@@ -33,7 +33,7 @@ int id=0;
 %token <int_val> INT_CONST
 
 
-%type <ast_val> FuncDef FuncType Block Stmt Number
+%type <ast_val> FuncDef FuncType Block Stmt Number Decl
 
 %%
 
@@ -46,8 +46,25 @@ CompUnit
     comp_unit->func_def = unique_ptr<BaseAST>($1);
     ast = move(comp_unit);
   }
+  | Decl {
+
+  }
+  | CompUnit FuncDef {
+
+  }
+  | CompUnit Decl {
+
+  } 
   ;
 
+Decl
+  : ConstDecl {
+
+  }
+  | VarDecl {
+
+  }
+  ;
 FuncDef
   : FuncType IDENT '(' ')' Block {
     auto ast = new FuncDefAST();
