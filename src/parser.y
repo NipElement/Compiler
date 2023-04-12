@@ -27,25 +27,96 @@ int id=0;
   BaseAST *ast_val;
 }
 
-
-%token INT RETURN VOID
+ 
+%token INT RETURN VOID CONST IF ELSE WHILE BREAK CONTINUE
 %token <str_val> IDENT
-%token <int_val> INT_CONST
+%token <int_val> INT_CONST 
 
 
-%type <ast_val> FuncDef FuncType Block Stmt Number
+%type <ast_val> FuncDef FuncType Block Stmt Number Decl ConstDecl VarDecl 
+BType ConstDef ConstDefList ConstExpList ConstInitVal ConstExp ConstInitValList 
+VarDef VarDefList InitVal InitValList FuncFParams FuncFParamsList FuncFParam 
+BlockItemList BlockItem LVal LOrExp ExpList1 PrimaryExp UnaryExp UnaryOp FuncRParams 
+ExpList2 MulExp AddExp RelExp EqExp LAndExp 
 
 %%
 
 
 CompUnit
-  : FuncDef {
+  : 
+  | CompUnit Decl 
+  | CompUnit FuncDef {
     auto comp_unit = make_unique<CompUnitAST>();
     
     comp_unit->id = id++;
     comp_unit->func_def = unique_ptr<BaseAST>($1);
     ast = move(comp_unit);
   }
+  ;
+
+Decl
+  : ConstDecl 
+  | VarDecl 
+  ;
+
+//ConstDecl     ::= "const" BType ConstDef {"," ConstDef} ";"
+ConstDecl
+  : CONST BType ConstDef ConstDefList ';'
+  ;
+
+ConstDefList
+  : ',' ConstDef ConstDefList
+  |
+  ;
+
+BType
+  : INT 
+  ;
+
+ConstDef
+  : IDENT ConstExpList '=' ConstInitVal 
+  ;
+
+ConstExpList
+  : '[' ConstExp ']' ConstExpList
+  |
+  ;
+
+//ConstInitVal  ::= ConstExp | "{" [ConstInitVal {"," ConstInitVal}] "}";
+ConstInitVal
+  : ConstExp 
+  | '{'  '}'
+  | '{' ConstInitVal ConstInitValList '}'
+  ;
+
+ConstInitValList
+  : ',' ConstInitVal ConstInitValList
+  |
+  ;
+
+VarDecl
+  : IDENT BType VarDef VarDefList ';'
+  ;
+
+VarDefList
+  : ',' VarDef VarDefList
+  |
+  ;
+
+VarDef 
+  : IDENT ConstExpList
+  | IDENT ConstExpList '=' InitVal
+  ;
+
+InitVal
+  : Exp
+  | '{'  '}'
+  | '{' InitVal InitValList '}'
+  ;
+
+InitValList
+  : ',' InitVal InitValList
+  |
   ;
 
 FuncDef
@@ -57,6 +128,7 @@ FuncDef
     ast->block = unique_ptr<BaseAST>($5);
     $$ = ast;
   }
+  | FuncType IDENT '(' FuncFParams ')' Block
   ;
 
 FuncType
@@ -74,20 +146,75 @@ FuncType
   }
   ;
 
+FuncFParams
+  : FuncFParams FuncFParamsList
+  ;
+
+FuncFParamsList
+  : ',' FuncFParams FuncFParamsList
+  |
+  ;
+
+FuncFParam
+  : BType IDENT
+  | BType IDENT '['  ']' ConstExpList
+  ;
+
 Block
-  : '{' Stmt '}' {
-    auto ast = new Block();
+  : '{' BlockItemList '}' {
+  }
+  ;
+
+BlockItemList
+  : BlockItem BlockItemList
+  |
+  ;
+
+BlockItem
+  : Decl
+  | Stmt
+  ;
+
+Stmt
+  : LVal '=' Exp ';'
+  | ';'
+  | Exp ';'
+  | Block
+  | IF '(' Exp ')' Stmt
+  | IF '(' Exp ')' Stmt ELSE Stmt
+  | WHILE '(' Exp ')' Stmt
+  | BREAK ';'
+  | CONTINUE ';'
+  |RETURN ';'
+  | RETURN Exp ';' {
+    auto ast = new Stmt();
     ast->id = id++;
-    ast->stmt = unique_ptr<BaseAST>($2);
+    ast->number = unique_ptr<BaseAST>($2);
     $$ = ast;
   }
   ;
 
-Stmt
-  : RETURN Number ';' {
-    auto ast = new Stmt();
-    ast->id = id++;
-    ast->number = unique_ptr<BaseAST>($2);
+Exp
+  : LOrExp
+  ;
+
+LVal
+  : IDENT ExpList1
+  ;
+
+ExpList1
+  : '[' Exp ']' ExpList1
+  |
+  ;
+
+PrimaryExp    
+  : '(' Exp ')'
+  | LVal
+  | Number{
+    auto ast = new PrimaryExp();
+    ast->type=number;
+    ast->id++;
+    ast->exp = unique_ptr<BaseAST>($2);
     $$ = ast;
   }
   ;
@@ -101,6 +228,68 @@ Number
   }
   ;
 
+UnaryExp 
+  : PrimaryExp
+  | IDENT '(' ')'
+  | IDENT '(' FuncRParams ')'
+  | UnaryOp UnaryExp
+  ;
+
+UnaryOp
+  : '+'
+  | '-'
+  | '!'
+  ;
+
+FuncRParams
+  : Exp ExpList2
+  ;
+
+ExpList2
+  : ',' Exp ExpList2
+  |
+  ;
+
+MulExp
+  : UnaryExp
+  | MulExp '*' UnaryExp
+  | MulExp '/' UnaryExp
+  | MulExp '%' UnaryExp
+  ;
+
+AddExp
+  : MulExp
+  | AddExp '+' MulExp
+  | AddExp '-' MulExp
+  ;
+
+RelExp
+  : AddExp
+  | RelExp '<' AddExp
+  | RelExp '>' AddExp
+  | RelExp '<=' AddExp
+  | RelExp '>=' AddExp
+  ;
+
+EqExp
+  : RelExp
+  | EqExp '==' RelExp
+  | EqExp '!=' RelExp
+  ;
+
+LAndExp
+  : EqExp
+  | LAndExp '&&' EqExp
+  ;
+
+LOrExp
+  : LAndExp
+  | LOrExp '||' LAndExp
+  ;
+
+ConstExp
+  : Exp
+  ;
 %%
 
 // 定义错误处理函数, 其中第二个参数是错误信息
