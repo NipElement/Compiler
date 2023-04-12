@@ -35,6 +35,19 @@ Hexadecimal   0[xX][0-9a-fA-F]+
 "int"           { return INT; }
 "return"        { return RETURN; }
 "void"          { return VOID; }
+"while"         { return WHILE; }
+"if"            { return IF; }
+"else"          { return ELSE; }
+"break"         { return BREAK; }
+"continue"      { return CONTINUE; }
+">="            { return GE; }
+"<="            { return LE; }
+">"             { return GT; }
+"<"             { return LT; }
+"=="            { return EQ; }
+"!="            { return NE; }
+"&&"            { return AND; }
+"||"            { return OR; }
 
 {Identifier}    { yylval.str_val = new string(yytext); return IDENT; }
 
