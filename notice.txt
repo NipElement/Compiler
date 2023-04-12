@@ -1,0 +1,31 @@
+任务1：把代码翻译成语法树
+
+1.语法：参考网站语法，以非终结符分工，继承BASEAST类，结点type可能需要记录
+
+https://pku-minic.github.io/online-doc/#/misc-app-ref/sysy-spec
+
+2.对于每个结点，需要写printTree函数，便于后续查看语法树
+
+https://dreampuf.github.io/GraphvizOnline/
+
+3.规范：
+
+函数：第一个单词第一个字母小写，之后单词第一个字母大写 如printTree()
+
+变量：全部小写中间用_分割 如int func_type
+
+类名：第一个单词第一个字母大写，其他同函数 如BaseFuncAST
+
+其余有clang-format，保存对齐格式
+
+4.使用unique_ptr 听说可以防内存泄漏，尝试使用
+
+5.如果新增文件，需要先cmake
+
+其他：
+
+我们不要求你编写的编译器具备处理语法/语义错误的能力, 也不会考察这些内容. line, col 位置信息
+
+任务2：学习llvm IR,将语法树翻译成IR
+
+https://hub.packtpub.com/introducing-llvm-intermediate-representation/
