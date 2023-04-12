@@ -28,12 +28,12 @@ int id=0;
 }
 
  
-%token INT RETURN VOID CONST IF ELSE WHILE BREAK CONTINUE
+%token INT RETURN VOID CONST IF ELSE WHILE BREAK CONTINUE GE LE GT LT EQ NE AND OR
 %token <str_val> IDENT
 %token <int_val> INT_CONST 
 
 
-%type <ast_val> FuncDef FuncType Block Stmt Number Decl ConstDecl VarDecl 
+%type <ast_val> CompUnit FuncDef FuncType Block Stmt Number Decl ConstDecl VarDecl 
 BType ConstDef ConstDefList ConstExpList ConstInitVal ConstExp ConstInitValList 
 VarDef VarDefList InitVal InitValList FuncFParams FuncFParamsList FuncFParam 
 BlockItemList BlockItem LVal LOrExp ExpList1 PrimaryExp UnaryExp UnaryOp FuncRParams 
@@ -44,19 +44,20 @@ ExpList2 MulExp AddExp RelExp EqExp LAndExp
 
 CompUnit
   : 
-  | CompUnit Decl 
+  | CompUnit Decl {
+
+  }
   | CompUnit FuncDef {
-    auto comp_unit = make_unique<CompUnitAST>();
-    
-    comp_unit->id = id++;
-    comp_unit->func_def = unique_ptr<BaseAST>($1);
-    ast = move(comp_unit);
   }
   ;
 
 Decl
-  : ConstDecl 
-  | VarDecl 
+  : ConstDecl {
+
+  }
+  | VarDecl {
+    
+  }
   ;
 
 //ConstDecl     ::= "const" BType ConstDef {"," ConstDef} ";"
@@ -121,28 +122,16 @@ InitValList
 
 FuncDef
   : FuncType IDENT '(' ')' Block {
-    auto ast = new FuncDefAST();
-    ast->id = id++;
-    ast->func_type = unique_ptr<BaseAST>($1);
-    ast->ident = *unique_ptr<string>($2);
-    ast->block = unique_ptr<BaseAST>($5);
-    $$ = ast;
   }
   | FuncType IDENT '(' FuncFParams ')' Block
   ;
 
 FuncType
   : INT {
-    auto ast = new FuncType();
-    ast->id = id++;
-    ast->type_ = FuncType::int_;
-    $$ = ast;
+  
   }
   | VOID{
-    auto ast = new FuncType();
-    ast->id = id++;
-    ast->type_ = FuncType::void_;
-    $$ = ast;
+    
   }
   ;
 
@@ -187,10 +176,6 @@ Stmt
   | CONTINUE ';'
   |RETURN ';'
   | RETURN Exp ';' {
-    auto ast = new Stmt();
-    ast->id = id++;
-    ast->number = unique_ptr<BaseAST>($2);
-    $$ = ast;
   }
   ;
 
@@ -211,20 +196,13 @@ PrimaryExp
   : '(' Exp ')'
   | LVal
   | Number{
-    auto ast = new PrimaryExp();
-    ast->type=number;
-    ast->id++;
-    ast->exp = unique_ptr<BaseAST>($2);
-    $$ = ast;
+    
   }
   ;
 
 Number
   : INT_CONST {
-    auto ast = new Number();
-    ast->id = id++;
-    ast->content = $1;
-    $$ = ast;
+    
   }
   ;
 
@@ -267,24 +245,24 @@ RelExp
   : AddExp
   | RelExp '<' AddExp
   | RelExp '>' AddExp
-  | RelExp '<=' AddExp
-  | RelExp '>=' AddExp
+  | RelExp LE AddExp
+  | RelExp GE AddExp
   ;
 
 EqExp
   : RelExp
-  | EqExp '==' RelExp
-  | EqExp '!=' RelExp
+  | EqExp EQ RelExp
+  | EqExp NE RelExp
   ;
 
 LAndExp
   : EqExp
-  | LAndExp '&&' EqExp
+  | LAndExp AND EqExp
   ;
 
 LOrExp
   : LAndExp
-  | LOrExp '||' LAndExp
+  | LOrExp OR LAndExp
   ;
 
 ConstExp
