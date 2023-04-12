@@ -43,125 +43,183 @@ ExpList2 MulExp AddExp RelExp EqExp LAndExp
 
 
 CompUnit
-  : 
-  | CompUnit Decl {
-
+  : CompUnit Decl {
+      std::cout<<"CompUnit Decl"<<endl;
   }
   | CompUnit FuncDef {
+    std::cout<<"CompUnit FuncDef"<<endl;
+  }
+  | {
+    std::cout<<"Blank"<<endl;
   }
   ;
 
 Decl
   : ConstDecl {
+    std::cout<<"ConstDecl"<<endl;
 
   }
   | VarDecl {
+    std::cout<<"VarDecl"<<endl;
     
   }
   ;
 
 //ConstDecl     ::= "const" BType ConstDef {"," ConstDef} ";"
 ConstDecl
-  : CONST BType ConstDef ConstDefList ';'
+  : CONST BType ConstDef ConstDefList ';'{
+    std::cout<<"CONST BType ConstDef ConstDefList ';'"<<endl;
+  }
   ;
 
 ConstDefList
-  : ',' ConstDef ConstDefList
-  |
+  :
+  | ',' ConstDef ConstDefList{
+    std::cout<<"',' ConstDef ConstDefList"<<endl;
+  }
+  
   ;
 
 BType
-  : INT 
+  : INT {
+    std::cout<<"INT"<<endl;
+  }
   ;
 
 ConstDef
-  : IDENT ConstExpList '=' ConstInitVal 
+  : IDENT ConstExpList '=' ConstInitVal{
+    std::cout<<"IDENT ConstExpList '=' ConstInitVal"<<endl;
+  } 
   ;
 
 ConstExpList
-  : '[' ConstExp ']' ConstExpList
-  |
+  : 
+  | ConstExpList '[' ConstExp ']' {
+    std::cout<<" ConstExpList '[' ConstExp ']'"<<endl;
+  }
+  
   ;
 
 //ConstInitVal  ::= ConstExp | "{" [ConstInitVal {"," ConstInitVal}] "}";
 ConstInitVal
-  : ConstExp 
-  | '{'  '}'
-  | '{' ConstInitVal ConstInitValList '}'
+  : ConstExp {
+    std::cout<<"ConstExp"<<endl;
+  }
+  | '{'  '}'{
+    std::cout<<"'{'  '}'"<<endl;
+  }
+  | '{' ConstInitVal ConstInitValList '}'{
+    std::cout<<"'{' ConstInitVal ConstInitValList '}'"<<endl;
+  }
   ;
 
 ConstInitValList
-  : ',' ConstInitVal ConstInitValList
-  |
+  : 
+  | ',' ConstInitVal ConstInitValList{
+    std::cout<<"',' ConstInitVal ConstInitValList"<<endl;
+  }
+  
   ;
 
 VarDecl
-  : IDENT BType VarDef VarDefList ';'
+  : BType VarDef VarDefList ';'{
+    std::cout<<"BType VarDef VarDefList ';'"<<endl;
+  }
   ;
 
 VarDefList
-  : ',' VarDef VarDefList
-  |
+  : 
+  | VarDefList ',' VarDef {
+    std::cout<<"VarDefList ',' VarDef"<<endl;
+  }
   ;
 
 VarDef 
-  : IDENT ConstExpList
-  | IDENT ConstExpList '=' InitVal
+  : IDENT ConstExpList{
+    std::cout<<"IDENT ConstExpList"<<endl;
+  }
+  | IDENT ConstExpList '=' InitVal{
+    std::cout<<"IDENT ConstExpList '=' InitVal"<<endl;
+  }
   ;
 
 InitVal
   : Exp
-  | '{'  '}'
-  | '{' InitVal InitValList '}'
+  | '{'  '}'{
+    std::cout<<"'{'  '}'"<<endl;
+  }
+  | '{' InitVal InitValList '}'{
+    std::cout<<"'{' InitVal InitValList '}'"<<endl;
+  }
   ;
 
 InitValList
-  : ',' InitVal InitValList
-  |
+  : 
+  | ',' InitVal InitValList{
+    std::cout<<"',' InitVal InitValList"<<endl;
+  }
   ;
 
 FuncDef
   : FuncType IDENT '(' ')' Block {
+    std::cout<<"FuncType IDENT '(' ')' Block"<<endl;
   }
-  | FuncType IDENT '(' FuncFParams ')' Block
+  | FuncType IDENT '(' FuncFParams ')' Block {
+    std::cout<<"FuncType IDENT '(' FuncFParams ')' Block"<<endl;
+  }
   ;
 
 FuncType
   : INT {
-  
+    std::cout<<"INT"<<endl;
   }
   | VOID{
-    
+    std::cout<<"VOID"<<endl;
   }
   ;
 
 FuncFParams
-  : FuncFParams FuncFParamsList
+  : FuncFParam FuncFParamsList{
+    std::cout<<"FuncFParam FuncFParamsList"<<endl;
+  }
   ;
 
 FuncFParamsList
-  : ',' FuncFParams FuncFParamsList
-  |
+  : 
+  | ',' FuncFParam FuncFParamsList{
+    std::cout<<"',' FuncFParam FuncFParamsList"<<endl;
+  }
   ;
 
 FuncFParam
-  : BType IDENT
-  | BType IDENT '['  ']' ConstExpList
+  : BType IDENT{
+    std::cout<<"BType IDENT"<<endl;
+  }
+  | BType IDENT '['  ']' ConstExpList{
+    std::cout<<"BType IDENT '['  ']' ConstExpList"<<endl;
+  }
   ;
 
 Block
   : '{' BlockItemList '}' {
+    std::cout<<"'{' BlockItemList '}'"<<endl;
   }
   ;
 
 BlockItemList
-  : BlockItem BlockItemList
-  |
+  : 
+  | BlockItem BlockItemList{
+    std::cout<<"BlockItem BlockItemList"<<endl;
+  }  
   ;
 
 BlockItem
-  : Decl
-  | Stmt
+  : Decl{
+    std::cout<<"Decl"<<endl;
+  }
+  | Stmt{
+    std::cout<<"Stmt"<<endl;
+  }
   ;
 
 Stmt
@@ -174,9 +232,8 @@ Stmt
   | WHILE '(' Exp ')' Stmt
   | BREAK ';'
   | CONTINUE ';'
-  |RETURN ';'
-  | RETURN Exp ';' {
-  }
+  | RETURN ';'
+  | RETURN Exp ';' 
   ;
 
 Exp
@@ -188,21 +245,19 @@ LVal
   ;
 
 ExpList1
-  : '[' Exp ']' ExpList1
-  |
+  : 
+  | '[' Exp ']' ExpList1  
   ;
 
 PrimaryExp    
   : '(' Exp ')'
   | LVal
-  | Number{
-    
-  }
+  | Number
   ;
 
 Number
   : INT_CONST {
-    
+    std::cout<<"INT_CONST"<<endl;
   }
   ;
 
@@ -224,8 +279,8 @@ FuncRParams
   ;
 
 ExpList2
-  : ',' Exp ExpList2
-  |
+  : 
+  | ',' Exp ExpList2
   ;
 
 MulExp

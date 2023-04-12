@@ -10,7 +10,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/build/compiler",
       "args": [
-        "input.sy"
+        "input.txt"
       ],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}/build",
