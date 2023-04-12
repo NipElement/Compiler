@@ -42,6 +42,7 @@ ExpList2 MulExp AddExp RelExp EqExp LAndExp
 %%
 
 
+
 CompUnit
   : CompUnit Decl {
       std::cout<<"CompUnit Decl"<<endl;
@@ -94,7 +95,7 @@ ConstDef
 
 ConstExpList
   : 
-  | ConstExpList '[' ConstExp ']' {
+  |  '[' ConstExp ']' ConstExpList{
     std::cout<<" ConstExpList '[' ConstExp ']'"<<endl;
   }
   
@@ -129,7 +130,7 @@ VarDecl
 
 VarDefList
   : 
-  | VarDefList ',' VarDef {
+  |  ',' VarDef VarDefList{
     std::cout<<"VarDefList ',' VarDef"<<endl;
   }
   ;
