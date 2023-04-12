@@ -33,8 +33,8 @@ int id=0;
 %token <int_val> INT_CONST 
 
 
-%type <ast_val> CompUnit FuncDef FuncType Block Stmt Number Decl ConstDecl VarDecl 
-BType ConstDef ConstDefList ConstExpList ConstInitVal ConstExp ConstInitValList 
+%type <ast_val> CompUnit FuncDef Block Stmt Number Decl ConstDecl VarDecl 
+ConstDef ConstDefList ConstExpList ConstInitVal ConstExp ConstInitValList 
 VarDef VarDefList InitVal InitValList FuncFParams FuncFParamsList FuncFParam 
 BlockItemList BlockItem LVal LOrExp ExpList1 PrimaryExp UnaryExp UnaryOp FuncRParams 
 ExpList2 MulExp AddExp RelExp EqExp LAndExp 
@@ -66,10 +66,10 @@ Decl
   }
   ;
 
-//ConstDecl     ::= "const" BType ConstDef {"," ConstDef} ";"
+//ConstDecl     ::= "const" INT ConstDef {"," ConstDef} ";"
 ConstDecl
-  : CONST BType ConstDef ConstDefList ';'{
-    std::cout<<"CONST BType ConstDef ConstDefList ';'"<<endl;
+  : CONST INT ConstDef ConstDefList ';'{
+    std::cout<<"CONST INT ConstDef ConstDefList ';'"<<endl;
   }
   ;
 
@@ -100,7 +100,15 @@ ConstExpList
   }
   
   ;
+/*
 
+%token ID
+%%
+s: a ID
+a: expr
+expr: %empty | expr ID ','
+
+*/
 //ConstInitVal  ::= ConstExp | "{" [ConstInitVal {"," ConstInitVal}] "}";
 ConstInitVal
   : ConstExp {
@@ -123,8 +131,8 @@ ConstInitValList
   ;
 
 VarDecl
-  : BType VarDef VarDefList ';'{
-    std::cout<<"BType VarDef VarDefList ';'"<<endl;
+  : INT VarDef VarDefList ';'{
+    std::cout<<"INT VarDef VarDefList ';'"<<endl;
   }
   ;
 
@@ -162,20 +170,17 @@ InitValList
   ;
 
 FuncDef
-  : FuncType IDENT '(' ')' Block {
-    std::cout<<"FuncType IDENT '(' ')' Block"<<endl;
+  : INT IDENT '(' ')' Block {
+    std::cout<<"INT IDENT '(' ')' Block"<<endl;
   }
-  | FuncType IDENT '(' FuncFParams ')' Block {
+  | VOID IDENT '(' ')' Block {
+    std::cout<<"INT IDENT '(' ')' Block"<<endl;
+  }
+  | INT IDENT '(' FuncFParams ')' Block {
     std::cout<<"FuncType IDENT '(' FuncFParams ')' Block"<<endl;
   }
-  ;
-
-FuncType
-  : INT {
-    std::cout<<"INT"<<endl;
-  }
-  | VOID{
-    std::cout<<"VOID"<<endl;
+  | VOID IDENT '(' FuncFParams ')' Block {
+    std::cout<<"FuncType IDENT '(' FuncFParams ')' Block"<<endl;
   }
   ;
 
@@ -193,11 +198,11 @@ FuncFParamsList
   ;
 
 FuncFParam
-  : BType IDENT{
-    std::cout<<"BType IDENT"<<endl;
+  : INT IDENT{
+    std::cout<<"INT IDENT"<<endl;
   }
-  | BType IDENT '['  ']' ConstExpList{
-    std::cout<<"BType IDENT '['  ']' ConstExpList"<<endl;
+  | INT IDENT '['  ']' ConstExpList{
+    std::cout<<"INT IDENT '['  ']' ConstExpList"<<endl;
   }
   ;
 
