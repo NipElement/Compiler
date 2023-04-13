@@ -81,11 +81,11 @@ ConstDefList
   
   ;
 
-/* BType
+BType
   : INT {
     std::cout<<"INT"<<endl;
   }
-  ; */
+  ;
 
 ConstDef
   : IDENT ConstExpList '=' ConstInitVal{
