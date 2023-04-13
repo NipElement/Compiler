@@ -304,8 +304,8 @@ AddExp
 
 RelExp
   : AddExp
-  | RelExp '<' AddExp
-  | RelExp '>' AddExp
+  | RelExp LT AddExp
+  | RelExp GT AddExp
   | RelExp LE AddExp
   | RelExp GE AddExp
   ;
