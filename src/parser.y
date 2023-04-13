@@ -34,8 +34,8 @@ int id=0;
 
 
 %type <ast_val> StartRoot CompUnit FuncDef Block Stmt Number Decl ConstDecl VarDecl 
-ConstDef ConstDefList ConstExpList ConstInitVal ConstExp ConstInitValList 
-VarDef VarDefList InitVal InitValList FuncFParams FuncFParamsList FuncFParam 
+ConstDef ConstDefList ConstInitVal ConstExp ConstInitValList 
+VarDef VarDefList InitVal InitValList FuncFParams FuncFParamList FuncFParam 
 BlockItemList BlockItem LVal LOrExp ExpList1 PrimaryExp UnaryExp UnaryOp FuncRParams 
 ExpList2 MulExp AddExp RelExp EqExp LAndExp 
 
@@ -43,26 +43,28 @@ ExpList2 MulExp AddExp RelExp EqExp LAndExp
 
 StartRoot
   : CompUnit {
-      auto start_root = new StartRoot();
-      start_root->comp_unit_ast = std::unique_ptr<BaseAST>($1);
-      ast = move(start_root);
+    auto start_root = new StartRoot();
+    start_root->comp_unit_ast = std::unique_ptr<BaseAST>($1);
+    ast = move(start_root);
+    //std::cout<<"CompUnit"<<endl;
   }
   ;
 
 CompUnit
   : CompUnit Decl {
-      auto ast = new CompUnit();
-      ast->comp_unit_ast = unique_ptr<BaseAST>($1);
-      ast->func_def_ast= nullptr;
-      ast->decl_ast = unique_ptr<BaseAST>($2);
-      $$ = ast;
+      // auto ast = new CompUnit();
+      // ast->comp_unit_ast = unique_ptr<BaseAST>($1);
+      // ast->func_def_ast= nullptr;
+      // ast->decl_ast = unique_ptr<BaseAST>($2);
+      // $$ = ast;
   }
   | CompUnit FuncDef {
-      auto ast = new CompUnit();
-      ast->comp_unit_ast = unique_ptr<BaseAST>($1);
-      ast->decl_ast = nullptr;
-      ast->func_def_ast = unique_ptr<BaseAST>($2);
-      $$ = ast;
+    auto ast = new CompUnit();
+    ast->comp_unit_ast = unique_ptr<BaseAST>($1);
+    ast->decl_ast = nullptr;
+    ast->func_def_ast = unique_ptr<BaseAST>($2);
+    $$ = ast;
+    //std::cout<<"CompUnit FuncDef"<<endl;
   }
   | {
       $$ = nullptr;
@@ -71,23 +73,23 @@ CompUnit
 
 Decl
   : ConstDecl {
-      auto ast = new Decl();
-      ast->const_decl_ast = unique_ptr<BaseAST>($1);
-      ast->var_decl_ast = nullptr;
-      $$ = ast;
+      // auto ast = new Decl();
+      // ast->const_decl_ast = unique_ptr<BaseAST>($1);
+      // ast->var_decl_ast = nullptr;
+      // $$ = ast;
   }
   | VarDecl {
-      auto ast = new Decl();
-      ast->const_decl_ast = nullptr;
-      ast->var_decl_ast = unique_ptr<BaseAST>($1);
-      $$ = ast; 
+      // auto ast = new Decl();
+      // ast->const_decl_ast = nullptr;
+      // ast->var_decl_ast = unique_ptr<BaseAST>($1);
+      // $$ = ast; 
   }
   ;
 
 //ConstDecl     ::= "const" INT ConstDef {"," ConstDef} ";"
 ConstDecl
   : CONST INT ConstDef ConstDefList ';'{
-    std::cout<<"CONST INT ConstDef ConstDefList ';'"<<endl;
+    
   }
   ;
 
@@ -99,24 +101,10 @@ ConstDefList
   
   ;
 
-BType
-  : INT {
-    std::cout<<"INT"<<endl;
-  }
-  ;
-
 ConstDef
-  : IDENT ConstExpList '=' ConstInitVal{
-    std::cout<<"IDENT ConstExpList '=' ConstInitVal"<<endl;
+  : IDENT ExpList1 '=' ConstInitVal{
+    std::cout<<"IDENT ExpList '=' ConstInitVal"<<endl;
   } 
-  ;
-
-ConstExpList
-  : 
-  |  '[' ConstExp ']' ConstExpList{
-    std::cout<<" ConstExpList '[' ConstExp ']'"<<endl;
-  }
-  
   ;
 /*
 
@@ -135,7 +123,7 @@ ConstInitVal
   | '{'  '}'{
     std::cout<<"'{'  '}'"<<endl;
   }
-  | '{' ConstInitVal ConstInitValList '}'{
+  | '{' ConstInitVal ConstInitValList '}' {
     std::cout<<"'{' ConstInitVal ConstInitValList '}'"<<endl;
   }
   ;
@@ -149,24 +137,40 @@ ConstInitValList
   ;
 
 VarDecl
-  : INT VarDef VarDefList ';'{
-    std::cout<<"INT VarDef VarDefList ';'"<<endl;
+  : INT VarDef VarDefList ';' {
+    auto ast = new VarDecl();
+    ast->type = 0;
+    ast->var_def_ast = unique_ptr<BaseAST>($2);
+    ast->var_def_list_ast = unique_ptr<BaseAST>($3);
+    $$ = ast;
+    //std::cout<<"INT VarDef VarDefList ';'"<<endl;
   }
   ;
 
 VarDefList
   : 
-  |  ',' VarDef VarDefList{
-    std::cout<<"VarDefList ',' VarDef"<<endl;
+  |  ',' VarDef VarDefList {
+    auto ast = new VarDefList();
+    ast->var_def_ast = unique_ptr<BaseAST>($2);
+    ast->var_def_list_ast = unique_ptr<BaseAST>($3);
+    //std::cout<<"VarDefList ',' VarDef"<<endl;
   }
   ;
 
 VarDef 
-  : IDENT ConstExpList{
-    std::cout<<"IDENT ConstExpList"<<endl;
+  : IDENT ExpList1 {
+    auto ast = new VarDef();
+    ast->ident = $1;
+    ast->exp_list1_ast = unique_ptr<BaseAST>($2);
+    ast->initval_ast = nullptr;
+    //std::cout<<"IDENT ExpList"<<endl;
   }
-  | IDENT ConstExpList '=' InitVal{
-    std::cout<<"IDENT ConstExpList '=' InitVal"<<endl;
+  | IDENT ExpList1 '=' InitVal{
+    // auto ast = new VarDef();
+    // ast->ident = $1;
+    // ast->exp_list1_ast = unique_ptr<BaseAST>($2);
+    // ast->initval_ast = unique_ptr<BaseAST>($4);
+    std::cout<<"IDENT ExpList '=' InitVal"<<endl;
   }
   ;
 
@@ -195,116 +199,316 @@ FuncDef
     std::cout<<"INT IDENT '(' ')' Block"<<endl;
   }
   | INT IDENT '(' FuncFParams ')' Block {
+
     std::cout<<"FuncType IDENT '(' FuncFParams ')' Block"<<endl;
   }
   | VOID IDENT '(' FuncFParams ')' Block {
-    std::cout<<"FuncType IDENT '(' FuncFParams ')' Block"<<endl;
+    auto ast = new FuncDef();
+    ast->type = 1;
+    ast->ident = $2;
+    ast->func_fparams_ast = unique_ptr<BaseAST>($4);
+    ast->block_ast = unique_ptr<BaseAST>($6);
+    //std::cout<<"FuncType IDENT '(' FuncFParams ')' Block"<<endl;
   }
   ;
 
 FuncFParams
-  : FuncFParam FuncFParamsList{
-    std::cout<<"FuncFParam FuncFParamsList"<<endl;
+  : FuncFParam FuncFParamList {
+    auto ast = new FuncFParams();
+    ast->func_fparam_ast = unique_ptr<BaseAST>($1);
+    ast->func_fparam_list_ast = unique_ptr<BaseAST>($2);
+    //std::cout<<"FuncFParam FuncFParamsList"<<endl;
   }
   ;
 
-FuncFParamsList
-  : 
-  | ',' FuncFParam FuncFParamsList{
-    std::cout<<"',' FuncFParam FuncFParamsList"<<endl;
+FuncFParamList
+  : {
+    $$ = nullptr;
+  }
+  | ',' FuncFParam FuncFParamList {
+    auto ast = new FuncFParams();
+    ast->func_fparam_ast = unique_ptr<BaseAST>($1);
+    ast->func_fparam_list_ast = unique_ptr<BaseAST>($2);
+    //std::cout<<"',' FuncFParam FuncFParamsList"<<endl;
   }
   ;
 
 FuncFParam
-  : INT IDENT{
-    std::cout<<"INT IDENT"<<endl;
+  : INT IDENT {
+    auto ast = new FuncFParam();
+    ast->type = 0;
+    ast->ident = $2;
+    ast->exp_list1_ast = nullptr;
+    //std::cout<<"INT IDENT"<<endl;
   }
-  | INT IDENT '['  ']' ConstExpList{
-    std::cout<<"INT IDENT '['  ']' ConstExpList"<<endl;
+  | INT IDENT '['  ']' ExpList1 {
+    auto ast = new FuncFParam();
+    ast->type = 0;
+    ast->ident = $2;
+    ast->exp_list1_ast = unique_ptr<BaseAST>($5);
+    //std::cout<<"INT IDENT '['  ']' ExpList"<<endl;
   }
   ;
 
 Block
   : '{' BlockItemList '}' {
-    std::cout<<"'{' BlockItemList '}'"<<endl;
+    auto ast = new Block();
+    ast->block_item_list_ast = unique_ptr<BaseAST>($2);
+    //std::cout<<"'{' BlockItemList '}'"<<endl;
   }
   ;
 
 BlockItemList
-  : 
-  | BlockItem BlockItemList{
-    std::cout<<"BlockItem BlockItemList"<<endl;
+  : {
+    $$ = nullptr;
+  }
+  | BlockItem BlockItemList {
+    auto ast = new BlockItemList();
+    ast->block_item_ast = unique_ptr<BaseAST>($1);
+    ast->block_item_list_ast = unique_ptr<BaseAST>($2);
+    //std::cout<<"BlockItem BlockItemList"<<endl;
   }  
   ;
 
 BlockItem
-  : Decl{
-    std::cout<<"Decl"<<endl;
+  : Decl {
+    auto ast = new BlockItem();
+    ast->decl_ast = unique_ptr<BaseAST>($1);
+    ast->stmt_ast = nullptr;
+    //std::cout<<"Decl"<<endl;
   }
-  | Stmt{
-    std::cout<<"Stmt"<<endl;
+  | Stmt {
+    auto ast = new BlockItem();
+    ast->decl_ast = nullptr;
+    ast->stmt_ast = unique_ptr<BaseAST>($1);
+    //std::cout<<"Stmt"<<endl;
   }
   ;
 
 Stmt
-  : LVal '=' Exp ';'
-  | ';'
-  | Exp ';'
-  | Block
-  | IF '(' Exp ')' Stmt
-  | IF '(' Exp ')' Stmt ELSE Stmt
-  | WHILE '(' Exp ')' Stmt
-  | BREAK ';'
-  | CONTINUE ';'
-  | RETURN ';'
-  | RETURN Exp ';' 
+  : LVal '=' Exp ';' {
+    auto ast = new Stmt();
+    ast->stmt_rule = 0;
+    ast->l_val_ast = unique_ptr<BaseAST>($1);
+    ast->exp_ast = unique_ptr<BaseAST>($3);
+    ast->block_ast = nullptr;
+    ast->stmt1_ast = nullptr;
+    ast->stmt2_ast = nullptr;
+  }
+  | ';' {
+    auto ast = new Stmt();
+    ast->stmt_rule = 1;
+    ast->l_val_ast = nullptr;
+    ast->exp_ast = nullptr;
+    ast->block_ast = nullptr;
+    ast->stmt1_ast = nullptr;
+    ast->stmt2_ast = nullptr;
+  }
+  | Exp ';' {
+    auto ast = new Stmt();
+    ast->stmt_rule = 2;
+    ast->l_val_ast = nullptr;
+    ast->exp_ast = unique_ptr<BaseAST>($1);
+    ast->block_ast = nullptr;
+    ast->stmt1_ast = nullptr;
+    ast->stmt2_ast = nullptr;
+  }
+  | Block {
+    auto ast = new Stmt();
+    ast->stmt_rule = 3;
+    ast->l_val_ast = nullptr;
+    ast->exp_ast = nullptr;
+    ast->block_ast = unique_ptr<BaseAST>($1);
+    ast->stmt1_ast = nullptr;
+    ast->stmt2_ast = nullptr;
+  }
+  | IF '(' Exp ')' Stmt {
+    auto ast = new Stmt();
+    ast->stmt_rule = 4;
+    ast->l_val_ast = nullptr;
+    ast->exp_ast = unique_ptr<BaseAST>($3);
+    ast->block_ast = nullptr;
+    ast->stmt1_ast = unique_ptr<BaseAST>($5);
+    ast->stmt2_ast = nullptr;
+  }
+  | IF '(' Exp ')' Stmt ELSE Stmt {
+    auto ast = new Stmt();
+    ast->stmt_rule = 5;
+    ast->l_val_ast = nullptr;
+    ast->exp_ast = unique_ptr<BaseAST>($3);
+    ast->block_ast = nullptr;
+    ast->stmt1_ast = unique_ptr<BaseAST>($5);
+    ast->stmt2_ast = unique_ptr<BaseAST>($7);
+  }
+  | WHILE '(' Exp ')' Stmt {
+    auto ast = new Stmt();
+    ast->stmt_rule = 6;
+    ast->l_val_ast = nullptr;
+    ast->exp_ast = unique_ptr<BaseAST>($3);
+    ast->block_ast = nullptr;
+    ast->stmt1_ast = unique_ptr<BaseAST>($5);
+    ast->stmt2_ast = nullptr;
+  }
+  | BREAK ';' {
+    auto ast = new Stmt();
+    ast->stmt_rule = 7;
+    ast->l_val_ast = nullptr;
+    ast->exp_ast = nullptr;
+    ast->block_ast = nullptr;
+    ast->stmt1_ast = nullptr;
+    ast->stmt2_ast = nullptr;
+  }
+  | CONTINUE ';' {
+    auto ast = new Stmt();
+    ast->stmt_rule = 8;
+    ast->l_val_ast = nullptr;
+    ast->exp_ast = nullptr;
+    ast->block_ast = nullptr;
+    ast->stmt1_ast = nullptr;
+    ast->stmt2_ast = nullptr;;
+  }
+  | RETURN ';' {
+    auto ast = new Stmt();
+    ast->stmt_rule = 9;
+    ast->l_val_ast = nullptr;
+    ast->exp_ast = nullptr;
+    ast->block_ast = nullptr;
+    ast->stmt1_ast = nullptr;
+    ast->stmt2_ast = nullptr;
+  }
+  | RETURN Exp ';' {
+    auto ast = new Stmt();
+    ast->stmt_rule = 10;
+    ast->l_val_ast = nullptr;
+    ast->exp_ast = unique_ptr<BaseAST>($2);
+    ast->block_ast = nullptr;
+    ast->stmt1_ast = nullptr;
+    ast->stmt2_ast = nullptr;
+  }
   ;
 
 Exp
-  : LOrExp
+  : LOrExp {
+    auto ast = new Exp();
+    ast->l_or_exp_ast = unique_ptr<BaseAST>($1);
+  }
   ;
 
 LVal
-  : IDENT ExpList1
+  : IDENT ExpList1 {
+    auto ast = new LVal();
+    ast->ident = $1;
+    ast->exp_list1_ast = unique_ptr<BaseAST>($2);
+  }
   ;
 
 ExpList1
-  : 
-  | '[' Exp ']' ExpList1  
+  : {
+    $$ = nullptr;
+  }
+  | '[' Exp ']' ExpList1 {
+    auto ast = new ExpList1();
+    ast->exp_ast = unique_ptr<BaseAST>($2);
+    ast->exp_list1_ast = unique_ptr<BaseAST>($4);
+  }
   ;
 
 PrimaryExp    
-  : '(' Exp ')'
-  | LVal
-  | Number
+  : '(' Exp ')' {
+    auto ast = new PrimaryExp();
+    ast->exp_ast = unique_ptr<BaseAST>($2);
+    ast->l_val_ast = nullptr;
+    ast->number_ast = nullptr;
+  }
+  | LVal {
+    auto ast = new PrimaryExp();
+    ast->exp_ast = nullptr;
+    ast->l_val_ast = unique_ptr<BaseAST>($1);
+    ast->number_ast = nullptr;
+  }
+  | Number {
+    auto ast = new PrimaryExp();
+    ast->exp_ast = nullptr;
+    ast->l_val_ast = nullptr;
+    ast->number_ast = unique_ptr<BaseAST>($1);
+  }
   ;
 
 Number
   : INT_CONST {
-    std::cout<<"INT_CONST"<<endl;
+    auto ast = new PrimaryExp();
+    ast->exp_int_constast = $1;
+    //std::cout<<"INT_CONST"<<endl;
   }
   ;
 
 UnaryExp 
-  : PrimaryExp
-  | IDENT '(' ')'
-  | IDENT '(' FuncRParams ')'
-  | UnaryOp UnaryExp
+  : PrimaryExp {
+    auto ast = new UnaryExp();
+    ast->ident = "";
+    ast->primary_exp_ast = unique_ptr<BaseAST>($1);
+    ast->func_rparams_ast = nullptr;
+    ast->unary_op_ast = nullptr;
+    ast->unary_exp_ast = nullptr;
+  }
+  | IDENT '(' ')' {
+    auto ast = new UnaryExp();
+    ast->ident = $1;
+    ast->primary_exp_ast = nullptr;
+    ast->func_rparams_ast = nullptr;
+    ast->unary_op_ast = nullptr;
+    ast->unary_exp_ast = nullptr;
+  }
+  | IDENT '(' FuncRParams ')' {
+    auto ast = new UnaryExp();
+    ast->ident = $1;
+    ast->primary_exp_ast = nullptr;
+    ast->func_rparams_ast = unique_ptr<BaseAST>($3);
+    ast->unary_op_ast = nullptr;
+    ast->unary_exp_ast = nullptr;
+  }
+  | UnaryOp UnaryExp {
+    auto ast = new UnaryExp();
+    ast->ident = "";
+    ast->primary_exp_ast = nullptr;
+    ast->func_rparams_ast = nullptr;
+    ast->unary_op_ast = unique_ptr<BaseAST>($1);
+    ast->unary_exp_ast = unique_ptr<BaseAST>($2);
+  }
   ;
 
 UnaryOp
-  : '+'
-  | '-'
-  | '!'
+  : '+' {
+    auto ast = new UnaryOp();
+    ast->unary_op_rule = 0;
+  }
+  | '-' {
+    auto ast = new UnaryOp();
+    ast->unary_op_rule = 1;
+  }
+  | '!' {
+    auto ast = new UnaryOp();
+    ast->unary_op_rule = 2;
+  }
   ;
 
 FuncRParams
-  : Exp ExpList2
+  : Exp ExpList2 {
+    auto ast = new FuncRParams();
+    ast->exp_ast = unique_ptr<BaseAST>($1);
+    ast->exp_list2_ast = unique_ptr<BaseAST>($2);
+  }
   ;
 
 ExpList2
-  : 
-  | ',' Exp ExpList2
+  : {
+    $$ = nullptr;
+  }
+  | ',' Exp ExpList2 {
+    auto ast = new ExpList2();
+    ast->exp_ast = unique_ptr<BaseAST>($2);
+    ast->exp_list2_ast = unique_ptr<BaseAST>($3);
+  }
   ;
 
 MulExp
@@ -315,33 +519,108 @@ MulExp
   ;
 
 AddExp
-  : MulExp
-  | AddExp '+' MulExp
-  | AddExp '-' MulExp
+  : MulExp {
+    auto ast = new AddExp();
+    ast->add_exp_rule = 0;
+    ast->mul_exp_ast = unique_ptr<BaseAST>($1);
+    ast->add_exp_ast = nullptr;
+  }
+  | AddExp '+' MulExp {
+    auto ast = new AddExp();
+    ast->add_exp_rule = 1;
+    ast->mul_exp_ast = unique_ptr<BaseAST>($1);
+    ast->add_exp_ast = unique_ptr<BaseAST>($3);
+  }
+  | AddExp '-' MulExp {
+    auto ast = new AddExp();
+    ast->add_exp_rule = 2;
+    ast->mul_exp_ast = unique_ptr<BaseAST>($1);
+    ast->add_exp_ast = unique_ptr<BaseAST>($3);
+  }
   ;
 
 RelExp
-  : AddExp
-  | RelExp LT AddExp
-  | RelExp GT AddExp
-  | RelExp LE AddExp
-  | RelExp GE AddExp
+  : AddExp {
+    auto ast = new RelExp();
+    ast->add_exp_rule = 0;
+    ast->add_exp_ast = unique_ptr<BaseAST>($1);
+    ast->rel_exp_ast = nullptr;
+  }
+  | RelExp LT AddExp {
+    auto ast = new RelExp();
+    ast->add_exp_rule = 1;
+    ast->add_exp_ast = unique_ptr<BaseAST>($1);
+    ast->rel_exp_ast = unique_ptr<BaseAST>($3);
+  }
+  | RelExp GT AddExp {
+    auto ast = new RelExp();
+    ast->add_exp_rule = 2;
+    ast->add_exp_ast = unique_ptr<BaseAST>($1);
+    ast->rel_exp_ast = unique_ptr<BaseAST>($3);
+  }
+  | RelExp LE AddExp {
+    auto ast = new RelExp();
+    ast->add_exp_rule = 3;
+    ast->add_exp_ast = unique_ptr<BaseAST>($1);
+    ast->rel_exp_ast = unique_ptr<BaseAST>($3);
+  }
+  | RelExp GE AddExp {
+    auto ast = new RelExp();
+    ast->add_exp_rule = 4;
+    ast->add_exp_ast = unique_ptr<BaseAST>($1);
+    ast->rel_exp_ast = unique_ptr<BaseAST>($3);
+  }
   ;
 
 EqExp
-  : RelExp
-  | EqExp EQ RelExp
-  | EqExp NE RelExp
+  : RelExp {
+    auto ast = new EqExp();
+    ast->add_exp_rule = 0;
+    ast->eq_exp_ast = nullptr;
+    ast->rel_exp_ast = unique_ptr<BaseAST>($1);
+  }
+  | EqExp EQ RelExp {
+    auto ast = new EqExp();
+    ast->add_exp_rule = 1;
+    ast->eq_exp_ast = unique_ptr<BaseAST>($1);
+    ast->rel_exp_ast = unique_ptr<BaseAST>($3);
+  }
+  | EqExp NE RelExp {
+    auto ast = new EqExp();
+    ast->add_exp_rule = 2;
+    ast->eq_exp_ast = unique_ptr<BaseAST>($1);
+    ast->rel_exp_ast = unique_ptr<BaseAST>($3);
+  }
   ;
 
 LAndExp
-  : EqExp
-  | LAndExp AND EqExp
+  : EqExp {
+    auto ast = new EqExp();
+    ast->add_exp_rule = 0;
+    ast->eq_exp_ast = unique_ptr<BaseAST>($1);
+    ast->l_and_exp_ast = nullptr;
+  }
+  | LAndExp AND EqExp {
+    auto ast = new EqExp();
+    ast->add_exp_rule = 1;
+    ast->l_and_exp_ast = unique_ptr<BaseAST>($1);
+    ast->eq_exp_ast = unique_ptr<BaseAST>($3);
+  }
   ;
 
 LOrExp
-  : LAndExp
-  | LOrExp OR LAndExp
+  : LAndExp {
+    auto ast = new EqExp();
+    ast->add_exp_rule = 0;
+    ast->l_and_exp_ast = unique_ptr<BaseAST>($1);
+    ast->l_or_exp_ast = nullptr;
+  }
+  | LOrExp OR LAndExp {
+    auto ast = new EqExp();
+    ast->add_exp_rule = 1;
+    ast->l_and_exp_ast = unique_ptr<BaseAST>($1);
+    ast->l_or_exp_ast = unique_ptr<BaseAST>($3);
+  }
   ;
 
 ConstExp
