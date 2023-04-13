@@ -81,11 +81,11 @@ ConstDefList
   
   ;
 
-BType
+/* BType
   : INT {
     std::cout<<"INT"<<endl;
   }
-  ;
+  ; */
 
 ConstDef
   : IDENT ConstExpList '=' ConstInitVal{
@@ -304,8 +304,8 @@ AddExp
 
 RelExp
   : AddExp
-  | RelExp '<' AddExp
-  | RelExp '>' AddExp
+  | RelExp LT AddExp
+  | RelExp GT AddExp
   | RelExp LE AddExp
   | RelExp GE AddExp
   ;
