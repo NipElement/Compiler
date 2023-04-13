@@ -1,0 +1,38 @@
+
+void swap(int x[], int y[]) {
+    int t;
+    t = x[0];
+    x[0] = y[0];
+    y[0] = t;
+}
+
+void quick_sort_recursive(int arr[], int start, int end) {
+    if (start >= end){
+        return;
+    }
+    int mid;
+    mid = arr[end];
+    int left;
+    left = start;
+    int right;
+    right = end - 1;
+    while (left < right) {
+        while (arr[left] < mid && left < right)
+            left = left+1;
+        while (arr[right] >= mid && left < right)
+            right = right-1;
+        swap(arr+left, arr+right);
+    }
+    if (arr[left] >= arr[end])
+        swap(arr+left, arr+end);
+    else
+        left = left + 1;
+    if (left) {
+        quick_sort_recursive(arr, start, left - 1);
+    }
+    quick_sort_recursive(arr, left + 1, end);
+}
+
+void quick_sort(int arr[], int len) {
+    quick_sort_recursive(arr, 0, len - 1);
+}
