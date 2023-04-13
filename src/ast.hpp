@@ -19,20 +19,29 @@ class BaseAST {
   virtual ~BaseAST() = default;
 };
 
+class StartRoot : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> comp_unit_ast;
+  virtual void printTree() override;
+  virtual ~StartRoot() override{};
+};
+
 class CompUnitAST : public BaseAST {
  public:
-  std::unique_ptr<BaseAST> func_def;
+  std::unique_ptr<BaseAST> func_def_ast;
+  std::unique_ptr<BaseAST> decl_ast;
+  std::unique_ptr<BaseAST> comp_unit_ast;
   virtual void printTree() override;
   virtual ~CompUnitAST() override{};
 };
 
-/*
-class Decl : public BaseAST {
-
+class DeclAST : public BaseAST {
+ public:
+  std::unique_ptr<BaseAST> const_decl_ast;
+  std::unique_ptr<BaseAST> var_decl_ast;
   virtual void printTree() override;
-  virtual ~Decl() override {}
+  virtual ~DeclAST() override {}
 };
-*/
 
 /*
 class ConstDel : public BaseAST {
@@ -90,8 +99,6 @@ class InitVal : public BaseAST {
 };
 */
 
-
-
 class FuncDefAST : public BaseAST {
  public:
   std::unique_ptr<BaseAST> func_type;
@@ -128,7 +135,6 @@ class FuncFParam : public BaseAST {
 };
 */
 
-
 class Block : public BaseAST {
  public:
   std::unique_ptr<BaseAST> stmt;
@@ -143,7 +149,6 @@ class BlockItem : public BaseAST {
   virtual ~BlockItem() override {}
 };
 */
-
 
 class Stmt : public BaseAST {
  public:

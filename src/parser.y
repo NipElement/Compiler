@@ -33,7 +33,7 @@ int id=0;
 %token <int_val> INT_CONST 
 
 
-%type <ast_val> CompUnit FuncDef Block Stmt Number Decl ConstDecl VarDecl 
+%type <ast_val> StartRoot CompUnit FuncDef Block Stmt Number Decl ConstDecl VarDecl 
 ConstDef ConstDefList ConstExpList ConstInitVal ConstExp ConstInitValList 
 VarDef VarDefList InitVal InitValList FuncFParams FuncFParamsList FuncFParam 
 BlockItemList BlockItem LVal LOrExp ExpList1 PrimaryExp UnaryExp UnaryOp FuncRParams 
@@ -41,28 +41,46 @@ ExpList2 MulExp AddExp RelExp EqExp LAndExp
 
 %%
 
-
+StartRoot
+  : CompUnit {
+      auto start_root = new StartRoot();
+      start_root->comp_unit_ast = std::unique_ptr<BaseAST>($1);
+      ast = move(start_root);
+  }
+  ;
 
 CompUnit
   : CompUnit Decl {
-      std::cout<<"CompUnit Decl"<<endl;
+      auto ast = new CompUnit();
+      ast->comp_unit_ast = unique_ptr<BaseAST>($1);
+      ast->func_def_ast= nullptr;
+      ast->decl_ast = unique_ptr<BaseAST>($2);
+      $$ = ast;
   }
   | CompUnit FuncDef {
-    std::cout<<"CompUnit FuncDef"<<endl;
+      auto ast = new CompUnit();
+      ast->comp_unit_ast = unique_ptr<BaseAST>($1);
+      ast->decl_ast = nullptr;
+      ast->func_def_ast = unique_ptr<BaseAST>($2);
+      $$ = ast;
   }
   | {
-    std::cout<<"Blank"<<endl;
+      $$ = nullptr;
   }
   ;
 
 Decl
   : ConstDecl {
-    std::cout<<"ConstDecl"<<endl;
-
+      auto ast = new Decl();
+      ast->const_decl_ast = unique_ptr<BaseAST>($1);
+      ast->var_decl_ast = nullptr;
+      $$ = ast;
   }
   | VarDecl {
-    std::cout<<"VarDecl"<<endl;
-    
+      auto ast = new Decl();
+      ast->const_decl_ast = nullptr;
+      ast->var_decl_ast = unique_ptr<BaseAST>($1);
+      $$ = ast; 
   }
   ;
 
