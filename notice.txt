@@ -30,3 +30,4 @@ https://dreampuf.github.io/GraphvizOnline/
 
 https://hub.packtpub.com/introducing-llvm-intermediate-representation/
 
+先建立内存里的IR，对于stmt语法树结点，有一个tr_stmt, 对于exp结点，有一个tr_exp, 对于while和if,有一个tr_cx结点，

@@ -61,4 +61,5 @@ void Number::printTree() {
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";
   std::cout << "number\\nid=" << id << "\\ncontent=" << content;
   std::cout << "\"];" << std::endl;
+  std::cout << "s";
 }
