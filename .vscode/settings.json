@@ -4,6 +4,7 @@
     "*.wpy": "vue",
     "*.wxml": "html",
     "*.wxss": "css",
-    "exception": "cpp"
+    "exception": "cpp",
+    "string": "cpp"
   }
 }
