@@ -205,7 +205,7 @@ class UnaryExpAST : public BaseAST {
 */
 class UnaryOpAST : public BaseAST {
  public:
-  std::string unary_op_rule;
+  int unary_op_rule;
   virtual void printTree() override;
   virtual ~UnaryOpAST() override {}
 };
@@ -225,6 +225,8 @@ class ExpList2AST : public BaseAST {
   virtual void printTree() override;
   virtual ~ExpList2AST() override {}
 };
+
+
 /*
   add_exp_rule = 0 : MulExp
   add_exp_rule = 1 : AddExp '+' MulExp
