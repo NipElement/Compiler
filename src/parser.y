@@ -592,7 +592,9 @@ ExpList2
   ;
 
 MulExp
-  : UnaryExp
+  : UnaryExp {
+    $$ = $1;
+  }
   | MulExp '*' UnaryExp
   | MulExp '/' UnaryExp
   | MulExp '%' UnaryExp

@@ -12,6 +12,7 @@ void StartRoot::printTree() {
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << comp_unit_ast->id << ";" << std::endl;
   }
+  std::cout << "}" << std::endl;
 }
 
 void CompUnitAST::printTree() {
@@ -334,7 +335,7 @@ void NumberAST::printTree() {
 
 void UnaryExpAST::printTree() {
   // tell the rules by the identifier
-  if (*ident == "") {
+  if (ident == nullptr) {
     std::cout << "SYNTAX_NODE_" << id << "[label=\"";
     std::cout << "UnaryExpAST\\nid=" << id;
 
