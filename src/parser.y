@@ -157,6 +157,7 @@ VarDefList
     ast->var_def_ast = unique_ptr<BaseAST>($2);
     ast->var_def_list_ast = unique_ptr<BaseAST>($3);
     ast->id = id++;
+    $$ = ast;
     //std::cout<<"VarDefList ',' VarDef"<<endl;
   }
   ;
