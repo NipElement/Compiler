@@ -60,7 +60,7 @@ class VarDefListAST : public BaseAST {
 
 class VarDefAST : public BaseAST {
  public:
-  std::string ident;
+  std::string *ident;
   std::unique_ptr<BaseAST> exp_list1_ast;
   std::unique_ptr<BaseAST> initval_ast;
   virtual void printTree() override;
@@ -70,7 +70,7 @@ class VarDefAST : public BaseAST {
 class FuncDefAST : public BaseAST {
  public:
   int type;
-  std::string ident;
+  std::string *ident;
   std::unique_ptr<BaseAST> func_fparams_ast;
   std::unique_ptr<BaseAST> block_ast;
   virtual void printTree() override;
@@ -96,7 +96,7 @@ class FuncFParamListAST : public BaseAST {
 class FuncFParamAST : public BaseAST {
  public:
   int type;
-  std::string ident;
+  std::string *ident;
   std::unique_ptr<BaseAST> exp_list1_ast;
   virtual void printTree() override;
   virtual ~FuncFParamAST() override {}
@@ -158,7 +158,7 @@ class ExpAST : public BaseAST {
 
 class LValAST : public BaseAST {
  public:
-  std::string ident;
+  std::string *ident;
   std::unique_ptr<BaseAST> exp_list1_ast;
   virtual void printTree() override;
   virtual ~LValAST() override {}
@@ -190,7 +190,7 @@ class NumberAST : public BaseAST {
 
 class UnaryExpAST : public BaseAST {
  public:
-  std::string ident;
+  std::string *ident;
   std::unique_ptr<BaseAST> primary_exp_ast;
   std::unique_ptr<BaseAST> func_rparams_ast;
   std::unique_ptr<BaseAST> unary_op_ast;
@@ -225,7 +225,6 @@ class ExpList2AST : public BaseAST {
   virtual void printTree() override;
   virtual ~ExpList2AST() override {}
 };
-
 
 /*
   add_exp_rule = 0 : MulExp

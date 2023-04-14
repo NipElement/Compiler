@@ -84,7 +84,7 @@ void VarDefListAST::printTree() {
 void VarDefAST::printTree() {
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";
   std::cout << "VarDefAST\\nid=" << id;
-  std::cout << "\\n" << ident;
+  std::cout << "\\n" << *ident;
   std::cout << "\"];" << std::endl;
 
   if (exp_list1_ast) {
@@ -103,7 +103,7 @@ void VarDefAST::printTree() {
 void FuncDefAST::printTree() {
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";
   std::cout << "FuncDefAST\\nid=" << id;
-  std::cout << "\\n" << ident;
+  std::cout << "\\n" << *ident;
   std::cout << "\"];" << std::endl;
 
   if (func_fparams_ast) {
@@ -160,7 +160,7 @@ void FuncFParamListAST::printTree() {
 void FuncFParamAST::printTree() {
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";
   std::cout << "FuncFParamAST\\nid=" << id;
-  std::cout << "\\n" << ident;
+  std::cout << "\\n" << *ident;
   std::cout << "\"];" << std::endl;
 
   if (exp_list1_ast) {
@@ -261,7 +261,7 @@ void ExpAST::printTree() {
   std::cout << "ExpAST\\nid=" << id;
 
   std::cout << "\"];" << std::endl;
-  if(l_or_exp_ast) {
+  if (l_or_exp_ast) {
     l_or_exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << l_or_exp_ast->id << ";" << std::endl;
@@ -271,10 +271,10 @@ void ExpAST::printTree() {
 void LValAST::printTree() {
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";
   std::cout << "LValAST\\nid=" << id;
-  std::cout << "\\n" << ident;
+  std::cout << "\\n" << *ident;
   std::cout << "\"];" << std::endl;
 
-  if(exp_list1_ast) {
+  if (exp_list1_ast) {
     exp_list1_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << exp_list1_ast->id << ";" << std::endl;
@@ -287,13 +287,13 @@ void ExpList1AST::printTree() {
 
   std::cout << "\"];" << std::endl;
 
-  if(exp_ast) {
+  if (exp_ast) {
     exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << exp_ast->id << ";" << std::endl;
   }
 
-  if(exp_list1_ast) {
+  if (exp_list1_ast) {
     exp_list1_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << exp_list1_ast->id << ";" << std::endl;
@@ -306,19 +306,19 @@ void PrimaryExpAST::printTree() {
 
   std::cout << "\"];" << std::endl;
 
-  if(exp_ast) {
+  if (exp_ast) {
     exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << exp_ast->id << ";" << std::endl;
   }
 
-  if(l_val_ast) {
+  if (l_val_ast) {
     l_val_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << l_val_ast->id << ";" << std::endl;
   }
 
-  if(number_ast) {
+  if (number_ast) {
     number_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << number_ast->id << ";" << std::endl;
@@ -334,23 +334,23 @@ void NumberAST::printTree() {
 
 void UnaryExpAST::printTree() {
   // tell the rules by the identifier
-  if(ident == "") {
+  if (*ident == "") {
     std::cout << "SYNTAX_NODE_" << id << "[label=\"";
     std::cout << "UnaryExpAST\\nid=" << id;
 
     std::cout << "\"];" << std::endl;
 
-    if(primary_exp_ast) {
+    if (primary_exp_ast) {
       primary_exp_ast->printTree();
       std::cout << "SYNTAX_NODE_" << id << "  ->  "
                 << "SYNTAX_NODE_" << primary_exp_ast->id << ";" << std::endl;
     }
-    if(unary_op_ast) {
+    if (unary_op_ast) {
       unary_op_ast->printTree();
       std::cout << "SYNTAX_NODE_" << id << "  ->  "
                 << "SYNTAX_NODE_" << unary_op_ast->id << ";" << std::endl;
     }
-    if(unary_exp_ast) {
+    if (unary_exp_ast) {
       unary_exp_ast->printTree();
       std::cout << "SYNTAX_NODE_" << id << "  ->  "
                 << "SYNTAX_NODE_" << unary_exp_ast->id << ";" << std::endl;
@@ -358,10 +358,10 @@ void UnaryExpAST::printTree() {
   } else {
     std::cout << "SYNTAX_NODE_" << id << "[label=\"";
     std::cout << "UnaryExpAST\\nid=" << id;
-    std::cout << "\\n" << ident;
+    std::cout << "\\n" << *ident;
     std::cout << "\"];" << std::endl;
 
-    if(func_rparams_ast) {
+    if (func_rparams_ast) {
       func_rparams_ast->printTree();
       std::cout << "SYNTAX_NODE_" << id << "  ->  "
                 << "SYNTAX_NODE_" << func_rparams_ast->id << ";" << std::endl;
@@ -382,13 +382,13 @@ void FuncRParamsAST::printTree() {
 
   std::cout << "\"];" << std::endl;
 
-  if(exp_ast) {
+  if (exp_ast) {
     exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << exp_ast->id << ";" << std::endl;
   }
 
-  if(exp_list2_ast) {
+  if (exp_list2_ast) {
     exp_list2_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << exp_list2_ast->id << ";" << std::endl;
@@ -401,13 +401,13 @@ void ExpList2AST::printTree() {
 
   std::cout << "\"];" << std::endl;
 
-  if(exp_ast) {
+  if (exp_ast) {
     exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << exp_ast->id << ";" << std::endl;
   }
 
-  if(exp_list2_ast) {
+  if (exp_list2_ast) {
     exp_list2_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << exp_list2_ast->id << ";" << std::endl;
@@ -420,19 +420,18 @@ void AddExpAST::printTree() {
   std::cout << "\\add_exp_rule=" << add_exp_rule;
   std::cout << "\"];" << std::endl;
 
-  if(add_exp_ast) {
+  if (add_exp_ast) {
     add_exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << add_exp_ast->id << ";" << std::endl;
   }
 
-  if(mul_exp_ast) {
+  if (mul_exp_ast) {
     mul_exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << mul_exp_ast->id << ";" << std::endl;
   }
 }
-
 
 void RelExpAST::printTree() {
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";
@@ -440,13 +439,13 @@ void RelExpAST::printTree() {
   std::cout << "\\rel_exp_rule=" << rel_exp_rule;
   std::cout << "\"];" << std::endl;
 
-  if(rel_exp_ast) {
+  if (rel_exp_ast) {
     rel_exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << rel_exp_ast->id << ";" << std::endl;
   }
 
-  if(add_exp_ast) {
+  if (add_exp_ast) {
     add_exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << add_exp_ast->id << ";" << std::endl;
@@ -459,13 +458,13 @@ void EqExpAST::printTree() {
   std::cout << "\\eq_rule=" << eq_rule;
   std::cout << "\"];" << std::endl;
 
-  if(eq_exp_ast) {
+  if (eq_exp_ast) {
     eq_exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << eq_exp_ast->id << ";" << std::endl;
   }
 
-  if(rel_exp_ast) {
+  if (rel_exp_ast) {
     rel_exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << rel_exp_ast->id << ";" << std::endl;
@@ -478,17 +477,17 @@ void LAndExpAST::printTree() {
   std::cout << "\\l_and_exp_rule=" << l_and_exp_rule;
   std::cout << "\"];" << std::endl;
 
-  if(l_and_exp_ast) {
+  if (l_and_exp_ast) {
     l_and_exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << l_and_exp_ast->id << ";" << std::endl;
   }
 
-  if(eq_exp_ast) {
+  if (eq_exp_ast) {
     eq_exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << eq_exp_ast->id << ";" << std::endl;
-  }  
+  }
 }
 
 void LOrExpAST::printTree() {
@@ -497,13 +496,13 @@ void LOrExpAST::printTree() {
   std::cout << "\\l_or_exp_rule=" << l_or_exp_rule;
   std::cout << "\"];" << std::endl;
 
-  if(l_or_exp_ast) {
+  if (l_or_exp_ast) {
     l_or_exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << l_or_exp_ast->id << ";" << std::endl;
-  }  
+  }
 
-  if(l_and_exp_ast) {
+  if (l_and_exp_ast) {
     l_and_exp_ast->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
               << "SYNTAX_NODE_" << l_and_exp_ast->id << ";" << std::endl;
