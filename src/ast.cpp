@@ -1,6 +1,11 @@
 #include <ast.hpp>
 #include <iostream>
 
+
+void StartRoot::printTree(){
+  
+}
+
 void CompUnitAST::printTree() {
   std::cout << "digraph G{ " << std::endl;
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";

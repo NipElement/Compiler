@@ -5,6 +5,7 @@
     "*.wxml": "html",
     "*.wxss": "css",
     "exception": "cpp",
-    "string": "cpp"
+    "string": "cpp",
+    "ostream": "cpp"
   }
 }
