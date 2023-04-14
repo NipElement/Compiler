@@ -13,11 +13,11 @@ void CompUnitAST::printTree() {
   std::cout << "comp_unit\\nid=" << id;
   // end
   std::cout << "\"];" << std::endl;
-  if (func_def != nullptr) {
-    func_def->printTree();
+  if (func_def_ast != nullptr) {
+    func_def_ast->printTree();
     // print the relation
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
-              << "SYNTAX_NODE_" << func_def->id << ";" << std::endl;
+              << "SYNTAX_NODE_" << func_def_ast->id << ";" << std::endl;
   }
   std::cout << "}" << std::endl;
 }
