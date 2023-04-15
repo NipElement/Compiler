@@ -31,6 +31,33 @@ https://dreampuf.github.io/GraphvizOnline/
 https://hub.packtpub.com/introducing-llvm-intermediate-representation/
 
 先建立内存里的IR，对于stmt语法树结点，有一个tr_stmt, 对于exp结点，有一个tr_exp, 对于while和if,有一个tr_cx结点，
+ 
+Stmt ::=  1  LVal "=" Exp ";"
+          2  | [Exp] ";"
+          3  | Block
+          4  | "if" "(" Exp ")" Stmt ["else" Stmt]
+          5  | "while" "(" Exp ")" Stmt
+          6  | "break" ";"
+          7  | "continue" ";"
+          8  | "return" [Exp] ";";
+
+IR的基本单元定为语法树的Stmt结点。
+
+对于stmt结点： 先不考虑6，7
+
+总共两种数据结构： stmt和exp。 这两种类型又组成tr_*结点。
+
+stmt：带有副作用，表现为跳转，赋值，返回
+
+exp: 返回一个值：如调用函数，计算，load。
+
+4，5： tr_cx结点：包含跳转label和stmt
+
+1，8：tr_stmt结点：包含stmt。
+
+2：tr_exp结点：包含exp
+
+
 
 
 
