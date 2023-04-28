@@ -1,6 +1,6 @@
 #include <ast.hpp>
 #include <iostream>
-
+#include "irtree.hpp"
 void StartRoot::printTree() {
   std::cout << "digraph G{ " << std::endl;
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";

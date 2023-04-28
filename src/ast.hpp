@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "irtree.hpp"
 
 enum ASTtype {
   base,
@@ -16,6 +17,7 @@ class BaseAST {
   ASTtype type;
   int id;
   virtual void printTree() = 0;
+  virtual BaseIr *buildIrTree() {}
   virtual ~BaseAST() = default;
 };
 
@@ -23,6 +25,7 @@ class StartRoot : public BaseAST {
  public:
   std::unique_ptr<BaseAST> comp_unit_ast;
   virtual void printTree() override;
+  virtual BaseIr *buildIrTree();
   virtual ~StartRoot() override{};
 };
 
@@ -67,13 +70,17 @@ class VarDefAST : public BaseAST {
   virtual ~VarDefAST() override {}
 };
 
+// type = 0 int
+// type = 1 void
+
 class FuncDefAST : public BaseAST {
  public:
   int type;
   std::string *ident;
   std::unique_ptr<BaseAST> func_fparams_ast;
   std::unique_ptr<BaseAST> block_ast;
-  virtual void printTree() override;
+  virtual BaseIr *buildIrTree();
+  void printTree() override;
   virtual ~FuncDefAST() override {}
 };
 
@@ -106,6 +113,7 @@ class BlockAST : public BaseAST {
  public:
   std::unique_ptr<BaseAST> block_item_list_ast;
   virtual void printTree() override;
+  virtual BaseIr *buildIrTree();
   virtual ~BlockAST() override {}
 };
 
@@ -121,6 +129,7 @@ class BlockItemAST : public BaseAST {
  public:
   std::unique_ptr<BaseAST> decl_ast;
   std::unique_ptr<BaseAST> stmt_ast;
+  virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~BlockItemAST() override {}
 };
@@ -145,6 +154,8 @@ class StmtAST : public BaseAST {
   std::unique_ptr<BaseAST> block_ast;
   std::unique_ptr<BaseAST> stmt1_ast;
   std::unique_ptr<BaseAST> stmt2_ast;
+
+  virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~StmtAST() override {}
 };
@@ -152,6 +163,8 @@ class StmtAST : public BaseAST {
 class ExpAST : public BaseAST {
  public:
   std::unique_ptr<BaseAST> l_or_exp_ast;
+
+  virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~ExpAST() override {}
 };
@@ -160,6 +173,8 @@ class LValAST : public BaseAST {
  public:
   std::string *ident;
   std::unique_ptr<BaseAST> exp_list1_ast;
+
+  virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~LValAST() override {}
 };
@@ -177,6 +192,7 @@ class PrimaryExpAST : public BaseAST {
   std::unique_ptr<BaseAST> exp_ast;
   std::unique_ptr<BaseAST> l_val_ast;
   std::unique_ptr<BaseAST> number_ast;
+  virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~PrimaryExpAST() override {}
 };
@@ -184,6 +200,7 @@ class PrimaryExpAST : public BaseAST {
 class NumberAST : public BaseAST {
  public:
   int int_const;
+  virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~NumberAST() override {}
 };
@@ -195,6 +212,8 @@ class UnaryExpAST : public BaseAST {
   std::unique_ptr<BaseAST> func_rparams_ast;
   std::unique_ptr<BaseAST> unary_op_ast;
   std::unique_ptr<BaseAST> unary_exp_ast;
+
+  virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~UnaryExpAST() override {}
 };
@@ -236,6 +255,7 @@ class AddExpAST : public BaseAST {
   int add_exp_rule;
   std::unique_ptr<BaseAST> mul_exp_ast;
   std::unique_ptr<BaseAST> add_exp_ast;
+  virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~AddExpAST() override {}
 };
@@ -251,6 +271,7 @@ class RelExpAST : public BaseAST {
   int rel_exp_rule;
   std::unique_ptr<BaseAST> add_exp_ast;
   std::unique_ptr<BaseAST> rel_exp_ast;
+  virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~RelExpAST() override {}
 };
@@ -264,6 +285,7 @@ class EqExpAST : public BaseAST {
   int eq_rule;
   std::unique_ptr<BaseAST> rel_exp_ast;
   std::unique_ptr<BaseAST> eq_exp_ast;
+  virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~EqExpAST() override {}
 };
@@ -276,6 +298,7 @@ class LAndExpAST : public BaseAST {
   int l_and_exp_rule;
   std::unique_ptr<BaseAST> eq_exp_ast;
   std::unique_ptr<BaseAST> l_and_exp_ast;
+  virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~LAndExpAST() override {}
 };
@@ -288,6 +311,7 @@ class LOrExpAST : public BaseAST {
   int l_or_exp_rule;
   std::unique_ptr<BaseAST> l_and_exp_ast;
   std::unique_ptr<BaseAST> l_or_exp_ast;
+  virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~LOrExpAST() override {}
 };

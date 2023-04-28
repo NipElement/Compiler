@@ -237,7 +237,7 @@ FuncFParamList
     $$ = nullptr;
   }
   | ',' FuncFParam FuncFParamList {
-    auto ast = new FuncFParamsAST();
+    auto ast = new FuncFParamListAST();
     ast->func_fparam_ast = unique_ptr<BaseAST>($2);
     ast->func_fparam_list_ast = unique_ptr<BaseAST>($3);
     ast->id = id++;
