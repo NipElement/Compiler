@@ -1,6 +1,7 @@
 #ifndef _IRTREE_H
 #define _IRTREE_H
 #include <memory>
+#include <string>
 #include <vector>
 
 enum IrType {

@@ -1,6 +1,9 @@
 #include <iostream>
 #include "irtree.hpp"
-int attr_id = 0;
+
+using namespace std;
+
+// int attr_id = 0;
 // void RootIr::printLL() {
 //   // omit some attributes
 //   for (int i = 0; i < funcs.size(); i++) {
@@ -9,7 +12,11 @@ int attr_id = 0;
 // }
 
 // void FuncDefIr::printLL() {
-//   std::cout << "define dso_local ";
+//   int main_flag = 0;
+//   if (name == "main") {
+//     main_flag = 1;
+//   }
+//   std::cout << "define ";
 //   if (type == 0) {
 //     std::cout << "i32 ";
 //   } else {
@@ -25,7 +32,7 @@ int attr_id = 0;
 //     } else {
 //       // ...
 //     }
-
+//     cout << "noundef ";
 //     std::cout << "%" << i;
 //   }
 //   std::cout << ")";
