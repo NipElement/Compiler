@@ -18,6 +18,7 @@ generate llvm ir representation from *.c file
 ```sh
 
 clang main.c -emit-llvm -S -c -o main.ll
+clang input.c -emit-llvm -S -c -o input.ll
 
 ```
 

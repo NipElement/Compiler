@@ -90,10 +90,10 @@ enum BinOpType {
 class BinopExp : public ExpIr {
  public:
   BinOpType op;
-  std::unique_ptr<BaseIr> exp1;
-  std::unique_ptr<BaseIr> exp2;
+  std::unique_ptr<ExpIr> exp1;
+  std::unique_ptr<ExpIr> exp2;
   virtual void printTree();
-  // virtual void printLL();
+  virtual void printLL();
 };
 
 class MemExp : public ExpIr {

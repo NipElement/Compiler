@@ -11,11 +11,16 @@ void RootIr::printLL() {
   }
 }
 
+void BlockIr::printLL() {
+  // print
+  for (int i = 0; i < stmts.size(); i++) {
+    stmts[i]->printLL();
+  }
+}
+
+void VarDeclIr::printLL() { cout << "%" << mem_id << " = alloca i32, align 4" << endl; }
+
 void FuncDefIr::printLL() {
-  //   int main_flag = 0;
-  //   if (name == "main") {
-  //     main_flag = 1;
-  //   }
   std::cout << "define ";
   if (type == 0) {
     std::cout << "i32 ";
@@ -45,13 +50,10 @@ void FuncDefIr::printLL() {
   std::cout << "}" << std::endl;
 }
 
-void BlockIr::printLL() {
-  // print
-  for (int i = 0; i < stmts.size(); i++) {
-    stmts[i]->printLL();
+void BinopExp::printLL() {
+  // before
+  if (op == Add) {
+    cout << "%" << reg_id << "add nsw i32 "
+         << "%" << exp1->reg_id << ", %" << exp2->reg_id << endl;
   }
-}
-
-void VarDeclIr::printLL() {
-  // print
 }

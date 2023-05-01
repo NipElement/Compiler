@@ -33,6 +33,6 @@ int main(int argc, const char *argv[]) {
 
   auto ir_root = ast->buildIrTree();
   ir_root->printTree();
-  std::cout << "hello" << std::endl;
+  // std::cout << "hello" << std::endl;
   return 0;
 }
