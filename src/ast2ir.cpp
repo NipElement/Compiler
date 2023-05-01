@@ -169,8 +169,8 @@ BaseIr *LOrExpAST::buildIrTree() {
     binop->type = IrType(Exp);
 
     binop->op = BinOpType(Or);
-    binop->exp1 = std::unique_ptr<BaseIr>(l_and_exp_ast->buildIrTree());
-    binop->exp2 = std::unique_ptr<BaseIr>(l_or_exp_ast->buildIrTree());
+    binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_and_exp_ast->buildIrTree()));
+    binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_or_exp_ast->buildIrTree()));
 
     return binop;
   }
@@ -219,8 +219,8 @@ BaseIr *AddExpAST::buildIrTree() {
     binop->type = IrType(Exp);
 
     binop->op = BinOpType(Add);
-    binop->exp1 = std::unique_ptr<BaseIr>(mul_exp_ast->buildIrTree());
-    binop->exp2 = std::unique_ptr<BaseIr>(add_exp_ast->buildIrTree());
+    binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(mul_exp_ast->buildIrTree()));
+    binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(add_exp_ast->buildIrTree()));
     binop->reg_id = reg++;
 
     return binop;
@@ -231,8 +231,8 @@ BaseIr *AddExpAST::buildIrTree() {
     binop->reg_id = reg++;
 
     binop->op = BinOpType(Minus);
-    binop->exp1 = std::unique_ptr<BaseIr>(mul_exp_ast->buildIrTree());
-    binop->exp2 = std::unique_ptr<BaseIr>(add_exp_ast->buildIrTree());
+    binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(mul_exp_ast->buildIrTree()));
+    binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(add_exp_ast->buildIrTree()));
 
     return binop;
   }
