@@ -41,7 +41,7 @@ BaseIr *FuncDefAST::buildIrTree() {
 
     func_def->param_types.push_back(ParamType(first_para->type));
     func_def->param_names.push_back(*(first_para->ident));
-
+    reg++;
     // push parameter in lists
     if (p->func_fparam_list_ast) {
       auto it = dynamic_cast<FuncFParamListAST *>(p->func_fparam_list_ast.get());
@@ -51,12 +51,14 @@ BaseIr *FuncDefAST::buildIrTree() {
 
         func_def->param_types.push_back(ParamType(para_leaf->type));
         func_def->param_names.push_back(*(para_leaf->ident));
+        reg++;
 
         it = dynamic_cast<FuncFParamListAST *>(it->func_fparam_list_ast.get());
       }
     }
   }
 
+  reg++;
   for (int i = 0; i < func_def->param_names.size(); i++) {
     table.insert(std::pair<std::string, int>(func_def->param_names[i], i + 1 + func_def->param_names.size()));
   }
