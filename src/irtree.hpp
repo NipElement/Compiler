@@ -33,7 +33,7 @@ class RootIr : public BaseIr {
  public:
   std::vector<std::unique_ptr<BaseIr>> funcs;
   virtual void printTree();
-  virtual void printLL(){};
+  virtual void printLL();
 };
 
 class BlockIr : public BaseIr {
@@ -43,14 +43,14 @@ class BlockIr : public BaseIr {
   // in fact only Cjump,Exp,Move
   std::vector<std::unique_ptr<BaseIr>> stmts;
   virtual void printTree();
-  virtual void printLL(){};
+  virtual void printLL();
 };
 
 class VarDeclIr : public BaseIr {
  public:
   int mem_id;  // in fact $mem_id has the address of this variable
   virtual void printTree();
-  virtual void printLL(){};
+  virtual void printLL();
 };
 
 class FuncDefIr : public BaseIr {
@@ -61,7 +61,7 @@ class FuncDefIr : public BaseIr {
   std::unique_ptr<BaseIr> block;
   std::string name;
   virtual void printTree();
-  virtual void printLL(){};
+  virtual void printLL();
 };
 
 // for expression:
@@ -93,6 +93,7 @@ class BinopExp : public ExpIr {
   std::unique_ptr<BaseIr> exp1;
   std::unique_ptr<BaseIr> exp2;
   virtual void printTree();
+  // virtual void printLL();
 };
 
 class MemExp : public ExpIr {
@@ -112,12 +113,14 @@ class TempExp : public ExpIr {
   // this means the value of a variable will be load into a reg_id
   std::unique_ptr<BaseIr> mem;
   virtual void printTree();
+  // virtual void printLL();
 };
 
 class ConstExp : public ExpIr {
  public:
   int value;
   virtual void printTree();
+  // virtual void printLL();
 };
 
 class CallExp : public ExpIr {
@@ -128,6 +131,7 @@ class CallExp : public ExpIr {
 
  public:
   virtual void printTree();
+  // virtual void printLL();
   RetType type;
   std::string name;
   std::vector<std::unique_ptr<TempExp>> params;
@@ -139,6 +143,7 @@ class MoveIr : public BaseIr {
   std::unique_ptr<BaseIr> exp1;
   std::unique_ptr<BaseIr> exp2;
   virtual void printTree();
+  // virtual void printLL();
 };
 
 class CjumpIr : public BaseIr {
@@ -150,6 +155,7 @@ class CjumpIr : public BaseIr {
   int f;
   int done;
   virtual void printTree();
+  // virtual void printLL();
 };
 
 #endif

@@ -63,6 +63,7 @@ BaseIr *FuncDefAST::buildIrTree() {
     table.insert(std::pair<std::string, int>(func_def->param_names[i], i + 1 + func_def->param_names.size()));
   }
 
+  reg = 2 * func_def->param_names.size() + 1;
   // generate block
   func_def->block = std::unique_ptr<BaseIr>(dynamic_cast<BlockAST *>(block_ast.get())->buildIrTree());
 
@@ -216,11 +217,11 @@ BaseIr *AddExpAST::buildIrTree() {
     auto binop = new BinopExp();
     binop->id = ir_id++;
     binop->type = IrType(Exp);
-    binop->reg_id = reg++;
 
     binop->op = BinOpType(Add);
     binop->exp1 = std::unique_ptr<BaseIr>(mul_exp_ast->buildIrTree());
     binop->exp2 = std::unique_ptr<BaseIr>(add_exp_ast->buildIrTree());
+    binop->reg_id = reg++;
 
     return binop;
   } else if (add_exp_rule == 2) {
