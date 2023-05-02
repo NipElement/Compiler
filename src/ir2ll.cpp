@@ -45,6 +45,14 @@ void FuncDefIr::printLL() {
   std::cout << " #" << attr_id << " ";
   std::cout << "{" << std::endl;
 
+  for (int i = 0; i < param_names.size(); i++) {
+    // print
+    cout << "%" << param_names.size() + i + 1 << " = alloca i32, align 4" << endl;
+    // store i32 %0, i32* %3, align 4
+    cout << "store i32"
+         << "%" << i << ", i32* %" << param_names.size() + i + 1 << ", align 4" << endl;
+  }
+
   block->printLL();
 
   std::cout << "}" << std::endl;
@@ -52,8 +60,14 @@ void FuncDefIr::printLL() {
 
 void BinopExp::printLL() {
   // before
+  exp1->printLL();
+  exp2->printLL();
   if (op == Add) {
     cout << "%" << reg_id << "add nsw i32 "
          << "%" << exp1->reg_id << ", %" << exp2->reg_id << endl;
   }
+}
+
+void MemExp::printLL() {
+  
 }
