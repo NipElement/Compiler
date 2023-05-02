@@ -114,7 +114,7 @@ class TempExp : public ExpIr {
   // this means the value of a variable will be load into a reg_id
   std::unique_ptr<ExpIr> mem;
   virtual void printTree();
-  // virtual void printLL();
+  virtual void printLL();
 };
 
 class ConstExp : public ExpIr {

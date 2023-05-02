@@ -69,5 +69,24 @@ void BinopExp::printLL() {
 }
 
 void MemExp::printLL() {
-  
+  if (exp) {
+    // as left value, store
+    exp->printLL();
+    // store i32 %exp->reg_id, i32* %reg_id, align 4
+    cout << "store i32 %" << exp->reg_id << ", i32* %" << reg_id << ", align 4" << endl;
+  } else {
+    // as right value, load and here we do not need to do anything
+  }
+}
+
+void TempExp::printLL() {
+  // calculate the location
+  mem->printLL();
+  // %10 = load i32, i32* %6, align 4
+  cout << "%" << reg_id << " = load i32, i32* %" << mem->reg_id << ", align 4" << endl;
+}
+
+void ConstExp::printLL() {
+  // 
+
 }
