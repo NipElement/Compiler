@@ -154,6 +154,7 @@ class CjumpIr : public BaseIr {
   std::unique_ptr<ExpIr> exp;
   std::unique_ptr<BaseIr> t_block;
   std::unique_ptr<BaseIr> f_block;
+  int condition_reg;
   int t;
   int f;
   int done;

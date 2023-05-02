@@ -132,6 +132,7 @@ BaseIr *StmtAST::buildIrTree() {
 
     cjump->exp = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp_ast->buildIrTree()));
 
+    cjump->condition_reg = reg++;
     cjump->t = reg++;
     cjump->t_block = std::unique_ptr<BaseIr>(stmt1_ast->buildIrTree());
     cjump->f = reg++;
