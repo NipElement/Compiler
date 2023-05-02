@@ -48,7 +48,7 @@ void FuncDefIr::printLL() {
   for (int i = 0; i < param_names.size(); i++) {
     // print
     cout << "%" << param_names.size() + i + 1 << " = alloca i32, align 4" << endl;
-    // store i32 %0, i32* %3, align 4
+    // store i32 %i, i32* %param_names.size() + i + 1, align 4
     cout << "store i32"
          << "%" << i << ", i32* %" << param_names.size() + i + 1 << ", align 4" << endl;
   }
@@ -87,6 +87,21 @@ void TempExp::printLL() {
 }
 
 void ConstExp::printLL() {
-  // 
+  // store i32 value, i32* %reg_id, align 4
+  cout << "store i32 " << value << ", i32 * %" << reg_id << ", align 4" << endl;
+}
 
+void CallExp::printLL() {}
+
+void MoveIr::printLL() {
+  // MEM
+  exp1->printLL();
+  // value
+  exp2->printLL();
+  // store i32 %exp2->reg_id, i32* %exp1->reg_id, align 4
+  cout << "store i32 %" << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
+}
+
+void CjumpIr::printLL() {
+  // produce 3 labels
 }

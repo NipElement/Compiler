@@ -95,7 +95,7 @@ class BinopExp : public ExpIr {
   virtual void printTree();
   virtual void printLL();
 };
-// 计算值，并把值存在reg_id里面
+// 计算值，并把值存在地址reg_id里
 class MemExp : public ExpIr {
  public:
   // id is the address of this lval
@@ -109,6 +109,7 @@ class MemExp : public ExpIr {
   virtual void printLL();
 };
 
+// is value not location
 class TempExp : public ExpIr {
  public:
   // this means the value of a variable will be load into a reg_id
@@ -117,6 +118,7 @@ class TempExp : public ExpIr {
   virtual void printLL();
 };
 
+// is value not location
 class ConstExp : public ExpIr {
  public:
   int value;
@@ -132,7 +134,7 @@ class CallExp : public ExpIr {
 
  public:
   virtual void printTree();
-  // virtual void printLL();
+  virtual void printLL();
   RetType type;
   std::string name;
   std::vector<std::unique_ptr<TempExp>> params;
@@ -144,7 +146,7 @@ class MoveIr : public BaseIr {
   std::unique_ptr<ExpIr> exp1;
   std::unique_ptr<ExpIr> exp2;
   virtual void printTree();
-  // virtual void printLL();
+  virtual void printLL();
 };
 
 class CjumpIr : public BaseIr {
@@ -156,7 +158,7 @@ class CjumpIr : public BaseIr {
   int f;
   int done;
   virtual void printTree();
-  // virtual void printLL();
+  virtual void printLL();
 };
 
 #endif
