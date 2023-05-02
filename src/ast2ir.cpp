@@ -120,8 +120,8 @@ BaseIr *StmtAST::buildIrTree() {
     // in fact this is a move ir
     auto l_val = dynamic_cast<LValAST *>(l_val_ast.get());
     auto exp = dynamic_cast<ExpAST *>(exp_ast.get());
-    move->exp1 = std::unique_ptr<BaseIr>(l_val->buildIrTree());
-    move->exp2 = std::unique_ptr<BaseIr>(exp->buildIrTree());
+    move->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_val->buildIrTree()));
+    move->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp->buildIrTree()));
     return move;
   } else if (stmt_rule == 3) {
     return block_ast->buildIrTree();
@@ -130,7 +130,7 @@ BaseIr *StmtAST::buildIrTree() {
     cjump->id = ir_id++;
     cjump->type = IrType(Cjump);
 
-    cjump->exp = std::unique_ptr<BaseIr>(exp_ast->buildIrTree());
+    cjump->exp = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp_ast->buildIrTree()));
 
     cjump->t = reg++;
     cjump->t_block = std::unique_ptr<BaseIr>(stmt1_ast->buildIrTree());
@@ -258,7 +258,7 @@ BaseIr *PrimaryExpAST::buildIrTree() {
     temp->exp_type = ExpType(Temp);
     temp->reg_id = reg++;
 
-    temp->mem = std::unique_ptr<BaseIr>(l_val_ast->buildIrTree());
+    temp->mem = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_val_ast->buildIrTree()));
     return temp;
   } else if (number_ast) {
     return number_ast->buildIrTree();

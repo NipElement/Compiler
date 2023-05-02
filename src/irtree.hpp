@@ -104,7 +104,7 @@ class MemExp : public ExpIr {
   // left will be the exp
   //  = sext i32 %(exp->id) to i64
   int signext_id;
-  std::unique_ptr<BaseIr> exp;
+  std::unique_ptr<ExpIr> exp;
   virtual void printTree();
   virtual void printLL();
 };
@@ -112,7 +112,7 @@ class MemExp : public ExpIr {
 class TempExp : public ExpIr {
  public:
   // this means the value of a variable will be load into a reg_id
-  std::unique_ptr<BaseIr> mem;
+  std::unique_ptr<ExpIr> mem;
   virtual void printTree();
   // virtual void printLL();
 };
@@ -141,15 +141,15 @@ class CallExp : public ExpIr {
 class MoveIr : public BaseIr {
  public:
   // here exp1 could only be mem (left value)
-  std::unique_ptr<BaseIr> exp1;
-  std::unique_ptr<BaseIr> exp2;
+  std::unique_ptr<ExpIr> exp1;
+  std::unique_ptr<ExpIr> exp2;
   virtual void printTree();
   // virtual void printLL();
 };
 
 class CjumpIr : public BaseIr {
  public:
-  std::unique_ptr<BaseIr> exp;
+  std::unique_ptr<ExpIr> exp;
   std::unique_ptr<BaseIr> t_block;
   std::unique_ptr<BaseIr> f_block;
   int t;
