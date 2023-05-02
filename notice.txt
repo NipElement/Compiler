@@ -30,6 +30,8 @@ https://dreampuf.github.io/GraphvizOnline/
 
 https://hub.packtpub.com/introducing-llvm-intermediate-representation/
 
+https://releases.llvm.org/2.6/docs/LangRef.html
+
 Bugs:
 
 parser.y  MulExp模块
