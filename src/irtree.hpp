@@ -95,7 +95,7 @@ class BinopExp : public ExpIr {
   virtual void printTree();
   virtual void printLL();
 };
-
+// 计算值，并把值存在reg_id里面
 class MemExp : public ExpIr {
  public:
   // id is the address of this lval

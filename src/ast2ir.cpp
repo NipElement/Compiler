@@ -266,6 +266,7 @@ BaseIr *PrimaryExpAST::buildIrTree() {
 }
 BaseIr *NumberAST::buildIrTree() {
   auto const_exp = new ConstExp();
+  const_exp->reg_id = reg++;
   const_exp->id = ir_id++;
   const_exp->exp_type = ExpType(Const);
 
