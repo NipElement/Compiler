@@ -106,6 +106,7 @@ class MemExp : public ExpIr {
   int signext_id;
   std::unique_ptr<BaseIr> exp;
   virtual void printTree();
+  virtual void printLL();
 };
 
 class TempExp : public ExpIr {
