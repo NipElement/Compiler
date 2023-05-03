@@ -113,9 +113,11 @@ void CjumpIr::printLL() {
   // t:
   cout << t << ":" << endl;
   t_block->printLL();
+  cout << "br label %" << done << endl;
   // f:
   cout << f << ":" << endl;
   f_block->printLL();
+  cout << "br label %" << done << endl;
   // done:
   cout << done << ":" << endl;
 }
