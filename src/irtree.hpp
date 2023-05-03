@@ -123,7 +123,7 @@ class ConstExp : public ExpIr {
  public:
   int value;
   virtual void printTree();
-  // virtual void printLL();
+  virtual void printLL();
 };
 
 class CallExp : public ExpIr {

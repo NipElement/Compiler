@@ -104,4 +104,18 @@ void MoveIr::printLL() {
 
 void CjumpIr::printLL() {
   // produce 3 labels
+  exp->printLL();
+
+  // %condition_reg = icmp ne i32 %exp->reg_id, 0
+  cout << "%" << condition_reg << " = icmp ne i32 %" << exp->reg_id << ", 0" << endl;
+  // br i1 %condition_reg, label %t, label %f
+  cout << "br i1 %" << condition_reg << ", label %" << t << ", label %" << f << endl;
+  // t:
+  cout << t << ":" << endl;
+  t_block->printLL();
+  // f:
+  cout << f << ":" << endl;
+  f_block->printLL();
+  // done:
+  cout << done << ":" << endl;
 }
