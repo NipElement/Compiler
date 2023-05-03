@@ -18,7 +18,7 @@ void BlockIr::printLL() {
   }
 }
 
-void VarDeclIr::printLL() { cout << "%" << mem_id << " = alloca i32, align 4" << endl; }
+void VarDeclIr::printLL() { cout << "  %" << mem_id << " = alloca i32, align 4" << endl; }
 
 void FuncDefIr::printLL() {
   std::cout << "define ";
@@ -47,9 +47,9 @@ void FuncDefIr::printLL() {
 
   for (int i = 0; i < param_names.size(); i++) {
     // print
-    cout << "%" << param_names.size() + i + 1 << " = alloca i32, align 4" << endl;
+    cout << "  %" << param_names.size() + i + 1 << " = alloca i32, align 4" << endl;
     // store i32 %i, i32* %param_names.size() + i + 1, align 4
-    cout << "store i32"
+    cout << "  store i32"
          << "%" << i << ", i32* %" << param_names.size() + i + 1 << ", align 4" << endl;
   }
 
@@ -64,7 +64,8 @@ void BinopExp::printLL() {
   exp1->printLL();
   exp2->printLL();
   if (op == Add) {
-    cout << "%" << reg_id << "add nsw i32 "
+    cout << "  %" << reg_id << " = "
+         << "add nsw i32 "
          << "%" << exp1->reg_id << ", %" << exp2->reg_id << endl;
   }
 }
@@ -74,7 +75,7 @@ void MemExp::printLL() {
     // as left value, store
     exp->printLL();
     // store i32 %exp->reg_id, i32* %reg_id, align 4
-    cout << "store i32 %" << exp->reg_id << ", i32* %" << reg_id << ", align 4" << endl;
+    cout << "  store i32 %" << exp->reg_id << ", i32* %" << reg_id << ", align 4" << endl;
   } else {
     // as right value, load and here we do not need to do anything
   }
@@ -84,12 +85,12 @@ void TempExp::printLL() {
   // calculate the location
   mem->printLL();
   // %10 = load i32, i32* %6, align 4
-  cout << "%" << reg_id << " = load i32, i32* %" << mem->reg_id << ", align 4" << endl;
+  cout << "  %" << reg_id << " = load i32, i32* %" << mem->reg_id << ", align 4" << endl;
 }
 
 void ConstExp::printLL() {
   // store i32 value, i32* %reg_id, align 4
-  cout << "store i32 " << value << ", i32 * %" << reg_id << ", align 4" << endl;
+  cout << "  store i32 " << value << ", i32 * %" << reg_id << ", align 4" << endl;
 }
 
 void CallExp::printLL() {}
@@ -100,7 +101,7 @@ void MoveIr::printLL() {
   // value
   exp2->printLL();
   // store i32 %exp2->reg_id, i32* %exp1->reg_id, align 4
-  cout << "store i32 %" << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
+  cout << "  store i32 %" << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
 }
 
 void CjumpIr::printLL() {
@@ -108,17 +109,20 @@ void CjumpIr::printLL() {
   exp->printLL();
 
   // %condition_reg = icmp ne i32 %exp->reg_id, 0
-  cout << "%" << condition_reg << " = icmp ne i32 %" << exp->reg_id << ", 0" << endl;
+  cout << "  %" << condition_reg << " = icmp ne i32 %" << exp->reg_id << ", 0" << endl;
   // br i1 %condition_reg, label %t, label %f
-  cout << "br i1 %" << condition_reg << ", label %" << t << ", label %" << f << endl;
+  cout << "  br i1 %" << condition_reg << ", label %" << t << ", label %" << f << endl;
   // t:
+  cout << endl;
   cout << t << ":" << endl;
   t_block->printLL();
-  cout << "br label %" << done << endl;
+  cout << "  br label %" << done << endl;
   // f:
+  cout << endl;
   cout << f << ":" << endl;
   f_block->printLL();
-  cout << "br label %" << done << endl;
+  cout << "  br label %" << done << endl;
   // done:
+  cout << endl;
   cout << done << ":" << endl;
 }
