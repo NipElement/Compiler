@@ -31,6 +31,14 @@ BaseIr *FuncDefAST::buildIrTree() {
   auto func_def = new FuncDefIr();
   func_def->type = IrType(FuncDef);
   func_def->id = ir_id++;
+  if (type == 0) {
+    // int
+    func_def->ret_type = FuncDefIr::RetType(FuncDefIr::INT);
+  } else {
+    // void
+    func_def->ret_type = FuncDefIr::RetType(FuncDefIr::VOID);
+  }
+
   auto p = dynamic_cast<FuncFParamsAST *>(func_fparams_ast.get());
 
   // generate parameter list
@@ -69,6 +77,15 @@ BaseIr *FuncDefAST::buildIrTree() {
 
   dynamic_cast<BlockIr *>(func_def->block.get())->param_num = func_def->param_names.size();
 
+  // if the function returns void, add a return stmt to block
+  if (type == FuncDefIr::RetType(FuncDefIr::VOID)) {
+    auto ret_stmt = new RetIr();
+    ret_stmt->id = ir_id++;
+    ret_stmt->type = IrType(Ret);
+    ret_stmt->ret_value = nullptr;
+
+    dynamic_cast<BlockIr *>(func_def->block.get())->stmts.push_back(std::unique_ptr<BaseIr>(ret_stmt));
+  }
   return func_def;
 }
 

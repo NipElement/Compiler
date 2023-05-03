@@ -13,6 +13,7 @@ enum IrType {
   Cjump,
   Move,
   Exp,
+  Ret,
 };
 
 enum ParamType {
@@ -55,7 +56,11 @@ class VarDeclIr : public BaseIr {
 
 class FuncDefIr : public BaseIr {
  public:
-  int type;
+  enum RetType {
+    VOID,
+    INT,
+  };
+  RetType ret_type;
   std::vector<ParamType> param_types;
   std::vector<std::string> param_names;
   std::unique_ptr<BaseIr> block;
@@ -162,4 +167,9 @@ class CjumpIr : public BaseIr {
   virtual void printLL();
 };
 
+class RetIr : public BaseIr {
+  // if ret_value==nullptr, that is return void
+ public:
+  std::unique_ptr<ExpIr> ret_value;
+};
 #endif
