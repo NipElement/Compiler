@@ -56,6 +56,7 @@ void FuncDefIr::printLL() {
   block->printLL();
 
   std::cout << "}" << std::endl;
+  cout << endl;
 }
 
 void BinopExp::printLL() {
