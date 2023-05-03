@@ -57,10 +57,10 @@ class VarDeclIr : public BaseIr {
 class FuncDefIr : public BaseIr {
  public:
   enum RetType {
-    VOID,
     INT,
+    VOID,
   };
-  RetType ret_type;
+  RetType ret_type = INT;
   std::vector<ParamType> param_types;
   std::vector<std::string> param_names;
   std::unique_ptr<BaseIr> block;
