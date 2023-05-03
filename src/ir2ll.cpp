@@ -6,7 +6,7 @@ using namespace std;
 int attr_id = 0;
 void RootIr::printLL() {
   // omit some attributes
-  for (int i = 0; i < funcs.size(); i++) {
+  for (int i = funcs.size() - 1; i >= 0; i--) {
     funcs[i]->printLL();
   }
 }
