@@ -16,10 +16,10 @@ enum IrType {
   Ret,
 };
 
-enum ParamType {
+enum VariableType {
   Int,
-  Void,
-  Arr,
+  Pointer,
+  Array,
 };
 
 class BaseIr {
@@ -49,7 +49,12 @@ class BlockIr : public BaseIr {
 
 class VarDeclIr : public BaseIr {
  public:
+  VariableType var_type;
   int mem_id;  // in fact $mem_id has the address of this variable
+
+  // size is for array
+  int size = -1;
+
   virtual void printTree();
   virtual void printLL();
 };
@@ -61,7 +66,7 @@ class FuncDefIr : public BaseIr {
     VOID,
   };
   RetType ret_type = INT;
-  std::vector<ParamType> param_types;
+  std::vector<VariableType> param_types;
   std::vector<std::string> param_names;
   std::unique_ptr<BaseIr> block;
   std::string name;
@@ -103,13 +108,21 @@ class BinopExp : public ExpIr {
 // 计算值，并把值存在地址reg_id里
 class MemExp : public ExpIr {
  public:
-  // id is the address of this lval
+  VariableType mem_type;
+  // for int reg_id is the address of this lval
+  // for pointer reg_id is the address of pointer
 
-  // like a[left]
-  // left will be the exp
+  // variable below are for pointer, because pointer is a special variable which needs loading from reg_id
+  int pointer_value_reg_id;
+
+  // variables below are for array element like a[exp]
   //  = sext i32 %(exp->id) to i64
   int signext_id;
   std::unique_ptr<ExpIr> exp;
+  // ele_reg_id is the address of the lval of element in an array
+  int ele_reg_id;
+  // size is the array size
+  int size;
   virtual void printTree();
   virtual void printLL();
 };

@@ -110,6 +110,7 @@ void ConstExp::printTree() {
   std::cout << "ConstIr\\nid=" << id;
   std::cout << "\\n";
   std::cout << "value=" << value;
+  std::cout << "\\nreg_id=" << reg_id;
   std::cout << "\"];" << std::endl;
 }
 

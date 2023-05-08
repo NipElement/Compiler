@@ -151,7 +151,9 @@ VarDecl
   ;
 
 VarDefList
-  : 
+  : {
+    $$ = nullptr;
+  }
   |  ',' VarDef VarDefList {
     auto ast = new VarDefListAST();
     ast->var_def_ast = unique_ptr<BaseAST>($2);
@@ -170,6 +172,7 @@ VarDef
     ast->initval_ast = nullptr;
     ast->id = id++;
     $$ = ast;
+    // std::cout<<*ast->ident<<std::endl;
     //std::cout<<"IDENT ExpList"<<endl;
   }
   | IDENT ExpList1 '=' InitVal{
@@ -258,7 +261,7 @@ FuncFParam
   }
   | INT IDENT '['  ']' ExpList1 {
     auto ast = new FuncFParamAST();
-    ast->type = 0;
+    ast->type = 1;
     ast->ident = $2;
     ast->exp_list1_ast = unique_ptr<BaseAST>($5);
     ast->id = id++;
@@ -464,6 +467,7 @@ ExpList1
     ast->exp_list1_ast = unique_ptr<BaseAST>($4);
     ast->id = id++;
     $$ = ast;
+    // std::cout<<"array"<<std::endl;
   }
   ;
 

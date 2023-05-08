@@ -6,6 +6,8 @@
 // todo for array
 std::unordered_map<std::string, int> array_size_table;
 std::unordered_map<std::string, int> table;
+std::unordered_map<std::string, VariableType> variable_type_table;
+
 // id is for printTree
 int ir_id = 0;
 // reg is the $..
@@ -27,6 +29,8 @@ BaseIr *FuncDefAST::buildIrTree() {
   // refresh regs and hash table
   reg = 0;
   table.clear();
+  array_size_table.clear();
+  variable_type_table.clear();
 
   auto func_def = new FuncDefIr();
   func_def->type = IrType(FuncDef);
@@ -47,7 +51,7 @@ BaseIr *FuncDefAST::buildIrTree() {
     assert(p->func_fparam_ast != nullptr);
     auto first_para = dynamic_cast<FuncFParamAST *>(p->func_fparam_ast.get());
 
-    func_def->param_types.push_back(ParamType(first_para->type));
+    func_def->param_types.push_back(VariableType(first_para->type));
     func_def->param_names.push_back(*(first_para->ident));
     reg++;
     // push parameter in lists
@@ -57,7 +61,7 @@ BaseIr *FuncDefAST::buildIrTree() {
       while (it) {
         auto para_leaf = dynamic_cast<FuncFParamAST *>(it->func_fparam_ast.get());
 
-        func_def->param_types.push_back(ParamType(para_leaf->type));
+        func_def->param_types.push_back(VariableType(para_leaf->type));
         func_def->param_names.push_back(*(para_leaf->ident));
         reg++;
 
@@ -69,6 +73,10 @@ BaseIr *FuncDefAST::buildIrTree() {
   reg++;
   for (int i = 0; i < func_def->param_names.size(); i++) {
     table.insert(std::pair<std::string, int>(func_def->param_names[i], i + 1 + func_def->param_names.size()));
+
+    // record the variable type
+    variable_type_table.insert(
+        std::pair<std::string, VariableType>(func_def->param_names[i], func_def->param_types[i]));
   }
 
   reg = 2 * func_def->param_names.size() + 1;
@@ -109,18 +117,53 @@ BaseIr *BlockAST::buildIrTree() {
 
 BaseIr *BlockItemAST::buildIrTree() {
   if (decl_ast) {
-    // here only consider VarDecl for convenience, and no vardeflist, no array, only int variable for example.
+    // here only consider VarDecl for convenience, and no vardeflist
+
     auto var_decl = dynamic_cast<VarDeclAST *>(decl_ast.get());
+    // suppose no vardef list and check
+    assert(var_decl->var_def_list_ast == nullptr);
 
     auto var_def = dynamic_cast<VarDefAST *>(var_decl->var_def_ast.get());
 
-    auto decl = new VarDeclIr();
-    decl->type = IrType(VarDec);
-    decl->id = ir_id++;
-    decl->mem_id = reg++;
-    table.insert(std::pair<std::string, int>(*var_def->ident, decl->mem_id));
+    // suppose no initial value and check
+    assert(var_def->initval_ast == nullptr);
 
-    return decl;
+    if (var_def->exp_list1_ast == nullptr) {  // simple varaible: int
+      auto decl = new VarDeclIr();
+      decl->var_type = VariableType(Int);
+      decl->type = IrType(VarDec);
+      decl->id = ir_id++;
+      decl->mem_id = reg++;
+      table.insert(std::pair<std::string, int>(*var_def->ident, decl->mem_id));
+      variable_type_table.insert(std::pair<std::string, VariableType>(*var_def->ident, VariableType(Array)));
+
+      return decl;
+    } else {  // array
+      auto decl = new VarDeclIr();
+      decl->var_type = VariableType(Array);
+
+      decl->type = IrType(VarDec);
+      decl->id = ir_id++;
+      decl->mem_id = reg++;
+      table.insert(std::pair<std::string, int>(*var_def->ident, decl->mem_id));
+      variable_type_table.insert(std::pair<std::string, VariableType>(*var_def->ident, VariableType(Array)));
+
+      // suppose the expression could only be a const and check
+      auto exp_list1 = dynamic_cast<ExpList1AST *>(var_def->exp_list1_ast.get());
+
+      // suppose there is no exp_list and check
+      assert(exp_list1->exp_list1_ast == nullptr);
+
+      auto exp = dynamic_cast<ExpAST *>(exp_list1->exp_ast.get());
+
+      int size = exp->getExpNum();
+      decl->size = size;
+
+      array_size_table.insert(std::pair<std::string, int>(*var_def->ident, size));
+
+      return decl;
+    }
+
   } else if (stmt_ast) {
     // here only handle stmt = 0
     auto stmt = dynamic_cast<StmtAST *>(stmt_ast.get());
@@ -165,18 +208,75 @@ BaseIr *LValAST::buildIrTree() {
   mem->id = ir_id++;
   mem->type = IrType(Exp);
   mem->exp_type = ExpType(Mem);
-  if (exp_list1_ast == nullptr) {  // simple variable
+  if (exp_list1_ast == nullptr) {  // simple variable int
     mem->signext_id = -1;
     mem->exp = nullptr;
     // the address of this lval
     mem->reg_id = table.find(*ident)->second;
-  } else {  // todo: array
+
+    // look up the table to set type info
+    mem->mem_type = variable_type_table.find(*ident)->second;
+
+  } else {  // array or pointer with exp
+    // set type info
+    mem->mem_type = variable_type_table.find(*ident)->second;
+    if (mem->mem_type == VariableType(Pointer)) {
+      mem->pointer_value_reg_id = reg++;
+    }
+
+    mem->signext_id = reg++;
+    // a[exp]..
+    auto exp_list1 = dynamic_cast<ExpList1AST *>(exp_list1_ast.get());
+
+    // suppose no exp combined by ','
+    assert(exp_list1->exp_list1_ast == nullptr);
+
+    auto exp = dynamic_cast<ExpAST *>(exp_list1->exp_ast.get());
+
+    mem->exp = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp->buildIrTree()));
+    mem->reg_id = table.find(*ident)->second;
+    // after compute exp, we will getelementptr to get the address, store into ele_reg_id
+    mem->ele_reg_id = reg++;
+
+    if (mem->mem_type == VariableType(Array)) {
+      // get the size of array
+      mem->size = array_size_table.find(*ident)->second;
+    }
   }
 
   return mem;
 }
 
 BaseIr *ExpAST::buildIrTree() { return l_or_exp_ast->buildIrTree(); }
+
+int ExpAST::getExpNum() {
+  assert(l_or_exp_ast != nullptr);
+  // only work for const expression, to get the const number of this long tree
+  auto or_exp = dynamic_cast<LOrExpAST *>(l_or_exp_ast.get());
+  auto and_exp = dynamic_cast<LAndExpAST *>(or_exp->l_and_exp_ast.get());
+  auto eq_exp = dynamic_cast<EqExpAST *>(and_exp->eq_exp_ast.get());
+  auto rel_exp = dynamic_cast<RelExpAST *>(eq_exp->rel_exp_ast.get());
+  auto add_exp = dynamic_cast<AddExpAST *>(rel_exp->add_exp_ast.get());
+  // here is unary, not mul: look MulExp in parser.y
+  auto unary_exp = dynamic_cast<UnaryExpAST *>(add_exp->mul_exp_ast.get());
+  auto primary_exp = dynamic_cast<PrimaryExpAST *>(unary_exp->primary_exp_ast.get());
+  auto number = dynamic_cast<NumberAST *>(primary_exp->number_ast.get());
+
+  return number->int_const;
+
+  // auto ret_ir = l_or_exp_ast->buildIrTree();
+  // auto exp_ir = dynamic_cast<ExpIr *>(ret_ir);
+  // assert(exp_ir != nullptr);
+
+  // if (exp_ir->exp_type != ExpType(Const)) {
+  //   std::cout << "exp is not a const" << std::endl;
+  //   assert(0);
+  // } else {
+  //   int value = dynamic_cast<ConstExp *>(exp_ir)->value;
+  //   delete ret_ir;
+  //   return value;
+  // }
+}
 
 BaseIr *LOrExpAST::buildIrTree() {
   if (l_or_exp_rule == 0) {

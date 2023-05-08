@@ -18,7 +18,15 @@ void BlockIr::printLL() {
   }
 }
 
-void VarDeclIr::printLL() { cout << "  %" << mem_id << " = alloca i32, align 4" << endl; }
+void VarDeclIr::printLL() {
+  if (var_type == VariableType(Int)) {
+    cout << "  %" << mem_id << " = alloca i32, align 4" << endl;
+  } else if (var_type == VariableType(Array)) {
+    //%5 = alloca [20 x i32], align 16
+    std::string array_type = "[" + to_string(size) + " x i32]";
+    cout << "  %" << mem_id << " = alloca " << array_type << ", align 16" << endl;
+  }
+}
 
 void FuncDefIr::printLL() {
   std::cout << "define ";
@@ -32,10 +40,12 @@ void FuncDefIr::printLL() {
     if (i != 0) {
       std::cout << ", ";
     }
-    if (param_types[i] == ParamType(Int)) {
+    if (param_types[i] == VariableType(Int)) {  // int
       std::cout << "i32 ";
+    } else if (param_types[i] == VariableType(Pointer)) {  // int*
+      std::cout << "i32* ";
     } else {
-      // ...
+      // ..
     }
     cout << "noundef ";
     std::cout << "%" << i;
@@ -47,10 +57,17 @@ void FuncDefIr::printLL() {
 
   for (int i = 0; i < param_names.size(); i++) {
     // print
-    cout << "  %" << param_names.size() + i + 1 << " = alloca i32, align 4" << endl;
-    // store i32 %i, i32* %param_names.size() + i + 1, align 4
-    cout << "  store i32"
-         << "%" << i << ", i32* %" << param_names.size() + i + 1 << ", align 4" << endl;
+    if (param_types[i] == VariableType(Int)) {
+      cout << "  %" << param_names.size() + i + 1 << " = alloca i32, align 4" << endl;
+      // store i32 %i, i32* %param_names.size() + i + 1, align 4
+      cout << "  store i32 "
+           << "%" << i << ", i32* %" << param_names.size() + i + 1 << ", align 4" << endl;
+    } else if (param_types[i] == VariableType(Pointer)) {
+      cout << "  %" << param_names.size() + i + 1 << " = alloca i32*, align 8" << endl;
+      // store i32 %i, i32* %param_names.size() + i + 1, align 4
+      cout << "  store i32* "
+           << "%" << i << ", i32** %" << param_names.size() + i + 1 << ", align 8" << endl;
+    }
   }
 
   block->printLL();
@@ -71,21 +88,57 @@ void BinopExp::printLL() {
 }
 
 void MemExp::printLL() {
-  if (exp) {
-    // as left value, store
+  // if (exp) {
+  //   // as left value, store
+  //   exp->printLL();
+  //   // store i32 %exp->reg_id, i32* %reg_id, align 4
+  //   cout << "  store i32 %" << exp->reg_id << ", i32* %" << reg_id << ", align 4" << endl;
+  // } else {
+  //   // as right value, load and here we do not need to do anything
+  // }
+
+  if (exp == nullptr) {
+    // simple variable int, do nothing
+  } else if (mem_type == VariableType(Array)) {
+    // array element as left value: like a[exp]=..
     exp->printLL();
-    // store i32 %exp->reg_id, i32* %reg_id, align 4
-    cout << "  store i32 %" << exp->reg_id << ", i32* %" << reg_id << ", align 4" << endl;
-  } else {
-    // as right value, load and here we do not need to do anything
+    // sext i32 %12 to i64
+    cout << " %" << signext_id << " = sext i32 %" << exp->reg_id << " to i64" << endl;
+    // %10 = getelementptr inbounds [10 x i32], [10 x i32]* %3, i64 0, i64 %9
+    std::string array_type = "[" + to_string(size) + " x i32]";
+
+    cout << "%" << ele_reg_id << " = getelementptr inbounds ";
+    cout << array_type << ", " << array_type << "*"
+         << " %" << reg_id << ", i64 0, i64 %" << signext_id << std::endl;
+  } else if (mem_type == VariableType(Pointer)) {
+    std::string pointer_type = "i32*";
+    std::string pointed_type = "i32";
+    // pointer with [] as left value
+    exp->printLL();
+    // load pointer value from memory
+    cout << " %" << pointer_value_reg_id << " = load " << pointer_type << ", " << pointer_type << "*"
+         << " %" << reg_id << ", align 8" << endl;
+    //%9 = sext i32 %8 to i64
+    cout << " %" << signext_id << " = sext i32 %" << exp->reg_id << " to i64" << endl;
+    // %8 = getelementptr inbounds i32, i32* %7, i64 1
+
+    cout << "%" << ele_reg_id << " = getelementptr inbounds " << pointed_type << ", " << pointer_type << "%"
+         << pointer_value_reg_id << ", "
+         << "i64 %" << signext_id << endl;
   }
 }
 
 void TempExp::printLL() {
   // calculate the location
   mem->printLL();
-  // %10 = load i32, i32* %6, align 4
-  cout << "  %" << reg_id << " = load i32, i32* %" << mem->reg_id << ", align 4" << endl;
+
+  auto mem_exp = dynamic_cast<MemExp *>(mem.get());
+  if (mem_exp && mem_exp->exp != nullptr) {  // array element or pointer [] element
+    cout << "  %" << reg_id << " = load i32, i32* %" << mem_exp->ele_reg_id << ", align 4" << endl;
+  } else {
+    // %10 = load i32, i32* %6, align 4
+    cout << "  %" << reg_id << " = load i32, i32* %" << mem->reg_id << ", align 4" << endl;
+  }
 }
 
 void ConstExp::printLL() {
@@ -96,10 +149,10 @@ void ConstExp::printLL() {
 void CallExp::printLL() {}
 
 void MoveIr::printLL() {
-  // MEM
-  exp1->printLL();
-  // value
+  // Value
   exp2->printLL();
+  // Mem
+  exp1->printLL();
   // store i32 %exp2->reg_id, i32* %exp1->reg_id, align 4
   cout << "  store i32 %" << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
 }

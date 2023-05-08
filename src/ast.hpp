@@ -102,6 +102,8 @@ class FuncFParamListAST : public BaseAST {
 
 class FuncFParamAST : public BaseAST {
  public:
+  // type = 0: int
+  // type = 1: int []
   int type;
   std::string *ident;
   std::unique_ptr<BaseAST> exp_list1_ast;
@@ -163,6 +165,7 @@ class StmtAST : public BaseAST {
 class ExpAST : public BaseAST {
  public:
   std::unique_ptr<BaseAST> l_or_exp_ast;
+  int getExpNum();
 
   virtual BaseIr *buildIrTree();
   virtual void printTree() override;
