@@ -37,7 +37,9 @@ Bugs:
 parser.y  MulExp模块
 
 
-
+贾：加减乘除 与或非 >= < 
+蒋：数组
+倪：函数
 
 
 ast.hpp 54
