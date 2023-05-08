@@ -84,6 +84,8 @@ void BinopExp::printLL() {
     cout << "  %" << reg_id << " = "
          << "add nsw i32 "
          << "%" << exp1->reg_id << ", %" << exp2->reg_id << endl;
+  } else if (op == Minus) {
+  } else if (op == Or) {
   }
 }
 
