@@ -118,15 +118,25 @@ void MemExp::printTree() {
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";
   std::cout << "MemIr\\nid=" << id;
   std::cout << "\\n";
-  if (exp) {
-    // array
-    std::cout << "array=$" << reg_id;
-    std::cout << "\\n element=$" << ele_reg_id;
-    std::cout << "\\n signext=$" << signext_id;
-    std::cout << "\"];" << std::endl;
-    exp->printTree();
-    std::cout << "SYNTAX_NODE_" << id << "  ->  "
-              << "SYNTAX_NODE_" << exp->id << ";" << std::endl;
+  if (exp) {                                // array or pointer
+    if (mem_type == VariableType(Array)) {  // array
+      std::cout << "array=$" << reg_id;
+      std::cout << "\\n element=$" << ele_reg_id;
+      std::cout << "\\n signext=$" << signext_id;
+      std::cout << "\"];" << std::endl;
+      exp->printTree();
+      std::cout << "SYNTAX_NODE_" << id << "  ->  "
+                << "SYNTAX_NODE_" << exp->id << ";" << std::endl;
+    } else if (mem_type == VariableType(Pointer)) {
+      std::cout << "array=$" << reg_id;
+      std::cout << "\\n element=$" << ele_reg_id;
+      std::cout << "\\n signext=$" << signext_id;
+      std::cout << "\\n pointer_value_reg_id=" << pointer_value_reg_id;
+      std::cout << "\"];" << std::endl;
+      exp->printTree();
+      std::cout << "SYNTAX_NODE_" << id << "  ->  "
+                << "SYNTAX_NODE_" << exp->id << ";" << std::endl;
+    }
   } else {
     // simple variable
     std::cout << "simple reg_id=$" << reg_id;

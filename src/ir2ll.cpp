@@ -103,26 +103,26 @@ void MemExp::printLL() {
     // array element as left value: like a[exp]=..
     exp->printLL();
     // sext i32 %12 to i64
-    cout << " %" << signext_id << " = sext i32 %" << exp->reg_id << " to i64" << endl;
+    cout << "  %" << signext_id << " = sext i32 %" << exp->reg_id << " to i64" << endl;
     // %10 = getelementptr inbounds [10 x i32], [10 x i32]* %3, i64 0, i64 %9
     std::string array_type = "[" + to_string(size) + " x i32]";
 
-    cout << "%" << ele_reg_id << " = getelementptr inbounds ";
+    cout << "  %" << ele_reg_id << " = getelementptr inbounds ";
     cout << array_type << ", " << array_type << "*"
          << " %" << reg_id << ", i64 0, i64 %" << signext_id << std::endl;
   } else if (mem_type == VariableType(Pointer)) {
     std::string pointer_type = "i32*";
     std::string pointed_type = "i32";
-    // pointer with [] as left value
-    exp->printLL();
     // load pointer value from memory
-    cout << " %" << pointer_value_reg_id << " = load " << pointer_type << ", " << pointer_type << "*"
+    cout << "  %" << pointer_value_reg_id << " = load " << pointer_type << ", " << pointer_type << "*"
          << " %" << reg_id << ", align 8" << endl;
+    // pointer with [] as left value, compute the exp
+    exp->printLL();
     //%9 = sext i32 %8 to i64
-    cout << " %" << signext_id << " = sext i32 %" << exp->reg_id << " to i64" << endl;
+    cout << "  %" << signext_id << " = sext i32 %" << exp->reg_id << " to i64" << endl;
     // %8 = getelementptr inbounds i32, i32* %7, i64 1
 
-    cout << "%" << ele_reg_id << " = getelementptr inbounds " << pointed_type << ", " << pointer_type << "%"
+    cout << "  %" << ele_reg_id << " = getelementptr inbounds " << pointed_type << ", " << pointer_type << "%"
          << pointer_value_reg_id << ", "
          << "i64 %" << signext_id << endl;
   }
@@ -154,7 +154,12 @@ void MoveIr::printLL() {
   // Mem
   exp1->printLL();
   // store i32 %exp2->reg_id, i32* %exp1->reg_id, align 4
-  cout << "  store i32 %" << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
+  if (dynamic_cast<MemExp *>(exp1.get())->mem_type == VariableType(Int)) {  // simple variable int
+    cout << "  store i32 %" << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
+  } else {  // array or pointer
+    cout << "  store i32 %" << exp2->reg_id << ", i32* %" << dynamic_cast<MemExp *>(exp1.get())->ele_reg_id
+         << ", align 4 " << endl;
+  }
 }
 
 void CjumpIr::printLL() {
