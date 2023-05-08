@@ -180,8 +180,8 @@ BaseIr *StmtAST::buildIrTree() {
     // in fact this is a move ir
     auto l_val = dynamic_cast<LValAST *>(l_val_ast.get());
     auto exp = dynamic_cast<ExpAST *>(exp_ast.get());
-    move->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_val->buildIrTree()));
     move->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp->buildIrTree()));
+    move->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_val->buildIrTree()));
     return move;
   } else if (stmt_rule == 3) {
     return block_ast->buildIrTree();
@@ -224,7 +224,6 @@ BaseIr *LValAST::buildIrTree() {
       mem->pointer_value_reg_id = reg++;
     }
 
-    mem->signext_id = reg++;
     // a[exp]..
     auto exp_list1 = dynamic_cast<ExpList1AST *>(exp_list1_ast.get());
 
@@ -234,7 +233,11 @@ BaseIr *LValAST::buildIrTree() {
     auto exp = dynamic_cast<ExpAST *>(exp_list1->exp_ast.get());
 
     mem->exp = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp->buildIrTree()));
+    // after computing expression, extend the expression result
+    mem->signext_id = reg++;
+
     mem->reg_id = table.find(*ident)->second;
+
     // after compute exp, we will getelementptr to get the address, store into ele_reg_id
     mem->ele_reg_id = reg++;
 
@@ -374,9 +377,9 @@ BaseIr *PrimaryExpAST::buildIrTree() {
     temp->id = ir_id++;
     temp->type = IrType(Exp);
     temp->exp_type = ExpType(Temp);
-    temp->reg_id = reg++;
 
     temp->mem = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_val_ast->buildIrTree()));
+    temp->reg_id = reg++;
     return temp;
   } else if (number_ast) {
     return number_ast->buildIrTree();

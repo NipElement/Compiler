@@ -120,7 +120,9 @@ void MemExp::printTree() {
   std::cout << "\\n";
   if (exp) {
     // array
-    std::cout << "array=$" << id;
+    std::cout << "array=$" << reg_id;
+    std::cout << "\\n element=$" << ele_reg_id;
+    std::cout << "\\n signext=$" << signext_id;
     std::cout << "\"];" << std::endl;
     exp->printTree();
     std::cout << "SYNTAX_NODE_" << id << "  ->  "
