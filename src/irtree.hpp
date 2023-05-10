@@ -185,4 +185,8 @@ class RetIr : public BaseIr {
  public:
   std::unique_ptr<ExpIr> ret_value;
 };
+class JumpIr : public BaseIr {
+ public:
+  int label;
+};
 #endif

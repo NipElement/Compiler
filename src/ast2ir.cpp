@@ -107,7 +107,11 @@ BaseIr *BlockAST::buildIrTree() {
   while (p) {
     auto block_item_leaf = dynamic_cast<BlockItemAST *>(p->block_item_ast.get());
 
-    block->stmts.push_back(std::unique_ptr<BaseIr>(block_item_leaf->buildIrTree()));
+    auto ret_ir_nodes = block_item_leaf->buildIrNodes();
+    // block->stmts.push_back(std::unique_ptr<BaseIr>(block_item_leaf->buildIrTree()));
+    for (auto el : ret_ir_nodes) {
+      block->stmts.push_back(std::unique_ptr<BaseIr>(el));
+    }
 
     p = dynamic_cast<BlockItemListAST *>(p->block_item_list_ast.get());
   }
@@ -165,14 +169,67 @@ BaseIr *BlockItemAST::buildIrTree() {
     }
 
   } else if (stmt_ast) {
-    // here only handle stmt = 0
     auto stmt = dynamic_cast<StmtAST *>(stmt_ast.get());
     return stmt->buildIrTree();
   }
 }
 
+std::vector<BaseIr *> BlockItemAST::buildIrNodes() {
+  if (decl_ast) {
+    // here only consider VarDecl for convenience, and no vardeflist
+
+    auto var_decl = dynamic_cast<VarDeclAST *>(decl_ast.get());
+    // suppose no vardef list and check
+    assert(var_decl->var_def_list_ast == nullptr);
+
+    auto var_def = dynamic_cast<VarDefAST *>(var_decl->var_def_ast.get());
+
+    // suppose no initial value and check
+    assert(var_def->initval_ast == nullptr);
+
+    if (var_def->exp_list1_ast == nullptr) {  // simple varaible: int
+      auto decl = new VarDeclIr();
+      decl->var_type = VariableType(Int);
+      decl->type = IrType(VarDec);
+      decl->id = ir_id++;
+      decl->mem_id = reg++;
+      table.insert(std::pair<std::string, int>(*var_def->ident, decl->mem_id));
+      variable_type_table.insert(std::pair<std::string, VariableType>(*var_def->ident, VariableType(Array)));
+
+      return std::vector<BaseIr *>{decl};
+    } else {  // array
+      auto decl = new VarDeclIr();
+      decl->var_type = VariableType(Array);
+
+      decl->type = IrType(VarDec);
+      decl->id = ir_id++;
+      decl->mem_id = reg++;
+      table.insert(std::pair<std::string, int>(*var_def->ident, decl->mem_id));
+      variable_type_table.insert(std::pair<std::string, VariableType>(*var_def->ident, VariableType(Array)));
+
+      // suppose the expression could only be a const and check
+      auto exp_list1 = dynamic_cast<ExpList1AST *>(var_def->exp_list1_ast.get());
+
+      // suppose there is no exp_list and check
+      assert(exp_list1->exp_list1_ast == nullptr);
+
+      auto exp = dynamic_cast<ExpAST *>(exp_list1->exp_ast.get());
+
+      int size = exp->getExpNum();
+      decl->size = size;
+
+      array_size_table.insert(std::pair<std::string, int>(*var_def->ident, size));
+
+      return std::vector<BaseIr *>{decl};
+    }
+
+  } else if (stmt_ast) {
+    return stmt_ast->buildIrNodes();
+  }
+}
+
 BaseIr *StmtAST::buildIrTree() {
-  if (stmt_rule == 0) {
+  if (stmt_rule == 0) {  // stmt_rule = 0 : LVal '=' Exp ';'
     auto move = new MoveIr();
     move->id = ir_id++;
     move->type = IrType(Move);
@@ -183,9 +240,9 @@ BaseIr *StmtAST::buildIrTree() {
     move->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp->buildIrTree()));
     move->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_val->buildIrTree()));
     return move;
-  } else if (stmt_rule == 3) {
+  } else if (stmt_rule == 3) {  // stmt_rule = 3 : Block
     return block_ast->buildIrTree();
-  } else if (stmt_rule == 5) {
+  } else if (stmt_rule == 5) {  // stmt_rule = 5 :  IF '(' Exp ')' Stmt ELSE Stmt
     auto cjump = new CjumpIr();
     cjump->id = ir_id++;
     cjump->type = IrType(Cjump);
@@ -199,8 +256,48 @@ BaseIr *StmtAST::buildIrTree() {
     cjump->f_block = std::unique_ptr<BaseIr>(stmt2_ast->buildIrTree());
     cjump->done = reg++;
     return cjump;
-  } else
-    return nullptr;
+  } else if (stmt_rule == 6) {  // stmt_rule = 6 :  WHILE '(' Exp ')' Stmt
+  }
+  return nullptr;
+}
+
+std::vector<BaseIr *> StmtAST::buildIrNodes() {
+  if (stmt_rule == 0) {  // stmt_rule = 0 : LVal '=' Exp ';'
+    auto move = new MoveIr();
+    move->id = ir_id++;
+    move->type = IrType(Move);
+
+    // in fact this is a move ir
+    auto l_val = dynamic_cast<LValAST *>(l_val_ast.get());
+    auto exp = dynamic_cast<ExpAST *>(exp_ast.get());
+    move->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp->buildIrTree()));
+    move->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_val->buildIrTree()));
+    return std::vector<BaseIr *>{move};
+  } else if (stmt_rule == 3) {  // stmt_rule = 3 : Block
+    return std::vector<BaseIr *>{block_ast->buildIrTree()};
+  } else if (stmt_rule == 5) {  // stmt_ruir_vector;le = 5 :  IF '(' Exp ')' Stmt ELSE Stmt
+    std::vector<BaseIr *> ret_ir_vector;
+    auto cjump = new CjumpIr();
+    ret_ir_vector.push_back(cjump);
+
+    cjump->id = ir_id++;
+    cjump->type = IrType(Cjump);
+
+    cjump->exp = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp_ast->buildIrTree()));
+
+    cjump->condition_reg = reg++;
+    cjump->t = reg++;
+
+    
+    cjump->t_block = std::unique_ptr<BaseIr>(stmt1_ast->buildIrTree());
+
+    cjump->f = reg++;
+    cjump->f_block = std::unique_ptr<BaseIr>(stmt2_ast->buildIrTree());
+    cjump->done = reg++;
+    return cjump;
+  } else if (stmt_rule == 6) {  // stmt_rule = 6 :  WHILE '(' Exp ')' Stmt
+  }
+  return std::vector<BaseIr *>();
 }
 
 BaseIr *LValAST::buildIrTree() {

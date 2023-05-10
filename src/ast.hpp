@@ -17,7 +17,8 @@ class BaseAST {
   ASTtype type;
   int id;
   virtual void printTree() = 0;
-  virtual BaseIr *buildIrTree() {}
+  virtual std::vector<BaseIr *> buildIrNodes(){};
+  virtual BaseIr *buildIrTree(){};
   virtual ~BaseAST() = default;
 };
 
@@ -132,6 +133,7 @@ class BlockItemAST : public BaseAST {
   std::unique_ptr<BaseAST> decl_ast;
   std::unique_ptr<BaseAST> stmt_ast;
   virtual BaseIr *buildIrTree();
+  virtual std::vector<BaseIr *> buildIrNodes() override;
   virtual void printTree() override;
   virtual ~BlockItemAST() override {}
 };
@@ -157,7 +159,10 @@ class StmtAST : public BaseAST {
   std::unique_ptr<BaseAST> stmt1_ast;
   std::unique_ptr<BaseAST> stmt2_ast;
 
+  virtual std::vector<BaseIr *> buildIrNodes(){};
+  virtual std::vector<BaseIr *> buildIrNodes() override;
   virtual BaseIr *buildIrTree();
+
   virtual void printTree() override;
   virtual ~StmtAST() override {}
 };
