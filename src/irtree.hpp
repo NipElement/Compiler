@@ -14,6 +14,7 @@ enum IrType {
   Move,
   Exp,
   Ret,
+  Label,
 };
 
 enum VariableType {
@@ -187,6 +188,11 @@ class RetIr : public BaseIr {
 };
 class JumpIr : public BaseIr {
  public:
+  int label;
+};
+class LabelIr : public BaseIr {
+ public:
+  LabelIr() { type = IrType(Label); }
   int label;
 };
 #endif

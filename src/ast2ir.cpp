@@ -286,15 +286,40 @@ std::vector<BaseIr *> StmtAST::buildIrNodes() {
     cjump->exp = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp_ast->buildIrTree()));
 
     cjump->condition_reg = reg++;
-    cjump->t = reg++;
 
-    
-    cjump->t_block = std::unique_ptr<BaseIr>(stmt1_ast->buildIrTree());
+    cjump->t = reg++;
+    auto t_label = new LabelIr();
+    t_label->label = cjump->t;
+
+    auto t_block = stmt1_ast->buildIrTree();
+    cjump->t_block = nullptr;
 
     cjump->f = reg++;
-    cjump->f_block = std::unique_ptr<BaseIr>(stmt2_ast->buildIrTree());
+    auto f_label = new LabelIr();
+    f_label->label = cjump->t;
+    auto f_block = stmt2_ast->buildIrTree();
+    cjump->f_block = nullptr;
+
+    auto t_block_jump_to_done = new JumpIr();
+    auto f_block_jump_to_done = new JumpIr();
+    t_block_jump_to_done->type = IrType(Jump);
+    f_block_jump_to_done->type = IrType(Jump);
+    t_block_jump_to_done->id = ir_id++;
+    f_block_jump_to_done->id = ir_id++;
+
     cjump->done = reg++;
-    return cjump;
+
+    t_block_jump_to_done->label = cjump->done;
+    f_block_jump_to_done->label = cjump->done;
+
+    ret_ir_vector.push_back(t_label);
+    ret_ir_vector.push_back(t_block);
+    ret_ir_vector.push_back(t_block_jump_to_done);
+    ret_ir_vector.push_back(f_label);
+    ret_ir_vector.push_back(f_block);
+    ret_ir_vector.push_back(f_block_jump_to_done);
+
+    return ret_ir_vector;
   } else if (stmt_rule == 6) {  // stmt_rule = 6 :  WHILE '(' Exp ')' Stmt
   }
   return std::vector<BaseIr *>();
