@@ -23,6 +23,7 @@ enum VariableType {
   Int,
   Pointer,
   Array,
+  Void,
 };
 
 class BaseIr {
@@ -76,15 +77,11 @@ class VarDeclIr : public BaseIr {
 
 class FuncDefIr : public BaseIr {
  public:
-  enum RetType {
-    INT,
-    VOID,
-  };
   FuncDefIr() {
     id = ir_id++;
     type = IrType(FuncDef);
   }
-  RetType ret_type = INT;
+  VariableType ret_type = VariableType(Int);
   std::vector<VariableType> param_types;
   std::vector<std::string> param_names;
   std::unique_ptr<BaseIr> block;
@@ -188,19 +185,15 @@ class ConstExp : public ExpIr {
 };
 
 class CallExp : public ExpIr {
-  enum RetType {
-    RetInt,
-    RetVoid,
-  };
-
  public:
   CallExp() { exp_type = ExpType(Call); }
-
+  // if ret_type == void, reg_id is invalid
+  // if ret_type == int, reg_id is where the return value stores
   virtual void printTree();
   virtual void printLL();
-  RetType type;
+  VariableType ret_type;
   std::string name;
-  std::vector<std::unique_ptr<TempExp>> params;
+  std::vector<std::unique_ptr<ExpIr>> params;
 };
 
 class MoveIr : public BaseIr {

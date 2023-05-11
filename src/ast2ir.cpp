@@ -3,10 +3,12 @@
 #include <unordered_map>
 #include "ast.hpp"
 #include "irtree.hpp"
-// todo for array
+
 std::unordered_map<std::string, int> array_size_table;
 std::unordered_map<std::string, int> table;
 std::unordered_map<std::string, VariableType> variable_type_table;
+
+std::unordered_map<std::string, VariableType> func_rettype_table;
 
 // id is for printTree
 // int ir_id = 0;
@@ -37,11 +39,14 @@ BaseIr *FuncDefAST::buildIrTree() {
   // func_def->id = ir_id++;
   if (type == 0) {
     // int
-    func_def->ret_type = FuncDefIr::RetType(FuncDefIr::INT);
+    func_def->ret_type = VariableType(Int);
   } else {
     // void
-    func_def->ret_type = FuncDefIr::RetType(FuncDefIr::VOID);
+    func_def->ret_type = VariableType(Void);
   }
+
+  // update func_rettype_table
+  func_rettype_table.insert(std::pair<std::string, VariableType>(*ident, func_def->ret_type));
 
   auto p = dynamic_cast<FuncFParamsAST *>(func_fparams_ast.get());
 
@@ -86,7 +91,7 @@ BaseIr *FuncDefAST::buildIrTree() {
   dynamic_cast<BlockIr *>(func_def->block.get())->param_num = func_def->param_names.size();
 
   // if the function returns void, add a return stmt to block
-  if (type == FuncDefIr::RetType(FuncDefIr::VOID)) {
+  if (type == VariableType(Void)) {
     auto ret_stmt = new RetIr();
     // ret_stmt->id = ir_id++;
     // ret_stmt->type = IrType(Ret);
@@ -240,6 +245,8 @@ BaseIr *StmtAST::buildIrTree() {
     move->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp->buildIrTree()));
     move->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_val->buildIrTree()));
     return move;
+  } else if (stmt_rule == 2) {  // EXP: function
+    return exp_ast->buildIrTree();
   } else if (stmt_rule == 3) {  // stmt_rule = 3 : Block
     return block_ast->buildIrTree();
   } else if (stmt_rule == 5) {  // stmt_rule = 5 :  IF '(' Exp ')' Stmt ELSE Stmt
@@ -274,6 +281,8 @@ std::vector<BaseIr *> StmtAST::buildIrNodes() {
     move->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp->buildIrTree()));
     move->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_val->buildIrTree()));
     return std::vector<BaseIr *>{move};
+  } else if (stmt_rule == 2) {  // stmt_rule == 2:Exp
+    return std::vector<BaseIr *>{exp_ast->buildIrTree()};
   } else if (stmt_rule == 3) {  // stmt_rule = 3 : Block
     return std::vector<BaseIr *>{block_ast->buildIrTree()};
   } else if (stmt_rule == 5) {  // stmt_ruir_vector;le = 5 :  IF '(' Exp ')' Stmt ELSE Stmt
@@ -319,6 +328,10 @@ std::vector<BaseIr *> StmtAST::buildIrNodes() {
     ret_ir_vector.push_back(f_label);
     ret_ir_vector.push_back(f_block);
     ret_ir_vector.push_back(f_block_jump_to_done);
+
+    auto label_done = new LabelIr();
+    label_done->label = cjump->done;
+    ret_ir_vector.push_back(label_done);
 
     return ret_ir_vector;
   } else if (stmt_rule == 6) {  // stmt_rule = 6 :  WHILE '(' Exp ')' Stmt
@@ -560,8 +573,25 @@ BaseIr *AddExpAST::buildIrTree() {
 BaseIr *UnaryExpAST::buildIrTree() {
   if (primary_exp_ast != nullptr) {
     return primary_exp_ast->buildIrTree();
-  } else if (func_rparams_ast != nullptr) {
-    return nullptr;
+  } else if (ident != nullptr) {  // function call
+    auto func_call = new CallExp();
+    if (func_rettype_table.find(*ident) != func_rettype_table.end()) {  // function exist
+      // set function return type
+      func_call->ret_type = func_rettype_table.find(*ident)->second;
+      // set function name
+      func_call->name = *ident;
+
+      // set function parameter
+
+      if (func_call->ret_type == VariableType(Int)) {
+        func_call->reg_id = reg++;
+      }
+    } else {
+      std::cout << "function:" << *ident << "doesn't exist" << std::endl;
+      assert(0);
+    }
+
+    return func_call;
   } else if (unary_exp_ast != nullptr) {
     return nullptr;
   }
