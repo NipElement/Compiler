@@ -622,16 +622,19 @@ AddExp
   | AddExp '+' MulExp {
     auto ast = new AddExpAST();
     ast->add_exp_rule = 1;
-    ast->mul_exp_ast = unique_ptr<BaseAST>($1);
-    ast->add_exp_ast = unique_ptr<BaseAST>($3);
+    // last change jsa
+    ast->add_exp_ast = unique_ptr<BaseAST>($1);
+    ast->mul_exp_ast = unique_ptr<BaseAST>($3);
+    
     ast->id = id++;
     $$ = ast;
   }
   | AddExp '-' MulExp {
     auto ast = new AddExpAST();
     ast->add_exp_rule = 2;
-    ast->mul_exp_ast = unique_ptr<BaseAST>($1);
-    ast->add_exp_ast = unique_ptr<BaseAST>($3);
+    // last change jsa
+    ast->add_exp_ast = unique_ptr<BaseAST>($1);
+    ast->mul_exp_ast = unique_ptr<BaseAST>($3);
     ast->id = id++;
     $$ = ast;
   }
@@ -649,32 +652,36 @@ RelExp
   | RelExp LT AddExp {
     auto ast = new RelExpAST();
     ast->rel_exp_rule = 1;
-    ast->add_exp_ast = unique_ptr<BaseAST>($1);
-    ast->rel_exp_ast = unique_ptr<BaseAST>($3);
+    // last change jsa
+    ast->rel_exp_ast = unique_ptr<BaseAST>($1);
+    ast->add_exp_ast = unique_ptr<BaseAST>($3);
     ast->id = id++;
     $$ = ast;
   }
   | RelExp GT AddExp {
     auto ast = new RelExpAST();
     ast->rel_exp_rule = 2;
-    ast->add_exp_ast = unique_ptr<BaseAST>($1);
-    ast->rel_exp_ast = unique_ptr<BaseAST>($3);
+    // last change jsa
+    ast->rel_exp_ast = unique_ptr<BaseAST>($1);
+    ast->add_exp_ast = unique_ptr<BaseAST>($3);
     ast->id = id++;
     $$ = ast;
   }
   | RelExp LE AddExp {
     auto ast = new RelExpAST();
     ast->rel_exp_rule = 3;
-    ast->add_exp_ast = unique_ptr<BaseAST>($1);
-    ast->rel_exp_ast = unique_ptr<BaseAST>($3);
+    // last change jsa
+    ast->rel_exp_ast = unique_ptr<BaseAST>($1);
+    ast->add_exp_ast = unique_ptr<BaseAST>($3);
     ast->id = id++;
     $$ = ast;
   }
   | RelExp GE AddExp {
     auto ast = new RelExpAST();
     ast->rel_exp_rule = 4;
-    ast->add_exp_ast = unique_ptr<BaseAST>($1);
-    ast->rel_exp_ast = unique_ptr<BaseAST>($3);
+    // last change jsa
+    ast->rel_exp_ast = unique_ptr<BaseAST>($1);
+    ast->add_exp_ast = unique_ptr<BaseAST>($3);
     ast->id = id++;
     $$ = ast;
   }
@@ -738,8 +745,9 @@ LOrExp
   | LOrExp OR LAndExp {
     auto ast = new LOrExpAST();
     ast->l_or_exp_rule = 1;
-    ast->l_and_exp_ast = unique_ptr<BaseAST>($1);
-    ast->l_or_exp_ast = unique_ptr<BaseAST>($3);
+    // jsa
+    ast->l_or_exp_ast = unique_ptr<BaseAST>($1);
+    ast->l_and_exp_ast = unique_ptr<BaseAST>($3);
     ast->id = id++;
     $$ = ast;
   }

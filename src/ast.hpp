@@ -276,8 +276,8 @@ class AddExpAST : public BaseAST {
 class RelExpAST : public BaseAST {
  public:
   int rel_exp_rule;
-  std::unique_ptr<BaseAST> add_exp_ast;
   std::unique_ptr<BaseAST> rel_exp_ast;
+  std::unique_ptr<BaseAST> add_exp_ast;
   virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~RelExpAST() override {}

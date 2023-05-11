@@ -115,9 +115,20 @@ class ExpIr : public BaseIr {
 };
 
 enum BinOpType {
+  // int or float
   Add,
   Minus,
+  Mul,
+  Divide,
+  // bool
   Or,
+  Ge,
+  Le,
+  Gt,
+  Lt,
+  Eq,
+  Ne,
+  And,
 };
 
 class BinopExp : public ExpIr {
