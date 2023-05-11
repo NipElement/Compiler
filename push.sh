@@ -1,1 +1,2 @@
-git add -A
+# git add -A
+git commit -m "test"
