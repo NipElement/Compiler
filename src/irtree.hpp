@@ -115,20 +115,36 @@ class ExpIr : public BaseIr {
 };
 
 enum BinOpType {
+  // int or float
   Add,
   Minus,
+  Mul,
+  Divide,
+  // bool
   Or,
+  And,
+  Ge,
+  Le,
+  Gt,
+  Lt,
+  Eq,
+  Ne,
 };
 
 class BinopExp : public ExpIr {
  public:
   BinopExp() { exp_type = ExpType(Binop); }
   BinOpType op;
+
+  // jsa
+  int bool_result_reg;
+
   std::unique_ptr<ExpIr> exp1;
   std::unique_ptr<ExpIr> exp2;
   virtual void printTree();
   virtual void printLL();
 };
+
 // 计算值，并把值存在地址reg_id里
 class MemExp : public ExpIr {
  public:
