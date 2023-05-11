@@ -262,6 +262,7 @@ BaseIr *StmtAST::buildIrTree() {
 }
 
 std::vector<BaseIr *> StmtAST::buildIrNodes() {
+  // test
   if (stmt_rule == 0) {  // stmt_rule = 0 : LVal '=' Exp ';'
     auto move = new MoveIr();
     move->id = ir_id++;
