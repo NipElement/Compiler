@@ -225,6 +225,7 @@ class RetIr : public BaseIr {
     id = ir_id++;
   }
   std::unique_ptr<ExpIr> ret_value;
+  virtual void printTree();
 };
 class JumpIr : public BaseIr {
  public:
@@ -233,6 +234,7 @@ class JumpIr : public BaseIr {
     id = ir_id++;
   }
   int label;
+  virtual void printTree();
 };
 class LabelIr : public BaseIr {
  public:
@@ -241,5 +243,6 @@ class LabelIr : public BaseIr {
     id = ir_id++;
   }
   int label;
+  virtual void printTree();
 };
 #endif

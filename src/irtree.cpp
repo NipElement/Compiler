@@ -175,3 +175,24 @@ void BinopExp::printTree() {
               << "SYNTAX_NODE_" << exp2->id << ";" << std::endl;
   }
 }
+
+void JumpIr::printTree() {
+  std::cout << "SYNTAX_NODE_" << id << "[label=\"";
+  std::cout << "JumpIr\\nid=" << id;
+  std::cout << "\\njump to label " << label;
+  std::cout << "\"];" << std::endl;
+}
+
+void LabelIr::printTree() {
+  std::cout << "SYNTAX_NODE_" << id << "[label=\"";
+  std::cout << "LabelIr\\nid=" << id;
+  std::cout << "\\nlabel=" << label;
+  std::cout << "\"];" << std::endl;
+}
+
+void RetIr::printTree() {
+  // now only support return void
+  std::cout << "SYNTAX_NODE_" << id << "[label=\"";
+  std::cout << "RetIr\\nid=" << id;
+  std::cout << "\"];" << std::endl;
+}
