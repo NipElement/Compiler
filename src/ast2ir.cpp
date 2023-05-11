@@ -262,6 +262,7 @@ BaseIr *StmtAST::buildIrTree() {
 }
 
 std::vector<BaseIr *> StmtAST::buildIrNodes() {
+  // test
   if (stmt_rule == 0) {  // stmt_rule = 0 : LVal '=' Exp ';'
     auto move = new MoveIr();
     move->id = ir_id++;
@@ -288,8 +289,7 @@ std::vector<BaseIr *> StmtAST::buildIrNodes() {
     cjump->condition_reg = reg++;
     cjump->t = reg++;
 
-    
-    cjump->t_block = std::unique_ptr<BaseIr>(stmt1_ast->buildIrTree());
+        cjump->t_block = std::unique_ptr<BaseIr>(stmt1_ast->buildIrTree());
 
     cjump->f = reg++;
     cjump->f_block = std::unique_ptr<BaseIr>(stmt2_ast->buildIrTree());
