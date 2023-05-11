@@ -4,11 +4,13 @@
 #include <string>
 #include <vector>
 
+static int ir_id = 0;
+
 enum IrType {
   Root,
   FuncDef,
   Block,
-  VarDec,
+  VarDecl,
   Jump,
   Cjump,
   Move,
@@ -33,6 +35,10 @@ class BaseIr {
 
 class RootIr : public BaseIr {
  public:
+  RootIr() {
+    id = ir_id++;
+    type = IrType(Root);
+  }
   std::vector<std::unique_ptr<BaseIr>> funcs;
   virtual void printTree();
   virtual void printLL();
@@ -40,6 +46,10 @@ class RootIr : public BaseIr {
 
 class BlockIr : public BaseIr {
  public:
+  BlockIr() {
+    id = ir_id++;
+    type = IrType(Block);
+  }
   // for print allocate mem for parameter
   int param_num = 0;
   // in fact only Cjump,Exp,Move
@@ -50,6 +60,10 @@ class BlockIr : public BaseIr {
 
 class VarDeclIr : public BaseIr {
  public:
+  VarDeclIr() {
+    id = ir_id++;
+    type = IrType(VarDecl);
+  }
   VariableType var_type;
   int mem_id;  // in fact $mem_id has the address of this variable
 
@@ -66,6 +80,10 @@ class FuncDefIr : public BaseIr {
     INT,
     VOID,
   };
+  FuncDefIr() {
+    id = ir_id++;
+    type = IrType(FuncDef);
+  }
   RetType ret_type = INT;
   std::vector<VariableType> param_types;
   std::vector<std::string> param_names;
@@ -88,6 +106,10 @@ enum ExpType {
 // BaseIr ExpIr->ExpBase
 class ExpIr : public BaseIr {
  public:
+  ExpIr() {
+    id = ir_id++;
+    type = IrType(Exp);
+  }
   int reg_id;
   ExpType exp_type;
 };
@@ -100,6 +122,7 @@ enum BinOpType {
 
 class BinopExp : public ExpIr {
  public:
+  BinopExp() { exp_type = ExpType(Binop); }
   BinOpType op;
   std::unique_ptr<ExpIr> exp1;
   std::unique_ptr<ExpIr> exp2;
@@ -109,6 +132,7 @@ class BinopExp : public ExpIr {
 // 计算值，并把值存在地址reg_id里
 class MemExp : public ExpIr {
  public:
+  MemExp() { exp_type = ExpType(Mem); }
   VariableType mem_type;
   // for int reg_id is the address of this lval
   // for pointer reg_id is the address of pointer
@@ -132,6 +156,7 @@ class MemExp : public ExpIr {
 class TempExp : public ExpIr {
  public:
   // this means the value of a variable will be load into a reg_id
+  TempExp() { exp_type = ExpType(Temp); }
   std::unique_ptr<ExpIr> mem;
   virtual void printTree();
   virtual void printLL();
@@ -140,6 +165,7 @@ class TempExp : public ExpIr {
 // is value not location
 class ConstExp : public ExpIr {
  public:
+  ConstExp() { exp_type = ExpType(Const); }
   int value;
   virtual void printTree();
   virtual void printLL();
@@ -152,6 +178,8 @@ class CallExp : public ExpIr {
   };
 
  public:
+  CallExp() { exp_type = ExpType(Call); }
+
   virtual void printTree();
   virtual void printLL();
   RetType type;
@@ -161,6 +189,10 @@ class CallExp : public ExpIr {
 
 class MoveIr : public BaseIr {
  public:
+  MoveIr() {
+    type = IrType(Move);
+    id = ir_id++;
+  }
   // here exp1 could only be mem (left value)
   std::unique_ptr<ExpIr> exp1;
   std::unique_ptr<ExpIr> exp2;
@@ -170,6 +202,10 @@ class MoveIr : public BaseIr {
 
 class CjumpIr : public BaseIr {
  public:
+  CjumpIr() {
+    type = IrType(Cjump);
+    id = ir_id++;
+  }
   std::unique_ptr<ExpIr> exp;
   std::unique_ptr<BaseIr> t_block;
   std::unique_ptr<BaseIr> f_block;
@@ -184,15 +220,26 @@ class CjumpIr : public BaseIr {
 class RetIr : public BaseIr {
   // if ret_value==nullptr, that is return void
  public:
+  RetIr() {
+    type = IrType(Ret);
+    id = ir_id++;
+  }
   std::unique_ptr<ExpIr> ret_value;
 };
 class JumpIr : public BaseIr {
  public:
+  JumpIr() {
+    type = IrType(Jump);
+    id = ir_id++;
+  }
   int label;
 };
 class LabelIr : public BaseIr {
  public:
-  LabelIr() { type = IrType(Label); }
+  LabelIr() {
+    type = IrType(Label);
+    id = ir_id++;
+  }
   int label;
 };
 #endif

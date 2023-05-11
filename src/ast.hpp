@@ -159,8 +159,7 @@ class StmtAST : public BaseAST {
   std::unique_ptr<BaseAST> stmt1_ast;
   std::unique_ptr<BaseAST> stmt2_ast;
 
-  virtual std::vector<BaseIr *> buildIrNodes(){};
-  virtual std::vector<BaseIr *> buildIrNodes() override;
+  virtual std::vector<BaseIr *> buildIrNodes();
   virtual BaseIr *buildIrTree();
 
   virtual void printTree() override;
