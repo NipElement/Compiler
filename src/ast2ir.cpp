@@ -454,6 +454,9 @@ BaseIr *LOrExpAST::buildIrTree() {
     binop->op = BinOpType(Or);
     binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_or_exp_ast->buildIrTree()));
     binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_and_exp_ast->buildIrTree()));
+    // jsa
+    binop->bool_result_reg = reg++;
+    binop->reg_id = reg++;
 
     return binop;
   }
@@ -494,7 +497,9 @@ BaseIr *RelExpAST::buildIrTree() {
       binop->op = BinOpType(Lt);
       binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(rel_exp_ast->buildIrTree()));
       binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(add_exp_ast->buildIrTree()));
+      binop->bool_result_reg = reg++;
       binop->reg_id = reg++;
+
       return binop;
       break;
     // RelExp GT AddExp
@@ -504,6 +509,7 @@ BaseIr *RelExpAST::buildIrTree() {
       binop->op = BinOpType(Gt);
       binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(rel_exp_ast->buildIrTree()));
       binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(add_exp_ast->buildIrTree()));
+      binop->bool_result_reg = reg++;
       binop->reg_id = reg++;
       return binop;
       break;
@@ -514,6 +520,7 @@ BaseIr *RelExpAST::buildIrTree() {
       binop->op = BinOpType(Le);
       binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(rel_exp_ast->buildIrTree()));
       binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(add_exp_ast->buildIrTree()));
+      binop->bool_result_reg = reg++;
       binop->reg_id = reg++;
       return binop;
       break;
@@ -524,6 +531,7 @@ BaseIr *RelExpAST::buildIrTree() {
       binop->op = BinOpType(Ge);
       binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(rel_exp_ast->buildIrTree()));
       binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(add_exp_ast->buildIrTree()));
+      binop->bool_result_reg = reg++;
       binop->reg_id = reg++;
       return binop;
       break;
