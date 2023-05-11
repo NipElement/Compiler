@@ -297,7 +297,7 @@ std::vector<BaseIr *> StmtAST::buildIrNodes() {
 
     cjump->f = reg++;
     auto f_label = new LabelIr();
-    f_label->label = cjump->t;
+    f_label->label = cjump->f;
     auto f_block = stmt2_ast->buildIrTree();
     cjump->f_block = nullptr;
 
