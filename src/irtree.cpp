@@ -196,3 +196,15 @@ void RetIr::printTree() {
   std::cout << "RetIr\\nid=" << id;
   std::cout << "\"];" << std::endl;
 }
+
+void CallExp::printTree() {
+  std::cout << "SYNTAX_NODE_" << id << "[label=\"";
+  std::cout << "CallExp\\n";
+  std::cout << name;
+  std::cout << "\"];" << std::endl;
+  for (int i = 0; i < params.size(); i++) {
+    params[i]->printTree();
+    std::cout << "SYNTAX_NODE_" << id << "  ->  "
+              << "SYNTAX_NODE_" << params[i]->id << ";" << std::endl;
+  }
+}

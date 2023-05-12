@@ -43,3 +43,5 @@ parser.y  MulExp模块
 
 
 ast.hpp 54
+
+加一个res_type for all expir

@@ -56,7 +56,12 @@ BaseIr *FuncDefAST::buildIrTree() {
     assert(p->func_fparam_ast != nullptr);
     auto first_para = dynamic_cast<FuncFParamAST *>(p->func_fparam_ast.get());
 
-    func_def->param_types.push_back(VariableType(first_para->type));
+    if (first_para->type == 0) {
+      func_def->param_types.push_back(VariableType(Int));
+    } else {
+      func_def->param_types.push_back(VariableType(Pointer));
+    }
+
     func_def->param_names.push_back(*(first_para->ident));
     reg++;
     // push parameter in lists
@@ -144,7 +149,7 @@ BaseIr *BlockItemAST::buildIrTree() {
       // decl->id = ir_id++;
       decl->mem_id = reg++;
       table.insert(std::pair<std::string, int>(*var_def->ident, decl->mem_id));
-      variable_type_table.insert(std::pair<std::string, VariableType>(*var_def->ident, VariableType(Array)));
+      variable_type_table.insert(std::pair<std::string, VariableType>(*var_def->ident, VariableType(Int)));
 
       return decl;
     } else {  // array
@@ -199,7 +204,7 @@ std::vector<BaseIr *> BlockItemAST::buildIrNodes() {
       // decl->id = ir_id++;
       decl->mem_id = reg++;
       table.insert(std::pair<std::string, int>(*var_def->ident, decl->mem_id));
-      variable_type_table.insert(std::pair<std::string, VariableType>(*var_def->ident, VariableType(Array)));
+      variable_type_table.insert(std::pair<std::string, VariableType>(*var_def->ident, VariableType(Int)));
 
       return std::vector<BaseIr *>{decl};
     } else {  // array
@@ -383,18 +388,16 @@ BaseIr *LValAST::buildIrTree() {
   // mem->id = ir_id++;
   // mem->type = IrType(Exp);
   mem->exp_type = ExpType(Mem);
-  if (exp_list1_ast == nullptr) {  // simple variable int
+
+  // get type info
+  mem->mem_type = variable_type_table.find(*ident)->second;
+  if (mem->mem_type == VariableType(Int)) {  // simple variable int
     mem->signext_id = -1;
     mem->exp = nullptr;
     // the address of this lval
     mem->reg_id = table.find(*ident)->second;
 
-    // look up the table to set type info
-    mem->mem_type = variable_type_table.find(*ident)->second;
-
-  } else {  // array or pointer with exp
-    // set type info
-    mem->mem_type = variable_type_table.find(*ident)->second;
+  } else if (exp_list1_ast != nullptr) {  // array or pointer with exp(as left value)
     if (mem->mem_type == VariableType(Pointer)) {
       mem->pointer_value_reg_id = reg++;
     }
@@ -416,6 +419,13 @@ BaseIr *LValAST::buildIrTree() {
     // after compute exp, we will getelementptr to get the address, store into ele_reg_id
     mem->ele_reg_id = reg++;
 
+    if (mem->mem_type == VariableType(Array)) {
+      // get the size of array
+      mem->size = array_size_table.find(*ident)->second;
+    }
+  } else if (exp_list1_ast == nullptr) {  // array or pointer as function parameter passing
+    mem->exp = nullptr;
+    mem->reg_id = table.find(*ident)->second;
     if (mem->mem_type == VariableType(Array)) {
       // get the size of array
       mem->size = array_size_table.find(*ident)->second;
@@ -582,6 +592,20 @@ BaseIr *UnaryExpAST::buildIrTree() {
       func_call->name = *ident;
 
       // set function parameter
+      if (func_rparams_ast != nullptr) {  // with parameters
+        auto para_list = dynamic_cast<FuncRParamsAST *>(func_rparams_ast.get());
+
+        // first parameter
+        func_call->params.push_back(std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(para_list->exp_ast->buildIrTree())));
+
+        // other parameter
+        auto exp_list = dynamic_cast<ExpList2AST *>((para_list->exp_list2_ast).get());
+        while (exp_list != nullptr) {
+          func_call->params.push_back(std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp_list->exp_ast->buildIrTree())));
+
+          exp_list = dynamic_cast<ExpList2AST *>((exp_list->exp_list2_ast).get());
+        }
+      }
 
       if (func_call->ret_type == VariableType(Int)) {
         func_call->reg_id = reg++;
@@ -604,10 +628,13 @@ BaseIr *PrimaryExpAST::buildIrTree() {
     auto temp = new TempExp();
     // temp->id = ir_id++;
     // temp->type = IrType(Exp);
+
     temp->exp_type = ExpType(Temp);
 
     temp->mem = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_val_ast->buildIrTree()));
     temp->reg_id = reg++;
+
+    temp->res_type = dynamic_cast<MemExp *>(temp->mem.get())->mem_type;
     return temp;
   } else if (number_ast) {
     return number_ast->buildIrTree();

@@ -109,6 +109,7 @@ class ExpIr : public BaseIr {
   }
   int reg_id;
   ExpType exp_type;
+  VariableType res_type;
 };
 
 enum BinOpType {
@@ -244,6 +245,7 @@ class JumpIr : public BaseIr {
   }
   int label;
   virtual void printTree();
+  virtual void printLL();
 };
 class LabelIr : public BaseIr {
  public:
@@ -253,5 +255,6 @@ class LabelIr : public BaseIr {
   }
   int label;
   virtual void printTree();
+  virtual void printLL();
 };
 #endif

@@ -203,14 +203,31 @@ InitValList
 
 FuncDef
   : INT IDENT '(' ')' Block {
-    std::cout<<"INT IDENT '(' ')' Block"<<endl;
+    auto ast = new FuncDefAST();
+    ast->type = 0;
+    ast->ident = $2;
+    ast->func_fparams_ast = nullptr;
+    ast->block_ast = unique_ptr<BaseAST>($5);
+    ast->id = id++;
+    $$ = ast;
   }
   | VOID IDENT '(' ')' Block {
-    std::cout<<"INT IDENT '(' ')' Block"<<endl;
+    auto ast = new FuncDefAST();
+    ast->type = 1;
+    ast->ident = $2;
+    ast->func_fparams_ast = nullptr;
+    ast->block_ast = unique_ptr<BaseAST>($5);
+    ast->id = id++;
+    $$ = ast;
   }
   | INT IDENT '(' FuncFParams ')' Block {
-
-    std::cout<<"FuncType IDENT '(' FuncFParams ')' Block"<<endl;
+    auto ast = new FuncDefAST();
+    ast->type = 1;
+    ast->ident = $2;
+    ast->func_fparams_ast = unique_ptr<BaseAST>($4);
+    ast->block_ast = unique_ptr<BaseAST>($6);
+    ast->id = id++;
+    $$ = ast;
   }
   | VOID IDENT '(' FuncFParams ')' Block {
     auto ast = new FuncDefAST();

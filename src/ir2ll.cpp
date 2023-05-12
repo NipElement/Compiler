@@ -209,11 +209,25 @@ void TempExp::printLL() {
   mem->printLL();
 
   auto mem_exp = dynamic_cast<MemExp *>(mem.get());
-  if (mem_exp && mem_exp->exp != nullptr) {  // array element or pointer [] element
-    cout << "  %" << reg_id << " = load i32, i32* %" << mem_exp->ele_reg_id << ", align 4" << endl;
-  } else {
-    // %10 = load i32, i32* %6, align 4
-    cout << "  %" << reg_id << " = load i32, i32* %" << mem->reg_id << ", align 4" << endl;
+  if (mem_exp->mem_type == VariableType(Int) || mem_exp->exp != nullptr) {
+    // for right value
+    if (mem_exp && mem_exp->exp != nullptr) {  // array element or pointer [] element
+      cout << "  %" << reg_id << " = load i32, i32* %" << mem_exp->ele_reg_id << ", align 4" << endl;
+    } else {
+      // %10 = load i32, i32* %6, align 4
+      cout << "  %" << reg_id << " = load i32, i32* %" << mem->reg_id << ", align 4" << endl;
+    }
+  } else if (mem_exp->mem_type == VariableType(Array)) {  // array as function parameter passing
+    //%10 = getelementptr inbounds [10 x i32], [10 x i32]* %7, i64 0, i64 0
+    string array_type = "[" + to_string(mem_exp->size) + " x i32]";
+    cout << "  %" << reg_id << " = "
+         << "getelementptr inbounds ";
+    cout << array_type << ", " << array_type << "* "
+         << "%" << mem_exp->reg_id << ", i64 0, i64 0" << endl;
+  } else if (mem_exp->mem_type == VariableType(Pointer)) {  // pointer as function parameter passing
+    // %8 = load i32*, i32** %3, align 8
+    cout << "  %" << reg_id << " = "
+         << "load i32*, i32** %" << mem->reg_id << ", align 8" << endl;
   }
 }
 
@@ -222,7 +236,37 @@ void ConstExp::printLL() {
   cout << "  store i32 " << value << ", i32 * %" << reg_id << ", align 4" << endl;
 }
 
-void CallExp::printLL() {}
+void CallExp::printLL() {
+  // todo: check the function is lib function or not
+
+  // first compute all the expression as parameter
+  for (int i = 0; i < params.size(); i++) {
+    params[i]->printLL();
+  }
+
+  // if the return type is void, no reg_id is used
+  if (ret_type == VariableType(Void)) {
+    // call void @f1(i32 %7, i32 %8)
+    cout << "  call void @" << name;
+    cout << "(";
+    // type and parameter
+
+    for (int i = 0; i < params.size(); i++) {
+      if (i != 0) {
+        cout << ", ";
+      }
+      if (params[i]->res_type == VariableType(Int)) {
+        cout << "i32 "
+             << "%" << params[i]->reg_id;
+      } else if (params[i]->res_type == VariableType(Pointer) || params[i]->res_type == VariableType(Array)) {
+        cout << "i32* "
+             << "%" << params[i]->reg_id;
+      }
+    }
+
+    cout << ")" << endl;
+  }
+}
 
 void MoveIr::printLL() {
   // Value
@@ -260,3 +304,7 @@ void CjumpIr::printLL() {
   cout << endl;
   cout << done << ":" << endl;
 }
+
+void JumpIr::printLL() { cout << "  br label %" << label << endl; }
+
+void LabelIr::printLL() { cout << label << ":" << endl; }
