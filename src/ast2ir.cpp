@@ -96,7 +96,7 @@ BaseIr *FuncDefAST::buildIrTree() {
   dynamic_cast<BlockIr *>(func_def->block.get())->param_num = func_def->param_names.size();
 
   // if the function returns void, add a return stmt to block
-  if (type == VariableType(Void)) {
+  if (type == 1) {  // return void
     auto ret_stmt = new RetIr();
     // ret_stmt->id = ir_id++;
     // ret_stmt->type = IrType(Ret);

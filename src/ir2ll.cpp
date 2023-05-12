@@ -292,19 +292,26 @@ void CjumpIr::printLL() {
   cout << "  br i1 %" << condition_reg << ", label %" << t << ", label %" << f << endl;
   // t:
   cout << endl;
-  cout << t << ":" << endl;
-  t_block->printLL();
-  cout << "  br label %" << done << endl;
+  // cout << t << ":" << endl;
+  // t_block->printLL();
+  // cout << "  br label %" << done << endl;
   // f:
-  cout << endl;
-  cout << f << ":" << endl;
-  f_block->printLL();
-  cout << "  br label %" << done << endl;
+  // cout << endl;
+  // cout << f << ":" << endl;
+  // f_block->printLL();
+  // cout << "  br label %" << done << endl;
   // done:
-  cout << endl;
-  cout << done << ":" << endl;
+  // cout << endl;
+  // cout << done << ":" << endl;
 }
 
 void JumpIr::printLL() { cout << "  br label %" << label << endl; }
 
 void LabelIr::printLL() { cout << label << ":" << endl; }
+
+void RetIr::printLL() {
+  // currently only support ret void
+  if (ret_value == nullptr) {
+    cout << "  ret void" << endl;
+  }
+}

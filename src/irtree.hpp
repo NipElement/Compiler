@@ -236,6 +236,7 @@ class RetIr : public BaseIr {
   }
   std::unique_ptr<ExpIr> ret_value;
   virtual void printTree();
+  virtual void printLL();
 };
 class JumpIr : public BaseIr {
  public:
