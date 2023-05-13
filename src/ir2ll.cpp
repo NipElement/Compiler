@@ -155,8 +155,6 @@ void BinopExp::printLL() {
            << "sdiv nsw i32 "
            << "%" << exp1->reg_id << ", " << theConstExp->value << endl;
     }
-  } else if (op == Or) {
-  } else if (op == And) {
   }
 }
 
@@ -290,27 +288,31 @@ void NorBoolBinopExp::printLL() {
 // here for the And Or
 void AndOrBinopExp::printLL() {
   // we assume there is no const exp
+
+  exp1->printLL();
+  // %bool_res1 = icmp ne i32 %exp1->reg_id, 0
+  cout << "  %" << bool_res1 << " = icmp ne i32 %" << exp1->reg_id << ", 0" << endl;
+  // br i1 %8, label %9, label %14
+  cout << "  br i1 %" << bool_res1 << ", label %" << label1 << ", label %" << label2 << endl;
+  cout << label1 << ":" << endl;
+  exp2->printLL();
+  // %bool_res2 = icmp ne i32 %exp2->reg_id, 0
+  cout << "  %" << bool_res2 << " = icmp ne i32 %" << exp2->reg_id << ", 0" << endl;
+  // br label %label2
+  cout << "  br label %" << label2 << endl;
+  cout << label2 << ":" << endl;
+
   if (op == And) {
-    exp1->printLL();
-    // %bool_res1 = icmp ne i32 %exp1->reg_id, 0
-    cout << "  %" << bool_res1 << " = icmp ne i32 %" << exp1->reg_id << ", 0" << endl;
-    // br i1 %8, label %9, label %14
-    cout << "  br i1 %" << bool_res1 << ", label %" << label1 << ", label %" << label2 << endl;
-    cout << label1 << ":" << endl;
-    exp2->printLL();
-    // %bool_res2 = icmp ne i32 %exp2->reg_id, 0
-    cout << "  %" << bool_res2 << " = icmp ne i32 %" << exp2->reg_id << ", 0" << endl;
-    // br label %label2
-    cout << "  br label %" << label2 << endl;
-    cout << label2 << ":" << endl;
     // %15 = phi i1 [ false, %1 ], [ %13, %9 ]
-    // %16 = zext i1 %15 to i32
     cout << "  %" << bool_result_reg << " = phi i1 [ false, %" << last_block_label << " ], [ %" << bool_res2 << ", %"
          << label1 << " ]" << endl;
-    cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
   } else if (op == Or) {
-    
+    // %23 = phi i1 [ true, %14 ], [ %21, %19 ]
+    cout << "  %" << bool_result_reg << " = phi i1 [ true, %" << last_block_label << " ], [ %" << bool_res2 << ", %"
+         << label1 << " ]" << endl;
   }
+  // %16 = zext i1 %15 to i32
+  cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
 }
 
 void MemExp::printLL() {
