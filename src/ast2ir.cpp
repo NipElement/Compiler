@@ -694,7 +694,9 @@ BaseIr *UnaryExpAST::buildIrTree() {
 
 BaseIr *PrimaryExpAST::buildIrTree() {
   if (exp_ast) {
-    return nullptr;
+    // that is (EXP)
+
+    return exp_ast->buildIrTree();
   } else if (l_val_ast) {
     auto temp = new TempExp();
     // temp->id = ir_id++;

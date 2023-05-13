@@ -491,6 +491,7 @@ ExpList1
 PrimaryExp    
   : '(' Exp ')' {
     auto ast = new PrimaryExpAST();
+    std::cout<<"()"<<std::endl;
     ast->exp_ast = unique_ptr<BaseAST>($2);
     ast->l_val_ast = nullptr;
     ast->number_ast = nullptr;
@@ -617,6 +618,7 @@ MulExp
     $$ = $1;
   }
   | MulExp '*' UnaryExp{
+    
 
   }
   | MulExp '/' UnaryExp{
