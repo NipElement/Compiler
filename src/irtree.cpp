@@ -176,6 +176,44 @@ void BinopExp::printTree() {
   }
 }
 
+void NorBoolBinopExp::printTree() {
+  std::cout << "SYNTAX_NODE_" << id << "[label=\"";
+  std::cout << "BinopIr\\nid=" << id;
+  std::cout << "\\noptype=" << op;
+  std::cout << "\\nreg_id=$" << reg_id;
+  std::cout << "\"];" << std::endl;
+  if (exp1) {
+    exp1->printTree();
+    std::cout << "SYNTAX_NODE_" << id << "  ->  "
+              << "SYNTAX_NODE_" << exp1->id << ";" << std::endl;
+  }
+
+  if (exp2) {
+    exp2->printTree();
+    std::cout << "SYNTAX_NODE_" << id << "  ->  "
+              << "SYNTAX_NODE_" << exp2->id << ";" << std::endl;
+  }
+}
+
+void AndOrBinopExp::printTree() {
+  std::cout << "SYNTAX_NODE_" << id << "[label=\"";
+  std::cout << "BinopIr\\nid=" << id;
+  std::cout << "\\noptype=" << op;
+  std::cout << "\\nreg_id=$" << reg_id;
+  std::cout << "\"];" << std::endl;
+  if (exp1) {
+    exp1->printTree();
+    std::cout << "SYNTAX_NODE_" << id << "  ->  "
+              << "SYNTAX_NODE_" << exp1->id << ";" << std::endl;
+  }
+
+  if (exp2) {
+    exp2->printTree();
+    std::cout << "SYNTAX_NODE_" << id << "  ->  "
+              << "SYNTAX_NODE_" << exp2->id << ";" << std::endl;
+  }
+}
+
 void JumpIr::printTree() {
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";
   std::cout << "JumpIr\\nid=" << id;

@@ -145,6 +145,7 @@ class BinopExp : public ExpIr {
 
 class NorBoolBinopExp : public BinopExp {
  public:
+  NorBoolBinopExp() { exp_type = ExpType(Binop); }
   int bool_result_reg;
   virtual void printTree();
   virtual void printLL();
@@ -152,6 +153,7 @@ class NorBoolBinopExp : public BinopExp {
 
 class AndOrBinopExp : public NorBoolBinopExp {
  public:
+  AndOrBinopExp() { exp_type = ExpType(Binop); }
   int bool_res1;
   int bool_res2;
   int last_block_label;
