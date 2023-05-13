@@ -157,7 +157,20 @@ void BinopExp::printLL() {
     }
   } else if (op == Or) {
   } else if (op == And) {
-  } else if (op == Ge) {
+  }
+}
+
+void NorBoolBinopExp::printLL() {
+  if (exp1->exp_type != Const) {
+    exp1->printLL();
+  }
+  if (exp2->exp_type != Const) {
+    exp2->printLL();
+  }
+  int constFlag = 0;
+  constFlag = (exp1->exp_type == Const) + (exp2->exp_type == Const);
+
+  if (op == Ge) {
     if (constFlag == 0) {
       // %bool_result_reg = icmp sge i32 %exp1->reg_id, %exp2->reg_id
       // %reg_id = zext i1 %10 to i32
@@ -271,6 +284,32 @@ void BinopExp::printLL() {
       cout << "  %" << bool_result_reg << " = icmp ne i32 %" << exp2->reg_id << ", " << theConstExp->value << endl;
       cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
     }
+  }
+}
+
+// here for the And Or
+void AndOrBinopExp::printLL() {
+  // we assume there is no const exp
+  if (op == And) {
+    exp1->printLL();
+    // %bool_res1 = icmp ne i32 %exp1->reg_id, 0
+    cout << "  %" << bool_res1 << " = icmp ne i32 %" << exp1->reg_id << ", 0" << endl;
+    // br i1 %8, label %9, label %14
+    cout << "  br i1 %" << bool_res1 << ", label %" << label1 << ", label %" << label2 << endl;
+    cout << label1 << ":" << endl;
+    exp2->printLL();
+    // %bool_res2 = icmp ne i32 %exp2->reg_id, 0
+    cout << "  %" << bool_res2 << " = icmp ne i32 %" << exp2->reg_id << ", 0" << endl;
+    // br label %label2
+    cout << "  br label %" << label2 << endl;
+    cout << label2 << ":" << endl;
+    // %15 = phi i1 [ false, %1 ], [ %13, %9 ]
+    // %16 = zext i1 %15 to i32
+    cout << "  %" << bool_result_reg << " = phi i1 [ false, %" << last_block_label << " ], [ %" << bool_res2 << ", %"
+         << label1 << " ]" << endl;
+    cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
+  } else if (op == Or) {
+    
   }
 }
 

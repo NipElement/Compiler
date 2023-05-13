@@ -290,8 +290,8 @@ class RelExpAST : public BaseAST {
 class EqExpAST : public BaseAST {
  public:
   int eq_rule;
-  std::unique_ptr<BaseAST> rel_exp_ast;
   std::unique_ptr<BaseAST> eq_exp_ast;
+  std::unique_ptr<BaseAST> rel_exp_ast;
   virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~EqExpAST() override {}
