@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <algorithm>
 #include <memory>
 #include <unordered_map>
 #include <vector>
@@ -460,7 +461,13 @@ BaseIr *ExpAST::buildIrTree() {
     const_str->const_type = ConstType(CStr);
     // original string begins with " and end with ", delete " symbol of this string
     const_str->str = str->substr(1, str->length() - 2);
+
+    if (std::find(const_strings.begin(), const_strings.end(), const_str->str) == const_strings.end()) {
+      const_strings.push_back(const_str->str);
+    }
     return const_str;
+  } else if (l_val) {
+    return l_val->buildIrTree();
   }
   return nullptr;
 }

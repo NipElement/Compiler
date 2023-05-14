@@ -2,9 +2,11 @@
 #define _IRTREE_H
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 static int ir_id = 0;
+static std::vector<std::string> const_strings;
 
 enum IrType {
   Root,

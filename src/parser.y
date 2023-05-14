@@ -469,6 +469,14 @@ Exp
     ast->id = id++;
     $$ = ast;
   }
+  | '&' LVal {
+    auto ast = new ExpAST();
+    ast->l_or_exp_ast = nullptr;
+    ast->str = nullptr;
+    ast->l_val = unique_ptr<BaseAST>($2);
+    ast->id = id++;
+    $$ = ast;
+  }
   ;
 
 LVal

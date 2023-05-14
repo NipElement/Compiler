@@ -390,6 +390,10 @@ void ConstExp::printLL() {
 
 void CallExp::printLL() {
   // todo: check the function is lib function or not
+  if (name == "printf") {
+    
+  } else if (name == "scanf") {
+  }
 
   // first compute all the expression as parameter
   for (int i = 0; i < params.size(); i++) {
@@ -417,6 +421,11 @@ void CallExp::printLL() {
     }
 
     cout << ")" << endl;
+  } else if (ret_type == VariableType(Int)) {
+    // % 4 = call i32(i8 *, ...) @printf(i8 * getelementptr inbounds([9 x i8], [9 x i8] * @.str .1, i64 0, i64 0), i32
+    // %3)
+
+    cout << "Todo" << endl;
   }
 }
 
