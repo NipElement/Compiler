@@ -1,6 +1,6 @@
+#include <algorithm>
 #include <iostream>
 #include "irtree.hpp"
-
 using namespace std;
 
 int attr_id = 0;
@@ -391,8 +391,69 @@ void ConstExp::printLL() {
 void CallExp::printLL() {
   // todo: check the function is lib function or not
   if (name == "printf") {
-    
+    // prepare parameter
+    for (int i = 0; i < params.size(); i++) {
+      params[i]->printLL();
+    }
+    // get the string
+    auto string = dynamic_cast<ConstExp *>(params[0].get())->str;
+    auto it = std::find(const_strings.begin(), const_strings.end(), string);
+    // get the string index
+    int index = std::distance(const_strings.begin(), it);
+
+    // %7 = call i32 (i8*, ...) @printf(i8* noundef getelementptr inbounds ([8 x i8], [8 x i8]* @.str.1, i64 0, i64 0),
+    // i32 noundef %6)
+    std::string const_str_type = "[" + to_string(string.length() + 1) + " x i8]";
+    std::cout << "  %" << reg_id << " = call i32 (i8*, ...) @printf"
+              << "(i8* noundef getelementptr inbounds (" << const_str_type << ", " << const_str_type << "* @.str";
+    if (index != 0) {
+      std::cout << "." << index;
+    }
+
+    std::cout << ",i64 0, i64 0)";
+
+    for (int i = 1; i < params.size(); i++) {
+      cout << ", ";
+      // we always assume that the paras in scanf is Mem
+      auto mem = dynamic_cast<MemExp *>(params[i].get());
+      if (mem->mem_type == VariableType(Int)) {  // for simple int variable
+        cout << "i32* noundef "
+             << "%" << params[i]->reg_id;
+      } else if (mem->mem_type == VariableType(Array)) {  // for a[exp] lval
+        cout << "i32* noundef "
+             << "%" << mem->ele_reg_id;
+      }
+    }
+
+    return;
   } else if (name == "scanf") {
+    // prepare parameter
+    for (int i = 0; i < params.size(); i++) {
+      params[i]->printLL();
+    }
+    // get the string
+    auto string = dynamic_cast<ConstExp *>(params[0].get())->str;
+    auto it = std::find(const_strings.begin(), const_strings.end(), string);
+    // get the string index
+    int index = std::distance(const_strings.begin(), it);
+
+    std::string const_str_type = "[" + to_string(string.length() + 1) + " x i8]";
+
+    std::cout << "  %" << reg_id << " = call i32 (i8*, ...) @scanf"
+              << "(i8* noundef getelementptr inbounds (" << const_str_type << ", " << const_str_type << "* @.str";
+
+    if (index != 0) {
+      std::cout << "." << index;
+    }
+    std::cout << ",i64 0, i64 0)";
+
+    for (int i = 1; i < params.size(); i++) {
+      cout << ", ";
+      if (params[i]->res_type == VariableType(Int)) {
+        cout << "i32 noundef "
+             << "%" << params[i]->reg_id;
+      }
+    }
   }
 
   // first compute all the expression as parameter
