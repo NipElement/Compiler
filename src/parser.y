@@ -28,8 +28,8 @@ int id=0;
 }
 
  
-%token INT RETURN VOID CONST IF ELSE WHILE BREAK CONTINUE GE LE GT LT EQ NE AND OR
-%token <str_val> IDENT
+%token INT RETURN VOID CONST IF ELSE WHILE BREAK CONTINUE GE LE GT LT EQ NE AND OR  
+%token <str_val> IDENT STR
 %token <int_val> INT_CONST 
 
 
@@ -459,6 +459,13 @@ Exp
   : LOrExp {
     auto ast = new ExpAST();
     ast->l_or_exp_ast = unique_ptr<BaseAST>($1);
+    ast->id = id++;
+    $$ = ast;
+  }
+  | STR {
+    auto ast = new ExpAST();
+    ast->l_or_exp_ast = nullptr;
+    ast->str= $1;
     ast->id = id++;
     $$ = ast;
   }

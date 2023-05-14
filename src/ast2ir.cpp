@@ -50,6 +50,7 @@ BaseIr *FuncDefAST::buildIrTree() {
 
   // update func_rettype_table
   func_rettype_table.insert(std::pair<std::string, VariableType>(*ident, func_def->ret_type));
+  func_def->name = *ident;
 
   auto p = dynamic_cast<FuncFParamsAST *>(func_fparams_ast.get());
 
@@ -450,7 +451,19 @@ BaseIr *LValAST::buildIrTree() {
   return mem;
 }
 
-BaseIr *ExpAST::buildIrTree() { return l_or_exp_ast->buildIrTree(); }
+BaseIr *ExpAST::buildIrTree() {
+  if (l_or_exp_ast) {
+    return l_or_exp_ast->buildIrTree();
+  } else if (str) {
+    // The expression is a const string
+    auto const_str = new ConstExp();
+    const_str->const_type = ConstType(CStr);
+    // original string begins with " and end with ", delete " symbol of this string
+    const_str->str = str->substr(1, str->length() - 2);
+    return const_str;
+  }
+  return nullptr;
+}
 
 int ExpAST::getExpNum() {
   assert(l_or_exp_ast != nullptr);

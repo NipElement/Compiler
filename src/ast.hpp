@@ -169,6 +169,7 @@ class StmtAST : public BaseAST {
 class ExpAST : public BaseAST {
  public:
   std::unique_ptr<BaseAST> l_or_exp_ast;
+  std::string *str;
   int getExpNum();
 
   virtual BaseIr *buildIrTree();

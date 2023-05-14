@@ -26,6 +26,11 @@ enum VariableType {
   Void,
 };
 
+enum ConstType {
+  CInt,
+  CStr,
+};
+
 class BaseIr {
  public:
   int id;
@@ -199,7 +204,9 @@ class TempExp : public ExpIr {
 class ConstExp : public ExpIr {
  public:
   ConstExp() { exp_type = ExpType(Const); }
+  ConstType const_type;
   int value;
+  std::string str;
   virtual void printTree();
   virtual void printLL();
 };

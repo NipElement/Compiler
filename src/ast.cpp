@@ -261,6 +261,10 @@ void ExpAST::printTree() {
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";
   std::cout << "ExpAST\\nid=" << id;
 
+  if (str) {
+    std::cout << "\\nstring = " << str->substr(1, str->length() - 2);
+  }
+
   std::cout << "\"];" << std::endl;
   if (l_or_exp_ast) {
     l_or_exp_ast->printTree();

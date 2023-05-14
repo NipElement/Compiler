@@ -109,7 +109,11 @@ void ConstExp::printTree() {
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";
   std::cout << "ConstIr\\nid=" << id;
   std::cout << "\\n";
-  std::cout << "value=" << value;
+  if (const_type == ConstType(CInt)) {
+    std::cout << "int value=" << value;
+  } else if (const_type == ConstType(CStr)) {
+    std::cout << "str value=" << str;
+  }
   std::cout << "\\nreg_id=" << reg_id;
   std::cout << "\"];" << std::endl;
 }
