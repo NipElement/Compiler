@@ -528,45 +528,38 @@ void CallExp::printLL() {
     // call void @f1(i32 %7, i32 %8)
     cout << "  call void @" << name;
     cout << "(";
-    // type and parameter
-
-    for (int i = 0; i < params.size(); i++) {
-      if (i != 0) {
-        cout << ", ";
-      }
-      if (params[i]->res_type == VariableType(Int)) {
-        cout << "i32 "
-             << "%" << params[i]->reg_id;
-      } else if (params[i]->res_type == VariableType(Pointer) || params[i]->res_type == VariableType(Array)) {
-        cout << "i32* "
-             << "%" << params[i]->reg_id;
-      }
-    }
-
-    cout << ")" << endl;
   } else if (ret_type == VariableType(Int)) {
     // % 4 = call i32(i8 *, ...) @printf(i8 * getelementptr inbounds([9 x i8], [9 x i8] * @.str .1, i64 0, i64 0), i32
     // %3)
     cout << "  %" << reg_id << " = "
          << "call i32 @" << name;
     cout << "(";
-    // type and parameter
-
-    for (int i = 0; i < params.size(); i++) {
-      if (i != 0) {
-        cout << ", ";
-      }
-      if (params[i]->res_type == VariableType(Int)) {
+  }
+  // parameter
+  for (int i = 0; i < params.size(); i++) {
+    if (i != 0) {
+      cout << ", ";
+    }
+    if (params[i]->exp_type == ExpType(Const)) {
+      cout << "i32 " << dynamic_cast<ConstExp *>(params[i].get())->value;
+    } else if (params[i]->exp_type == ExpType(Temp)) {
+      if (params[i]->res_type == VariableType(Int)) {  // passing like a (int)
         cout << "i32 "
              << "%" << params[i]->reg_id;
-      } else if (params[i]->res_type == VariableType(Pointer) || params[i]->res_type == VariableType(Array)) {
+      } else if (params[i]->res_type == VariableType(Pointer) ||
+                 params[i]->res_type == VariableType(Array)) {  // passing like a[],
         cout << "i32* "
              << "%" << params[i]->reg_id;
       }
+    } else if (params[i]->exp_type == ExpType(Mem)) {  // passing like &a
+      assert(0);
+    } else {  // like binop
+      cout << "i32 "
+           << "%" << params[i]->reg_id;
     }
-
-    cout << ")" << endl;
   }
+
+  cout << ")" << endl;
 }
 
 void MoveIr::printLL() {
