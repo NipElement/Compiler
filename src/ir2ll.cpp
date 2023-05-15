@@ -204,7 +204,7 @@ void NorBoolBinopExp::printLL() {
       // %bool_result_reg = icmp sge i32 %exp1->reg_id, %exp2->reg_id
       // %reg_id = zext i1 %10 to i32
       cout << "  %" << bool_result_reg << " = icmp sge i32 %" << exp1->reg_id << ", %" << exp2->reg_id << endl;
-      cout << "  %" << reg_id << " = zext i1 %" << reg_id << " to i32" << endl;
+      cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
     } else if (exp1->exp_type == Const) {
       ConstExp *theConstExp = dynamic_cast<ConstExp *>(exp1.get());
       // %bool_result_reg = icmp sge i32 const, %exp2->reg_id
@@ -223,7 +223,7 @@ void NorBoolBinopExp::printLL() {
       // %bool_result_reg = icmp sle i32 %exp1->reg_id, %exp2->reg_id
       // %reg_id = zext i1 %10 to i32
       cout << "  %" << bool_result_reg << " = icmp sle i32 %" << exp1->reg_id << ", %" << exp2->reg_id << endl;
-      cout << "  %" << reg_id << " = zext i1 %" << reg_id << " to i32" << endl;
+      cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
     } else if (exp1->exp_type == Const) {
       ConstExp *theConstExp = dynamic_cast<ConstExp *>(exp1.get());
       // %bool_result_reg = icmp sle i32 const, %exp2->reg_id
@@ -242,7 +242,7 @@ void NorBoolBinopExp::printLL() {
       // %bool_result_reg = icmp sgt i32 %exp1->reg_id, %exp2->reg_id
       // %reg_id = zext i1 %10 to i32
       cout << "  %" << bool_result_reg << " = icmp sgt i32 %" << exp1->reg_id << ", %" << exp2->reg_id << endl;
-      cout << "  %" << reg_id << " = zext i1 %" << reg_id << " to i32" << endl;
+      cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
     } else if (exp1->exp_type == Const) {
       ConstExp *theConstExp = dynamic_cast<ConstExp *>(exp1.get());
       // %bool_result_reg = icmp sgt i32 const, %exp2->reg_id
@@ -261,7 +261,7 @@ void NorBoolBinopExp::printLL() {
       // %bool_result_reg = icmp slt i32 %exp1->reg_id, %exp2->reg_id
       // %reg_id = zext i1 %10 to i32
       cout << "  %" << bool_result_reg << " = icmp slt i32 %" << exp1->reg_id << ", %" << exp2->reg_id << endl;
-      cout << "  %" << reg_id << " = zext i1 %" << reg_id << " to i32" << endl;
+      cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
     } else if (exp1->exp_type == Const) {
       ConstExp *theConstExp = dynamic_cast<ConstExp *>(exp1.get());
       // %bool_result_reg = icmp slt i32 const, %exp2->reg_id
@@ -280,7 +280,7 @@ void NorBoolBinopExp::printLL() {
       // %bool_result_reg = icmp eq i32 %exp1->reg_id, %exp2->reg_id
       // %reg_id = zext i1 %10 to i32
       cout << "  %" << bool_result_reg << " = icmp eq i32 %" << exp1->reg_id << ", %" << exp2->reg_id << endl;
-      cout << "  %" << reg_id << " = zext i1 %" << reg_id << " to i32" << endl;
+      cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
     } else if (exp1->exp_type == Const) {
       ConstExp *theConstExp = dynamic_cast<ConstExp *>(exp1.get());
       // %bool_result_reg = icmp eq i32 const, %exp2->reg_id
@@ -299,7 +299,7 @@ void NorBoolBinopExp::printLL() {
       // %bool_result_reg = icmp ne i32 %exp1->reg_id, %exp2->reg_id
       // %reg_id = zext i1 %10 to i32
       cout << "  %" << bool_result_reg << " = icmp ne i32 %" << exp1->reg_id << ", %" << exp2->reg_id << endl;
-      cout << "  %" << reg_id << " = zext i1 %" << reg_id << " to i32" << endl;
+      cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
     } else if (exp1->exp_type == Const) {
       ConstExp *theConstExp = dynamic_cast<ConstExp *>(exp1.get());
       // %bool_result_reg = icmp ne i32 const, %exp2->reg_id
