@@ -6,7 +6,6 @@
 #include <vector>
 
 static int ir_id = 0;
-static std::vector<std::string> const_strings;
 
 enum IrType {
   Root,
@@ -37,6 +36,7 @@ class BaseIr {
  public:
   int id;
   IrType type;
+  static std::vector<std::string> const_strings;
   virtual void printTree(){};
   virtual void printLL(){};
 };

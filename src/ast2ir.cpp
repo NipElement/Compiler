@@ -12,6 +12,8 @@ std::unordered_map<std::string, VariableType> variable_type_table;
 
 std::unordered_map<std::string, VariableType> func_rettype_table;
 
+std::vector<std::string> BaseIr::const_strings;
+
 // id is for printTree
 // int ir_id = 0;
 // reg is the $..
@@ -397,7 +399,17 @@ std::vector<BaseIr *> StmtAST::buildIrNodes() {
     cjump->f = done_label->label;
     all_label.push_back(cjump->f);
     return ret_ir_vector;
+  } else if (stmt_rule == 10) {  // return exp
+    std::vector<BaseIr *> ret_ir_vector;
+    auto ret = new RetIr();
+
+    ret->ret_value = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp_ast->buildIrTree()));
+
+    ret_ir_vector.push_back(ret);
+
+    return ret_ir_vector;
   }
+
   return std::vector<BaseIr *>();
 }
 
@@ -463,8 +475,9 @@ BaseIr *ExpAST::buildIrTree() {
     // original string begins with " and end with ", delete " symbol of this string
     const_str->str = str->substr(1, str->length() - 2);
 
-    if (std::find(const_strings.begin(), const_strings.end(), const_str->str) == const_strings.end()) {
-      const_strings.push_back(const_str->str);
+    if (std::find(BaseIr::const_strings.begin(), BaseIr::const_strings.end(), const_str->str) ==
+        BaseIr::const_strings.end()) {
+      BaseIr::const_strings.push_back(const_str->str);
     }
     return const_str;
   } else if (l_val) {

@@ -4,17 +4,18 @@
 using namespace std;
 
 int attr_id = 0;
+
 void RootIr::printLL() {
   // omit some attributes
-  for (int i = 0; i < const_strings.size(); i++) {
+  for (int i = 0; i < BaseIr::const_strings.size(); i++) {
     cout << "@.str";
     if (i != 0) {
       cout << "." << i;
     }
-    string string_type = "[" + to_string(const_strings[i].length() + 1) + " x i8]";
+    string string_type = "[" + to_string(BaseIr::const_strings[i].length() + 1) + " x i8]";
     cout << " = private unnamed_addr constant " << string_type;
     cout << " c";
-    cout << "\"" << const_strings[i] << "\\00"
+    cout << "\"" << BaseIr::const_strings[i] << "\\00"
          << "\", align 1" << endl;
   }
   for (int i = funcs.size() - 1; i >= 0; i--) {
@@ -408,9 +409,9 @@ void CallExp::printLL() {
     }
     // get the string
     auto string = dynamic_cast<ConstExp *>(params[0].get())->str;
-    auto it = std::find(const_strings.begin(), const_strings.end(), string);
+    auto it = std::find(BaseIr::const_strings.begin(), BaseIr::const_strings.end(), string);
     // get the string index
-    int index = std::distance(const_strings.begin(), it);
+    int index = std::distance(BaseIr::const_strings.begin(), it);
 
     // %7 = call i32 (i8*, ...) @printf(i8* noundef getelementptr inbounds ([8 x i8], [8 x i8]* @.str.1, i64 0, i64 0),
     // i32 noundef %6)
@@ -425,17 +426,17 @@ void CallExp::printLL() {
 
     for (int i = 1; i < params.size(); i++) {
       cout << ", ";
-      // we always assume that the paras in scanf is Mem
-      auto mem = dynamic_cast<MemExp *>(params[i].get());
-      if (mem->mem_type == VariableType(Int)) {  // for simple int variable
-        cout << "i32* noundef "
+      // we always assume that the paras in printf is Temp
+      // here we implement both
+      if (params[i]->res_type == VariableType(Int)) {
+        cout << "i32 "
              << "%" << params[i]->reg_id;
-      } else if (mem->mem_type == VariableType(Array)) {  // for a[exp] lval
-        cout << "i32* noundef "
-             << "%" << mem->ele_reg_id;
+      } else if (params[i]->res_type == VariableType(Pointer) || params[i]->res_type == VariableType(Array)) {
+        cout << "i32* "
+             << "%" << params[i]->reg_id;
       }
     }
-
+    cout << ")" << endl;
     return;
   } else if (name == "scanf") {
     // prepare parameter
@@ -444,9 +445,9 @@ void CallExp::printLL() {
     }
     // get the string
     auto string = dynamic_cast<ConstExp *>(params[0].get())->str;
-    auto it = std::find(const_strings.begin(), const_strings.end(), string);
+    auto it = std::find(BaseIr::const_strings.begin(), BaseIr::const_strings.end(), string);
     // get the string index
-    int index = std::distance(const_strings.begin(), it);
+    int index = std::distance(BaseIr::const_strings.begin(), it);
 
     std::string const_str_type = "[" + to_string(string.length() + 1) + " x i8]";
 
@@ -458,13 +459,20 @@ void CallExp::printLL() {
     }
     std::cout << ",i64 0, i64 0)";
 
+    // we always assume scanf has only & lval, so it is MemExp
     for (int i = 1; i < params.size(); i++) {
       cout << ", ";
-      if (params[i]->res_type == VariableType(Int)) {
-        cout << "i32 noundef "
-             << "%" << params[i]->reg_id;
+      auto mem = dynamic_cast<MemExp *>(params[i].get());
+      if (mem->mem_type == VariableType(Int)) {  // like &a
+        cout << "i32* noundef "
+             << "%" << mem->reg_id;
+      } else if (mem->mem_type == VariableType(Array)) {  // like &a[1]
+        cout << "i32* noundef "
+             << "%" << mem->ele_reg_id;
       }
     }
+    cout << ")" << endl;
+    return;
   }
 
   // first compute all the expression as parameter
@@ -496,8 +504,25 @@ void CallExp::printLL() {
   } else if (ret_type == VariableType(Int)) {
     // % 4 = call i32(i8 *, ...) @printf(i8 * getelementptr inbounds([9 x i8], [9 x i8] * @.str .1, i64 0, i64 0), i32
     // %3)
+    cout << "  %" << reg_id << " = "
+         << "call i32 @" << name;
+    cout << "(";
+    // type and parameter
 
-    cout << "Todo" << endl;
+    for (int i = 0; i < params.size(); i++) {
+      if (i != 0) {
+        cout << ", ";
+      }
+      if (params[i]->res_type == VariableType(Int)) {
+        cout << "i32 "
+             << "%" << params[i]->reg_id;
+      } else if (params[i]->res_type == VariableType(Pointer) || params[i]->res_type == VariableType(Array)) {
+        cout << "i32* "
+             << "%" << params[i]->reg_id;
+      }
+    }
+
+    cout << ")" << endl;
   }
 }
 
@@ -546,5 +571,14 @@ void RetIr::printLL() {
   // currently only support ret void
   if (ret_value == nullptr) {
     cout << "  ret void" << endl;
+  } else {
+    if (ret_value->exp_type == ExpType(Const)) {
+      cout << "  ret " << dynamic_cast<ConstExp *>(ret_value.get())->value << endl;
+    } else {
+      ret_value->printLL();
+
+      // we always assume return a temp: that is no expression like "return &a"..
+      cout << "  ret %" << ret_value->reg_id << endl;
+    }
   }
 }
