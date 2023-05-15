@@ -397,7 +397,7 @@ void TempExp::printLL() {
 
 void ConstExp::printLL() {
   // store i32 value, i32* %reg_id, align 4
-  cout << "  store i32 " << value << ", i32 * %" << reg_id << ", align 4" << endl;
+  // cout << "  store i32 " << value << ", i32 * %" << reg_id << ", align 4" << endl;
 }
 
 void CallExp::printLL() {
@@ -528,9 +528,22 @@ void CallExp::printLL() {
 
 void MoveIr::printLL() {
   // Value
-  exp2->printLL();
+  if (exp2->exp_type != ExpType(Const)) {
+    exp2->printLL();
+  }
   // Mem
   exp1->printLL();
+  if (exp2->exp_type == ExpType(Const)) {
+    if (dynamic_cast<MemExp *>(exp1.get())->mem_type == VariableType(Int)) {  // simple variable int
+      cout << "  store i32 " << dynamic_cast<ConstExp *>(exp2.get())->value << ", i32* %" << exp1->reg_id << ", align 4"
+           << endl;
+    } else {  // array or pointer
+      cout << "  store i32 " << dynamic_cast<ConstExp *>(exp2.get())->value << ", i32* %"
+           << dynamic_cast<MemExp *>(exp1.get())->ele_reg_id << ", align 4 " << endl;
+    }
+    return;
+  }
+
   // store i32 %exp2->reg_id, i32* %exp1->reg_id, align 4
   if (dynamic_cast<MemExp *>(exp1.get())->mem_type == VariableType(Int)) {  // simple variable int
     cout << "  store i32 %" << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
