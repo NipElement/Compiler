@@ -675,11 +675,11 @@ BaseIr *AddExpAST::buildIrTree() {
     auto binop = new BinopExp();
     // binop->id = ir_id++;
     // binop->type = IrType(Exp);
-    binop->reg_id = reg++;
 
     binop->op = BinOpType(Minus);
     binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(add_exp_ast->buildIrTree()));
     binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(mul_exp_ast->buildIrTree()));
+    binop->reg_id = reg++;
 
     return binop;
   }
