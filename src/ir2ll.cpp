@@ -1,9 +1,22 @@
+#include <assert.h>
 #include <algorithm>
 #include <iostream>
 #include "irtree.hpp"
 using namespace std;
 
 int attr_id = 0;
+
+std::string RootIr::replace(std::string str, std::string from, std::string to, int &len) {
+  len = str.length();
+  size_t start_pos = 0;
+  while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+    str.replace(start_pos, from.length(), to);
+    start_pos += to.length();  // Handles case where 'to' is a substring of 'from'
+
+    len -= 1;
+  }
+  return str;
+}
 
 void RootIr::printLL() {
   // omit some attributes
@@ -12,10 +25,13 @@ void RootIr::printLL() {
     if (i != 0) {
       cout << "." << i;
     }
-    string string_type = "[" + to_string(BaseIr::const_strings[i].length() + 1) + " x i8]";
+    int len;
+    string replace_Escape = replace(BaseIr::const_strings[i], "\\n", "\\0A", len);
+    string string_type = "[" + to_string(len + 1) + " x i8]";
     cout << " = private unnamed_addr constant " << string_type;
     cout << " c";
-    cout << "\"" << BaseIr::const_strings[i] << "\\00"
+
+    cout << "\"" << replace_Escape << "\\00"
          << "\", align 1" << endl;
   }
   for (int i = funcs.size() - 1; i >= 0; i--) {
@@ -447,12 +463,20 @@ void CallExp::printLL() {
       cout << ", ";
       // we always assume that the paras in printf is Temp
       // here we implement both
-      if (params[i]->res_type == VariableType(Int)) {
+      if (params[i]->exp_type == ExpType(Temp)) {
         cout << "i32 "
              << "%" << params[i]->reg_id;
-      } else if (params[i]->res_type == VariableType(Pointer) || params[i]->res_type == VariableType(Array)) {
-        cout << "i32* "
-             << "%" << params[i]->reg_id;
+      } else if (params[i]->exp_type == ExpType(Mem)) {
+        auto mem = dynamic_cast<MemExp *>(params[i].get());
+        if (mem->mem_type == VariableType(Int)) {  // like printf("%d",&a);
+          cout << "i32* "
+               << "%" << mem->reg_id;
+        } else {  // like printf("%d",&a[i]);
+          cout << "i32* "
+               << "%" << mem->ele_reg_id;
+        }
+      } else {
+        assert(0);
       }
     }
     cout << ")" << endl;

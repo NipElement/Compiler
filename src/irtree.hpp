@@ -50,6 +50,8 @@ class RootIr : public BaseIr {
   std::vector<std::unique_ptr<BaseIr>> funcs;
   virtual void printTree();
   virtual void printLL();
+
+  std::string replace(std::string str, std::string from, std::string to, int &len);
 };
 
 class BlockIr : public BaseIr {
