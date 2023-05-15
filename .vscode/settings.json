@@ -84,7 +84,8 @@
     "__string": "cpp",
     "compare": "cpp",
     "concepts": "cpp",
-    "*.ipp": "cpp"
+    "*.ipp": "cpp",
+    "stdio.h": "c"
   },
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
