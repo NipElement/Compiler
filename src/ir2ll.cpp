@@ -21,6 +21,9 @@ void RootIr::printLL() {
   for (int i = funcs.size() - 1; i >= 0; i--) {
     funcs[i]->printLL();
   }
+  cout << "declare i32 @scanf(i8 * noundef, ...) #1" << endl;
+
+  cout << "declare i32 @printf(i8 * noundef, ...) #1" << endl;
 }
 
 void BlockIr::printLL() {
@@ -42,9 +45,9 @@ void VarDeclIr::printLL() {
 
 void FuncDefIr::printLL() {
   std::cout << "define ";
-  if (type == 0) {
+  if (ret_type == VariableType(Int)) {
     std::cout << "i32 ";
-  } else {
+  } else if (ret_type == VariableType(Void)) {
     std::cout << "void ";
   }
   std::cout << "@" << name << "(";
@@ -586,7 +589,7 @@ void RetIr::printLL() {
     cout << "  ret void" << endl;
   } else {
     if (ret_value->exp_type == ExpType(Const)) {
-      cout << "  ret " << dynamic_cast<ConstExp *>(ret_value.get())->value << endl;
+      cout << "  ret i32 " << dynamic_cast<ConstExp *>(ret_value.get())->value << endl;
     } else {
       ret_value->printLL();
 
