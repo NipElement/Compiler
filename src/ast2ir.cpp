@@ -21,7 +21,8 @@ BaseIr *StartRoot::buildIrTree() {
   auto ir_root = new RootIr();
   // ir_root->id = ir_id++;
   auto p = dynamic_cast<CompUnitAST *>(comp_unit_ast.get());
-
+  func_rettype_table.insert(std::pair<std::string, VariableType>(std::string("printf"), VariableType(Int)));
+  func_rettype_table.insert(std::pair<std::string, VariableType>(std::string("scanf"), VariableType(Int)));
   while (p) {
     // here I assume p has only funcdef, be careful !
     ir_root->funcs.push_back(std::unique_ptr<BaseIr>((p->func_def_ast.get())->buildIrTree()));

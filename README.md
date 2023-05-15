@@ -29,4 +29,9 @@ generate *.ll to *.o file
 
 llc -filetype=obj main.ll -o main.o
 
+
+
+clang main.c -emit-llvm -S -c -o main.ll
+llvm-as main.ll
+lli main.ll
 ```

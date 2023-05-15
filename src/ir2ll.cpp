@@ -6,6 +6,17 @@ using namespace std;
 int attr_id = 0;
 void RootIr::printLL() {
   // omit some attributes
+  for (int i = 0; i < const_strings.size(); i++) {
+    cout << "@.str";
+    if (i != 0) {
+      cout << "." << i;
+    }
+    string string_type = "[" + to_string(const_strings[i].length() + 1) + " x i8]";
+    cout << " = private unnamed_addr constant " << string_type;
+    cout << " c";
+    cout << "\"" << const_strings[i] << "\\00"
+         << "\", align 1" << endl;
+  }
   for (int i = funcs.size() - 1; i >= 0; i--) {
     funcs[i]->printLL();
   }
