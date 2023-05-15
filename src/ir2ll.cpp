@@ -344,30 +344,46 @@ void MemExp::printLL() {
     // simple variable int, do nothing
   } else if (mem_type == VariableType(Array)) {
     // array element as left value: like a[exp]=..
-    exp->printLL();
-    // sext i32 %12 to i64
-    cout << "  %" << signext_id << " = sext i32 %" << exp->reg_id << " to i64" << endl;
-    // %10 = getelementptr inbounds [10 x i32], [10 x i32]* %3, i64 0, i64 %9
-    std::string array_type = "[" + to_string(size) + " x i32]";
+    if (exp->exp_type != ExpType(Const)) {  // a[exp]
+      exp->printLL();
+      // sext i32 %12 to i64
+      cout << "  %" << signext_id << " = sext i32 %" << exp->reg_id << " to i64" << endl;
+      // %10 = getelementptr inbounds [10 x i32], [10 x i32]* %3, i64 0, i64 %9
+      std::string array_type = "[" + to_string(size) + " x i32]";
 
-    cout << "  %" << ele_reg_id << " = getelementptr inbounds ";
-    cout << array_type << ", " << array_type << "*"
-         << " %" << reg_id << ", i64 0, i64 %" << signext_id << std::endl;
+      cout << "  %" << ele_reg_id << " = getelementptr inbounds ";
+      cout << array_type << ", " << array_type << "*"
+           << " %" << reg_id << ", i64 0, i64 %" << signext_id << std::endl;
+    } else {  // const exp a[1]
+      std::string array_type = "[" + to_string(size) + " x i32]";
+      cout << "  %" << ele_reg_id << " = getelementptr inbounds ";
+      cout << array_type << ", " << array_type << "*"
+           << " %" << reg_id << ", i64 0, i64 %" << dynamic_cast<ConstExp *>(exp.get())->value << std::endl;
+    }
   } else if (mem_type == VariableType(Pointer)) {
-    std::string pointer_type = "i32*";
-    std::string pointed_type = "i32";
-    // load pointer value from memory
-    cout << "  %" << pointer_value_reg_id << " = load " << pointer_type << ", " << pointer_type << "*"
-         << " %" << reg_id << ", align 8" << endl;
-    // pointer with [] as left value, compute the exp
-    exp->printLL();
-    //%9 = sext i32 %8 to i64
-    cout << "  %" << signext_id << " = sext i32 %" << exp->reg_id << " to i64" << endl;
-    // %8 = getelementptr inbounds i32, i32* %7, i64 1
+    if (exp->exp_type != ExpType(Const)) {  // a[exp]
+      std::string pointer_type = "i32*";
+      std::string pointed_type = "i32";
+      // load pointer value from memory
+      cout << "  %" << pointer_value_reg_id << " = load " << pointer_type << ", " << pointer_type << "*"
+           << " %" << reg_id << ", align 8" << endl;
+      // pointer with [] as left value, compute the exp
+      exp->printLL();
+      //%9 = sext i32 %8 to i64
+      cout << "  %" << signext_id << " = sext i32 %" << exp->reg_id << " to i64" << endl;
+      // %8 = getelementptr inbounds i32, i32* %7, i64 1
 
-    cout << "  %" << ele_reg_id << " = getelementptr inbounds " << pointed_type << ", " << pointer_type << "%"
-         << pointer_value_reg_id << ", "
-         << "i64 %" << signext_id << endl;
+      cout << "  %" << ele_reg_id << " = getelementptr inbounds " << pointed_type << ", " << pointer_type << "%"
+           << pointer_value_reg_id << ", "
+           << "i64 %" << signext_id << endl;
+    } else {  // const exp a[1]
+      std::string pointer_type = "i32*";
+      std::string pointed_type = "i32";
+
+      cout << "  %" << ele_reg_id << " = getelementptr inbounds " << pointed_type << ", " << pointer_type << "%"
+           << pointer_value_reg_id << ", "
+           << "i64 %" << dynamic_cast<ConstExp *>(exp.get())->value << endl;
+    }
   }
 }
 
