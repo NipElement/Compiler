@@ -411,7 +411,7 @@ void MemExp::printLL() {
 
       cout << "  %" << reg_id << " = getelementptr inbounds " << pointed_type << ", " << pointer_type << "%"
            << pointer_value_reg_id << ", "
-           << "i64 %" << dynamic_cast<ConstExp *>(exp.get())->value << endl;
+           << "i64 " << dynamic_cast<ConstExp *>(exp.get())->value << endl;
     }
   }
 }
@@ -562,7 +562,7 @@ void CallExp::printLL() {
         cout << "i32* "
              << "%" << params[i]->reg_id;
       } else {
-        cout << "i32* "
+        cout << "i32 "
              << "%" << params[i]->reg_id;
       }
     }

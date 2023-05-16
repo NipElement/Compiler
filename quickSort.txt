@@ -36,10 +36,14 @@ void quick_sort_recursive(int arr[], int start, int end) {
     int right;
     right = end - 1;
     while (left < right) {
-        while (arr[left] < mid && left < right)
+        while (arr[left] < mid && left < right){
             left = left+1;
-        while (arr[right] >= mid && left < right)
-            right = right-1;
+        }
+           
+        while (arr[right] >= mid && left < right){
+             right = right-1;
+        }
+           
         swap(arr+left, arr+right);
     }
     if (arr[left] >= arr[end])
