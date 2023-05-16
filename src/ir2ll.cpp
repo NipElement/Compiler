@@ -557,9 +557,14 @@ void CallExp::printLL() {
       }
     } else if (params[i]->exp_type == ExpType(Mem)) {  // passing like &a
       assert(0);
-    } else {  // like binop and other exp
-      cout << "i32 "
-           << "%" << params[i]->reg_id;
+    } else if (params[i]->exp_type == ExpType(Binop)) {  // like binop and other exp
+      if (params[i]->res_type == VariableType(Pointer)) {
+        cout << "i32* "
+             << "%" << params[i]->reg_id;
+      } else {
+        cout << "i32* "
+             << "%" << params[i]->reg_id;
+      }
     }
   }
 

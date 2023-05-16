@@ -675,6 +675,11 @@ BaseIr *AddExpAST::buildIrTree() {
     if ((binop->exp1->res_type == VariableType(Pointer)) && (binop->exp2->exp_type != Const)) {
       // used for sext the exp2
       binop->ptr_temp_reg = reg++;
+      // jsc
+      binop->res_type = VariableType(Pointer);
+    } else {
+      // jsc
+      binop->res_type = VariableType(Int);
     }
     binop->reg_id = reg++;
 
