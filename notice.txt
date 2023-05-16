@@ -45,3 +45,5 @@ parser.y  MulExp模块
 ast.hpp 54
 
 加一个res_type for all expir
+
+如果temp->res_type==Varaible(Pointer),说明是指针，如果temp->res_type==Varaible(Int),为普通变量 temp->reg_id就是对应的的寄存器。

@@ -442,7 +442,9 @@ BaseIr *LValAST::buildIrTree() {
 
     mem->exp = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp->buildIrTree()));
     // after computing expression, extend the expression result
-    mem->signext_id = reg++;
+    if (mem->exp->exp_type != ExpType(Const)) {
+      mem->signext_id = reg++;
+    }
 
     mem->array_reg_id = table.find(*ident)->second;
 

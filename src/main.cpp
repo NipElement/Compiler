@@ -32,7 +32,7 @@ int main(int argc, const char *argv[]) {
   // ast->printTree();
 
   auto ir_root = ast->buildIrTree();
-  // ir_root->printTree();
+  ir_root->printTree();
   ir_root->printLL();
   // std::cout << "hello" << std::endl;
   return 0;
