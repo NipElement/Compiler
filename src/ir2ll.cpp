@@ -119,20 +119,30 @@ void BinopExp::printLL() {
   constFlag = (exp1->exp_type == Const) + (exp2->exp_type == Const);
 
   if (op == Add) {
-    if (constFlag == 0) {
-      cout << "  %" << reg_id << " = "
-           << "add nsw i32 "
-           << "%" << exp1->reg_id << ", %" << exp2->reg_id << endl;
-    } else if (exp1->exp_type == Const) {
-      ConstExp *theConstExp = dynamic_cast<ConstExp *>(exp1.get());
-      // %reg_id = add nsw i32 theConstExp->value, %exp2->reg_id
-      cout << "  %" << reg_id << " = "
-           << "add nsw i32 " << theConstExp->value << ", %" << exp2->reg_id << endl;
-    } else if (exp2->exp_type == Const) {
-      ConstExp *theConstExp = dynamic_cast<ConstExp *>(exp2.get());
-      // %reg_id = add nsw i32 theConstExp->value, %exp1->reg_id
-      cout << "  %" << reg_id << " = "
-           << "add nsw i32 " << theConstExp->value << ", %" << exp1->reg_id << endl;
+    if ((exp1->res_type == VariableType(Pointer)) && (exp2->exp_type != Const)) {
+      /*
+      %ptr_temp_reg = sext i32 %exp2->reg_id to i64
+      %67 = getelementptr inbounds i32, ptr %64, i64 %66
+      */
+      cout << "  %" << ptr_temp_reg << " = sext i32 %" << exp2->reg_id << " to i64" << endl;
+      cout << "  %" << reg_id << " = getelementptr inbounds i32, ptr %" << exp1->reg_id << ", i64 %" << ptr_temp_reg
+           << endl;
+    } else {
+      if (constFlag == 0) {
+        cout << "  %" << reg_id << " = "
+             << "add nsw i32 "
+             << "%" << exp1->reg_id << ", %" << exp2->reg_id << endl;
+      } else if (exp1->exp_type == Const) {
+        ConstExp *theConstExp = dynamic_cast<ConstExp *>(exp1.get());
+        // %reg_id = add nsw i32 theConstExp->value, %exp2->reg_id
+        cout << "  %" << reg_id << " = "
+             << "add nsw i32 " << theConstExp->value << ", %" << exp2->reg_id << endl;
+      } else if (exp2->exp_type == Const) {
+        ConstExp *theConstExp = dynamic_cast<ConstExp *>(exp2.get());
+        // %reg_id = add nsw i32 theConstExp->value, %exp1->reg_id
+        cout << "  %" << reg_id << " = "
+             << "add nsw i32 " << theConstExp->value << ", %" << exp1->reg_id << endl;
+      }
     }
 
   } else if (op == Minus) {

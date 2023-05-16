@@ -670,7 +670,12 @@ BaseIr *AddExpAST::buildIrTree() {
 
     binop->op = BinOpType(Add);
     binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(add_exp_ast->buildIrTree()));
+
     binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(mul_exp_ast->buildIrTree()));
+    if ((binop->exp1->res_type == VariableType(Pointer)) && (binop->exp2->exp_type != Const)) {
+      // used for sext the exp2
+      binop->ptr_temp_reg = reg++;
+    }
     binop->reg_id = reg++;
 
     return binop;

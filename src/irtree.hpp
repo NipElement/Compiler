@@ -138,13 +138,19 @@ enum BinOpType {
   Ne,
 };
 
+/*
+  Add,
+  Minus,
+  Mul,
+  Divide,
+*/
 class BinopExp : public ExpIr {
  public:
   BinopExp() { exp_type = ExpType(Binop); }
   BinOpType op;
 
   // jsa
-  // int bool_result_reg;
+  int ptr_temp_reg;
 
   std::unique_ptr<ExpIr> exp1;
   std::unique_ptr<ExpIr> exp2;
@@ -152,6 +158,14 @@ class BinopExp : public ExpIr {
   virtual void printLL();
 };
 
+/*
+  Ge,
+  Le,
+  Gt,
+  Lt,
+  Eq,
+  Ne,
+*/
 class NorBoolBinopExp : public BinopExp {
  public:
   NorBoolBinopExp() { exp_type = ExpType(Binop); }
@@ -159,6 +173,11 @@ class NorBoolBinopExp : public BinopExp {
   virtual void printTree();
   virtual void printLL();
 };
+
+/*
+  Or,
+  And,
+*/
 
 class AndOrBinopExp : public NorBoolBinopExp {
  public:
