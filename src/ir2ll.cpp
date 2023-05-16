@@ -374,7 +374,7 @@ void MemExp::printLL() {
       std::string array_type = "[" + to_string(size) + " x i32]";
       cout << "  %" << reg_id << " = getelementptr inbounds ";
       cout << array_type << ", " << array_type << "*"
-           << " %" << array_reg_id << ", i64 0, i64 %" << dynamic_cast<ConstExp *>(exp.get())->value << std::endl;
+           << " %" << array_reg_id << ", i64 0, i64 " << dynamic_cast<ConstExp *>(exp.get())->value << std::endl;
     }
   } else if (mem_type == VariableType(Pointer)) {
     if (exp->exp_type != ExpType(Const)) {  // a[exp]
