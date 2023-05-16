@@ -369,6 +369,7 @@ std::vector<BaseIr *> StmtAST::buildIrNodes() {
 
     check_label->label = reg++;
     jump1->label = check_label->label;
+    all_label.push_back(check_label->label);
 
     auto cjump = new CjumpIr();
     ret_ir_vector.push_back(cjump);
