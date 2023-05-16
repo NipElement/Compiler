@@ -186,10 +186,11 @@ class MemExp : public ExpIr {
   //  = sext i32 %(exp->id) to i64
   int signext_id;
   std::unique_ptr<ExpIr> exp;
-  // ele_reg_id is the address of the lval of element in an array
-  int ele_reg_id;
+  // array_reg_id is the address of the first element
+  int array_reg_id;
   // size is the array size
   int size;
+
   virtual void printTree();
   virtual void printLL();
 };

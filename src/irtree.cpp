@@ -124,16 +124,16 @@ void MemExp::printTree() {
   std::cout << "\\n";
   if (exp) {                                // array or pointer
     if (mem_type == VariableType(Array)) {  // array
-      std::cout << "array=$" << reg_id;
-      std::cout << "\\n element=$" << ele_reg_id;
+      std::cout << "array=$" << array_reg_id;
+      std::cout << "\\n element=$" << reg_id;
       std::cout << "\\n signext=$" << signext_id;
       std::cout << "\"];" << std::endl;
       exp->printTree();
       std::cout << "SYNTAX_NODE_" << id << "  ->  "
                 << "SYNTAX_NODE_" << exp->id << ";" << std::endl;
     } else if (mem_type == VariableType(Pointer)) {
-      std::cout << "array=$" << reg_id;
-      std::cout << "\\n element=$" << ele_reg_id;
+      std::cout << "array=$" << array_reg_id;
+      std::cout << "\\n element=$" << reg_id;
       std::cout << "\\n signext=$" << signext_id;
       std::cout << "\\n pointer_value_reg_id=" << pointer_value_reg_id;
       std::cout << "\"];" << std::endl;

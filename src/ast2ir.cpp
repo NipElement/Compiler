@@ -444,10 +444,10 @@ BaseIr *LValAST::buildIrTree() {
     // after computing expression, extend the expression result
     mem->signext_id = reg++;
 
-    mem->reg_id = table.find(*ident)->second;
+    mem->array_reg_id = table.find(*ident)->second;
 
-    // after compute exp, we will getelementptr to get the address, store into ele_reg_id
-    mem->ele_reg_id = reg++;
+    // after compute exp, we will getelementptr to get the address, store into reg_id, that is a[exp]'s address.
+    mem->reg_id = reg++;
 
     if (mem->mem_type == VariableType(Array)) {
       // get the size of array
@@ -455,6 +455,7 @@ BaseIr *LValAST::buildIrTree() {
     }
   } else if (exp_list1_ast == nullptr) {  // array or pointer as function parameter passing
     mem->exp = nullptr;
+    // reg_id is the address of the array
     mem->reg_id = table.find(*ident)->second;
     if (mem->mem_type == VariableType(Array)) {
       // get the size of array
@@ -480,7 +481,7 @@ BaseIr *ExpAST::buildIrTree() {
       BaseIr::const_strings.push_back(const_str->str);
     }
     return const_str;
-  } else if (l_val) {
+  } else if (l_val) {  // for &a return a MemExp
     return l_val->buildIrTree();
   }
   return nullptr;
@@ -741,7 +742,16 @@ BaseIr *PrimaryExpAST::buildIrTree() {
     temp->mem = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_val_ast->buildIrTree()));
     temp->reg_id = reg++;
 
-    temp->res_type = dynamic_cast<MemExp *>(temp->mem.get())->mem_type;
+    auto mem_exp = dynamic_cast<MemExp *>(temp->mem.get());
+    assert(mem_exp != nullptr);
+
+    if (mem_exp->mem_type == VariableType(Int)) {  // simple int
+      temp->res_type = VariableType(Int);
+    } else if (mem_exp->exp != nullptr) {  // a[i]
+      temp->res_type = VariableType(Int);
+    } else {  // array a in function params passing
+      temp->res_type = VariableType(Pointer);
+    }
     return temp;
   } else if (number_ast) {
     return number_ast->buildIrTree();

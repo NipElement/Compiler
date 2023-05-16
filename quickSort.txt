@@ -1,9 +1,27 @@
+int main(){
+  int a[10];
+  int len;
+  int i;
+  i=0;
+  scanf("%d",&len);
+  while(i<len){
+    scanf("%d",&a[i]);
+    i=i+1;
+  }
+  quick_sort(a,len);
 
-void swap(int x[], int y[]) {
-    int t;
-    t = x[0];
-    x[0] = y[0];
-    y[0] = t;
+  i=0;
+  while(i<len){
+    printf("%d ",a[i]);
+  }
+  
+  printf("\n");
+  return 0;
+}
+
+
+void quick_sort(int arr[], int len) {
+    quick_sort_recursive(arr, 0, len - 1);
 }
 
 void quick_sort_recursive(int arr[], int start, int end) {
@@ -33,6 +51,10 @@ void quick_sort_recursive(int arr[], int start, int end) {
     quick_sort_recursive(arr, left + 1, end);
 }
 
-void quick_sort(int arr[], int len) {
-    quick_sort_recursive(arr, 0, len - 1);
+
+void swap(int x[], int y[]) {
+    int t;
+    t = x[0];
+    x[0] = y[0];
+    y[0] = t;
 }

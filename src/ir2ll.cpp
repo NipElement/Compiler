@@ -367,14 +367,14 @@ void MemExp::printLL() {
       // %10 = getelementptr inbounds [10 x i32], [10 x i32]* %3, i64 0, i64 %9
       std::string array_type = "[" + to_string(size) + " x i32]";
 
-      cout << "  %" << ele_reg_id << " = getelementptr inbounds ";
+      cout << "  %" << reg_id << " = getelementptr inbounds ";
       cout << array_type << ", " << array_type << "*"
-           << " %" << reg_id << ", i64 0, i64 %" << signext_id << std::endl;
+           << " %" << array_reg_id << ", i64 0, i64 %" << signext_id << std::endl;
     } else {  // const exp a[1]
       std::string array_type = "[" + to_string(size) + " x i32]";
-      cout << "  %" << ele_reg_id << " = getelementptr inbounds ";
+      cout << "  %" << reg_id << " = getelementptr inbounds ";
       cout << array_type << ", " << array_type << "*"
-           << " %" << reg_id << ", i64 0, i64 %" << dynamic_cast<ConstExp *>(exp.get())->value << std::endl;
+           << " %" << array_reg_id << ", i64 0, i64 %" << dynamic_cast<ConstExp *>(exp.get())->value << std::endl;
     }
   } else if (mem_type == VariableType(Pointer)) {
     if (exp->exp_type != ExpType(Const)) {  // a[exp]
@@ -382,21 +382,24 @@ void MemExp::printLL() {
       std::string pointed_type = "i32";
       // load pointer value from memory
       cout << "  %" << pointer_value_reg_id << " = load " << pointer_type << ", " << pointer_type << "*"
-           << " %" << reg_id << ", align 8" << endl;
+           << " %" << array_reg_id << ", align 8" << endl;
       // pointer with [] as left value, compute the exp
       exp->printLL();
       //%9 = sext i32 %8 to i64
       cout << "  %" << signext_id << " = sext i32 %" << exp->reg_id << " to i64" << endl;
       // %8 = getelementptr inbounds i32, i32* %7, i64 1
 
-      cout << "  %" << ele_reg_id << " = getelementptr inbounds " << pointed_type << ", " << pointer_type << "%"
+      cout << "  %" << reg_id << " = getelementptr inbounds " << pointed_type << ", " << pointer_type << "%"
            << pointer_value_reg_id << ", "
            << "i64 %" << signext_id << endl;
     } else {  // const exp a[1]
       std::string pointer_type = "i32*";
       std::string pointed_type = "i32";
+      // load pointer value from memory
+      cout << "  %" << pointer_value_reg_id << " = load " << pointer_type << ", " << pointer_type << "*"
+           << " %" << array_reg_id << ", align 8" << endl;
 
-      cout << "  %" << ele_reg_id << " = getelementptr inbounds " << pointed_type << ", " << pointer_type << "%"
+      cout << "  %" << reg_id << " = getelementptr inbounds " << pointed_type << ", " << pointer_type << "%"
            << pointer_value_reg_id << ", "
            << "i64 %" << dynamic_cast<ConstExp *>(exp.get())->value << endl;
     }
@@ -408,21 +411,16 @@ void TempExp::printLL() {
   mem->printLL();
 
   auto mem_exp = dynamic_cast<MemExp *>(mem.get());
-  if (mem_exp->mem_type == VariableType(Int) || mem_exp->exp != nullptr) {
-    // for right value
-    if (mem_exp && mem_exp->exp != nullptr) {  // array element or pointer [] element
-      cout << "  %" << reg_id << " = load i32, i32* %" << mem_exp->ele_reg_id << ", align 4" << endl;
-    } else {
-      // %10 = load i32, i32* %6, align 4
-      cout << "  %" << reg_id << " = load i32, i32* %" << mem->reg_id << ", align 4" << endl;
-    }
+  if (res_type == VariableType(Int)) {  // for simple int or a[i]..
+    // %10 = load i32, i32* %6, align 4
+    cout << "  %" << reg_id << " = load i32, i32* %" << mem->reg_id << ", align 4" << endl;
   } else if (mem_exp->mem_type == VariableType(Array)) {  // array as function parameter passing
     //%10 = getelementptr inbounds [10 x i32], [10 x i32]* %7, i64 0, i64 0
     string array_type = "[" + to_string(mem_exp->size) + " x i32]";
     cout << "  %" << reg_id << " = "
          << "getelementptr inbounds ";
     cout << array_type << ", " << array_type << "* "
-         << "%" << mem_exp->reg_id << ", i64 0, i64 0" << endl;
+         << "%" << mem->reg_id << ", i64 0, i64 0" << endl;
   } else if (mem_exp->mem_type == VariableType(Pointer)) {  // pointer as function parameter passing
     // %8 = load i32*, i32** %3, align 8
     cout << "  %" << reg_id << " = "
@@ -464,19 +462,19 @@ void CallExp::printLL() {
       // we always assume that the paras in printf is Temp
       // here we implement both
       if (params[i]->exp_type == ExpType(Temp)) {
+        if (dynamic_cast<TempExp *>(params[i].get())->res_type ==
+            VariableType(Pointer)) {  // passing to printf like array, which is not permitted
+          assert(0);
+        } else {
+          cout << "i32 "
+               << "%" << params[i]->reg_id;
+        }
+      } else if (params[i]->exp_type == ExpType(Mem)) {  // like printf("%d",&a) or printf("%d",&a[1])
+        cout << "i32* "
+             << "%" << params[i]->reg_id;
+      } else {  // any other exp like binop,
         cout << "i32 "
              << "%" << params[i]->reg_id;
-      } else if (params[i]->exp_type == ExpType(Mem)) {
-        auto mem = dynamic_cast<MemExp *>(params[i].get());
-        if (mem->mem_type == VariableType(Int)) {  // like printf("%d",&a);
-          cout << "i32* "
-               << "%" << mem->reg_id;
-        } else {  // like printf("%d",&a[i]);
-          cout << "i32* "
-               << "%" << mem->ele_reg_id;
-        }
-      } else {
-        assert(0);
       }
     }
     cout << ")" << endl;
@@ -506,13 +504,9 @@ void CallExp::printLL() {
     for (int i = 1; i < params.size(); i++) {
       cout << ", ";
       auto mem = dynamic_cast<MemExp *>(params[i].get());
-      if (mem->mem_type == VariableType(Int)) {  // like &a
-        cout << "i32* noundef "
-             << "%" << mem->reg_id;
-      } else if (mem->mem_type == VariableType(Array)) {  // like &a[1]
-        cout << "i32* noundef "
-             << "%" << mem->ele_reg_id;
-      }
+      // like &a or &a[1]
+      cout << "i32* noundef "
+           << "%" << mem->reg_id;
     }
     cout << ")" << endl;
     return;
@@ -553,7 +547,7 @@ void CallExp::printLL() {
       }
     } else if (params[i]->exp_type == ExpType(Mem)) {  // passing like &a
       assert(0);
-    } else {  // like binop
+    } else {  // like binop and other exp
       cout << "i32 "
            << "%" << params[i]->reg_id;
     }
@@ -569,23 +563,12 @@ void MoveIr::printLL() {
   }
   // Mem
   exp1->printLL();
-  if (exp2->exp_type == ExpType(Const)) {
-    if (dynamic_cast<MemExp *>(exp1.get())->mem_type == VariableType(Int)) {  // simple variable int
-      cout << "  store i32 " << dynamic_cast<ConstExp *>(exp2.get())->value << ", i32* %" << exp1->reg_id << ", align 4"
-           << endl;
-    } else {  // array or pointer
-      cout << "  store i32 " << dynamic_cast<ConstExp *>(exp2.get())->value << ", i32* %"
-           << dynamic_cast<MemExp *>(exp1.get())->ele_reg_id << ", align 4 " << endl;
-    }
+  if (exp2->exp_type == ExpType(Const)) {  // a or a[i]
+    cout << "  store i32 " << dynamic_cast<ConstExp *>(exp2.get())->value << ", i32* %" << exp1->reg_id << ", align 4"
+         << endl;
     return;
-  }
-
-  // store i32 %exp2->reg_id, i32* %exp1->reg_id, align 4
-  if (dynamic_cast<MemExp *>(exp1.get())->mem_type == VariableType(Int)) {  // simple variable int
+  } else {
     cout << "  store i32 %" << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
-  } else {  // array or pointer
-    cout << "  store i32 %" << exp2->reg_id << ", i32* %" << dynamic_cast<MemExp *>(exp1.get())->ele_reg_id
-         << ", align 4 " << endl;
   }
 }
 
