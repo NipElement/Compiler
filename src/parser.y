@@ -222,7 +222,7 @@ FuncDef
   }
   | INT IDENT '(' FuncFParams ')' Block {
     auto ast = new FuncDefAST();
-    ast->type = 1;
+    ast->type = 0;
     ast->ident = $2;
     ast->func_fparams_ast = unique_ptr<BaseAST>($4);
     ast->block_ast = unique_ptr<BaseAST>($6);
