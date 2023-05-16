@@ -399,6 +399,15 @@ std::vector<BaseIr *> StmtAST::buildIrNodes() {
     cjump->f = done_label->label;
     all_label.push_back(cjump->f);
     return ret_ir_vector;
+  } else if (stmt_rule == 9) {  // return;
+    std::vector<BaseIr *> ret_ir_vector;
+    auto ret = new RetIr();
+
+    ret->ret_value = nullptr;
+
+    ret_ir_vector.push_back(ret);
+
+    return ret_ir_vector;
   } else if (stmt_rule == 10) {  // return exp
     std::vector<BaseIr *> ret_ir_vector;
     auto ret = new RetIr();

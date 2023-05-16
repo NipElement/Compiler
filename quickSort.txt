@@ -27,33 +27,38 @@ void quick_sort(int arr[], int len) {
 
 void quick_sort_recursive(int arr[], int start, int end) {
     if (start >= end){
-        return;
-    }
-    int mid;
-    mid = arr[end];
-    int left;
-    left = start;
-    int right;
-    right = end - 1;
-    while (left < right) {
-        while (arr[left] < mid && left < right){
-            left = left+1;
+        
+    }else{
+        int mid;
+        mid = arr[end];
+        int left;
+        left = start;
+        int right;
+        right = end - 1;
+        while (left < right) {
+            while (arr[left] < mid && left < right){
+                left = left+1;
+            }
+
+            while (arr[right] >= mid && left < right){
+                 right = right-1;
+            }
+
+            swap(arr+left, arr+right);
         }
-           
-        while (arr[right] >= mid && left < right){
-             right = right-1;
+        if (arr[left] >= arr[end]){
+          swap(arr+left, arr+end);
         }
-           
-        swap(arr+left, arr+right);
+        else{
+          left = left + 1;
+        }
+            left = left + 1;
+        if (left) {
+            quick_sort_recursive(arr, start, left - 1);
+        }
+        quick_sort_recursive(arr, left + 1, end);
     }
-    if (arr[left] >= arr[end])
-        swap(arr+left, arr+end);
-    else
-        left = left + 1;
-    if (left) {
-        quick_sort_recursive(arr, start, left - 1);
-    }
-    quick_sort_recursive(arr, left + 1, end);
+    
 }
 
 
