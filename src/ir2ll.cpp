@@ -625,7 +625,7 @@ void RetIr::printLL() {
       ret_value->printLL();
 
       // we always assume return a temp: that is no expression like "return &a"..
-      cout << "  ret %" << ret_value->reg_id << endl;
+      cout << "  ret i32 %" << ret_value->reg_id << endl;
     }
   }
 }
