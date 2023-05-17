@@ -1,0 +1,223 @@
+
+int main()
+{
+    int M1;
+    int N1;
+    int M2;
+    int N2;
+    int A[625];
+    int B[625];
+    int C[625];
+    int i;
+    int j;
+    int k;
+    int temp;
+    int sum;
+    int count;
+    int loop;
+
+    int tmp1;
+    int tmp2;
+
+    // 输入矩阵 A
+    scanf("%d %d", &M1, &N1);
+    i = 0;
+    loop = 0;
+    while (loop < M1)
+    {
+        j = 0;
+        while (j < N1)
+        {
+            scanf("%d", &A[i]);
+            i = i + 1;
+            j = j + 1;
+        }
+        loop = loop + 1;
+    }
+
+    // 输入矩阵 B
+    scanf("%d %d", &M2, &N2);
+    i = 0;
+    loop = 0;
+    while (loop < M2)
+    {
+        j = 0;
+        while (j < N2)
+        {
+            scanf("%d", &B[i]);
+            i = i + 1;
+            j = j + 1;
+        }
+        loop = loop + 1;
+    }
+    if (N1 != M2)
+    {
+        printf("Incompatible Dimensions\n");
+    }
+    else
+    {
+        // 计算矩阵乘法
+        i = 0;
+        loop = 0;
+        while (loop < M1)
+        {
+            j = 0;
+            while (j < N2)
+            {
+                sum = 0;
+                k = 0;
+                while (k < N1)
+                {
+                    // 实现乘法
+                    temp = 0;
+                    count = 0;
+
+                    tmp1 = multiple(loop, N1);
+                    tmp2 = multiple(k, N2);
+                    //printf("a=%d b=%d\n",A[tmp1 + k], B[tmp2 + j]);
+                    temp = multiple(A[tmp1 + k], B[tmp2 + j]);
+                    //printf("temp=%d\n",temp);
+                    sum = sum + temp;
+                    k = k + 1;
+                }
+
+                tmp1 = multiple(loop, N2);
+                C[tmp1 + j] = sum;
+                j = j + 1;
+            }
+            loop = loop + 1;
+        }
+
+        // 输出结果
+        i = 0;
+        loop = 0;
+        while (loop < M1)
+        {
+            j = 0;
+            while (j < N2)
+            {
+                tmp1 = multiple(loop, N2);
+                printf("%10d", C[tmp1 + j]);
+                j = j + 1;
+            }
+            printf("\n");
+            loop = loop + 1;
+        }
+    }
+
+    return 0;
+}
+
+int multiple(int a, int b)
+{
+    int sign;
+    int retVal;
+    retVal = 0;
+    if (a > 0)
+    {
+        if (b > 0)
+        {
+            sign = 1;
+        }else{}
+
+
+        if (b == 0)
+        {
+            sign = 0;
+            retVal = 0;
+        }else{}
+
+        if (b < 0)
+        {
+            sign = 0;
+            sign=sign-1;
+        }else{
+          
+        }
+    }else{
+          
+    }
+    if (a == 0)
+    {
+        sign = 0;
+        retVal = 0;
+    }
+    else{
+          
+    }
+
+    if (a < 0)
+    {
+        if (b > 0)
+        {
+            sign = 0;
+            sign=sign-1;
+            //printf("a=%d,b=%d,sign=%d",a,b,sign);
+        }else{
+          
+        }
+
+        if (b == 0)
+        {
+            sign = 0;
+            retVal = 0;
+        }else{
+          
+        }
+        if (b < 0)
+        {
+            sign = 1;
+        }else{
+          
+        }
+    }else{
+          
+    }
+
+    if (a < 0)
+    {
+        a = 0 - a;
+    }else{
+          
+    }
+    if (b < 0)
+    {
+        b = 0 - b;
+    }else{
+          
+    }
+
+    if (sign == 1)
+    {
+        int i;
+        i = 0;
+        while (i < b)
+        {
+            retVal = retVal + a;
+            i = i + 1;
+        }
+    }
+    else{
+
+    }
+
+    int ne;
+    ne=0;
+    ne=ne-1;
+    if(sign==ne)
+    {
+        int j;
+        j = 0;
+        while (j < b)
+        {
+            retVal = retVal - a;
+            j = j + 1;
+        }
+    }else{
+
+    }
+
+
+
+    return retVal;
+}

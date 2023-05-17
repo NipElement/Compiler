@@ -54,7 +54,7 @@ void quick_sort_recursive(int arr[], int start, int end) {
         }
         if (left) {
             quick_sort_recursive(arr, start, left - 1);
-        }
+        }else{}
         quick_sort_recursive(arr, left + 1, end);
     }
     
