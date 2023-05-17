@@ -630,17 +630,39 @@ ExpList2
 
 MulExp
   : UnaryExp {
-    $$ = $1;
+    auto ast = new MulExpAST();
+    ast->mul_exp_rule = 0;
+    ast->mul_exp_ast = nullptr;
+    ast->unary_exp_ast = unique_ptr<BaseAST>($1);
+    ast->id = id++;
+    $$ = ast;
   }
   | MulExp '*' UnaryExp{
-    
+    auto ast = new MulExpAST();
+    ast->mul_exp_rule = 1;
+    ast->mul_exp_ast = unique_ptr<BaseAST>($1);
+    ast->unary_exp_ast = unique_ptr<BaseAST>($3);
 
+    ast->id = id++;
+    $$ = ast;
   }
   | MulExp '/' UnaryExp{
+    auto ast = new MulExpAST();
+    ast->mul_exp_rule = 2;
+    ast->mul_exp_ast = unique_ptr<BaseAST>($1);
+    ast->unary_exp_ast = unique_ptr<BaseAST>($3);
 
+    ast->id = id++;
+    $$ = ast;
   }
   | MulExp '%' UnaryExp{
-    
+    auto ast = new MulExpAST();
+    ast->mul_exp_rule = 3;
+    ast->mul_exp_ast = unique_ptr<BaseAST>($1);
+    ast->unary_exp_ast = unique_ptr<BaseAST>($3);
+
+    ast->id = id++;
+    $$ = ast;
   }
   ;
 

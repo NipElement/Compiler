@@ -708,6 +708,42 @@ BaseIr *AddExpAST::buildIrTree() {
   }
 }
 
+/*
+  mul_exp_rule = 0 : UnaryExp
+  mul_exp_rule = 1 : MulExp '*' UnaryExp
+  mul_exp_rule = 2 : MulExp '/' UnaryExp
+  mul_exp_rule = 3 : MulExp '%' UnaryExp
+*/
+BaseIr *MulExpAST ::buildIrTree() {
+  if (mul_exp_rule == 0) {
+    return unary_exp_ast->buildIrTree();
+  } else if (mul_exp_rule == 1) {
+    auto binop = new BinopExp();
+    // binop->id = ir_id++;
+    // binop->type = IrType(Exp);
+
+    binop->op = BinOpType(Mul);
+    binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(mul_exp_ast->buildIrTree()));
+    binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(unary_exp_ast->buildIrTree()));
+
+    binop->res_type = VariableType(Int);
+    binop->reg_id = reg++;
+    return binop;
+  } else if (mul_exp_rule == 2) {
+    auto binop = new BinopExp();
+    // binop->id = ir_id++;
+    // binop->type = IrType(Exp);
+
+    binop->op = BinOpType(Divide);
+    binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(mul_exp_ast->buildIrTree()));
+    binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(unary_exp_ast->buildIrTree()));
+
+    binop->res_type = VariableType(Int);
+    binop->reg_id = reg++;
+    return binop;
+  }
+}
+
 BaseIr *UnaryExpAST::buildIrTree() {
   if (primary_exp_ast != nullptr) {
     return primary_exp_ast->buildIrTree();
