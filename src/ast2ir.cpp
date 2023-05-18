@@ -508,7 +508,8 @@ int ExpAST::getExpNum() {
   auto rel_exp = dynamic_cast<RelExpAST *>(eq_exp->rel_exp_ast.get());
   auto add_exp = dynamic_cast<AddExpAST *>(rel_exp->add_exp_ast.get());
   // here is unary, not mul: look MulExp in parser.y
-  auto unary_exp = dynamic_cast<UnaryExpAST *>(add_exp->mul_exp_ast.get());
+  auto mul_exp = dynamic_cast<MulExpAST *>(add_exp->mul_exp_ast.get());
+  auto unary_exp = dynamic_cast<UnaryExpAST *>(mul_exp->unary_exp_ast.get());
   auto primary_exp = dynamic_cast<PrimaryExpAST *>(unary_exp->primary_exp_ast.get());
   auto number = dynamic_cast<NumberAST *>(primary_exp->number_ast.get());
 
