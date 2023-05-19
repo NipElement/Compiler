@@ -264,12 +264,30 @@ class ExpList2AST : public BaseAST {
 class AddExpAST : public BaseAST {
  public:
   int add_exp_rule;
-  std::unique_ptr<BaseAST> mul_exp_ast;
   std::unique_ptr<BaseAST> add_exp_ast;
+  std::unique_ptr<BaseAST> mul_exp_ast;
   virtual BaseIr *buildIrTree();
   virtual void printTree() override;
   virtual ~AddExpAST() override {}
 };
+
+/*
+  mul_exp_rule = 0 : UnaryExp
+  mul_exp_rule = 1 : MulExp '*' UnaryExp
+  mul_exp_rule = 2 : MulExp '/' UnaryExp
+  mul_exp_rule = 3 : MulExp '%' UnaryExp
+*/
+
+class MulExpAST : public BaseAST {
+ public:
+  int mul_exp_rule;
+  std::unique_ptr<BaseAST> mul_exp_ast;
+  std::unique_ptr<BaseAST> unary_exp_ast;
+  virtual BaseIr *buildIrTree();
+  virtual void printTree() override;
+  virtual ~MulExpAST() override {}
+};
+
 /*
   rel_exp_rule = 0 : AddExp
   rel_exp_rule = 1 : RelExp LT AddExp

@@ -438,6 +438,25 @@ void AddExpAST::printTree() {
   }
 }
 
+void MulExpAST::printTree() {
+  std::cout << "SYNTAX_NODE_" << id << "[label=\"";
+  std::cout << "MulExpAST\\nid=" << id;
+  std::cout << "\\mul_exp_rule=" << mul_exp_rule;
+  std::cout << "\"];" << std::endl;
+
+  if (mul_exp_ast) {
+    mul_exp_ast->printTree();
+    std::cout << "SYNTAX_NODE_" << id << "  ->  "
+              << "SYNTAX_NODE_" << mul_exp_ast->id << ";" << std::endl;
+  }
+
+  if (unary_exp_ast) {
+    unary_exp_ast->printTree();
+    std::cout << "SYNTAX_NODE_" << id << "  ->  "
+              << "SYNTAX_NODE_" << unary_exp_ast->id << ";" << std::endl;
+  }
+}
+
 void RelExpAST::printTree() {
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";
   std::cout << "RelExpAST\\nid=" << id;

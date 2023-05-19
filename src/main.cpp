@@ -29,7 +29,7 @@ int main(int argc, const char *argv[]) {
 
   // 输出解析得到的 AST, 其实就是个字符串
   // cout << *ast << endl;
-  // ast->printTree();
+  ast->printTree();
 
   auto ir_root = ast->buildIrTree();
   // ir_root->printTree();

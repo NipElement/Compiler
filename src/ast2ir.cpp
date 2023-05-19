@@ -508,7 +508,8 @@ int ExpAST::getExpNum() {
   auto rel_exp = dynamic_cast<RelExpAST *>(eq_exp->rel_exp_ast.get());
   auto add_exp = dynamic_cast<AddExpAST *>(rel_exp->add_exp_ast.get());
   // here is unary, not mul: look MulExp in parser.y
-  auto unary_exp = dynamic_cast<UnaryExpAST *>(add_exp->mul_exp_ast.get());
+  auto mul_exp = dynamic_cast<MulExpAST *>(add_exp->mul_exp_ast.get());
+  auto unary_exp = dynamic_cast<UnaryExpAST *>(mul_exp->unary_exp_ast.get());
   auto primary_exp = dynamic_cast<PrimaryExpAST *>(unary_exp->primary_exp_ast.get());
   auto number = dynamic_cast<NumberAST *>(primary_exp->number_ast.get());
 
@@ -704,6 +705,42 @@ BaseIr *AddExpAST::buildIrTree() {
     binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(mul_exp_ast->buildIrTree()));
     binop->reg_id = reg++;
 
+    return binop;
+  }
+}
+
+/*
+  mul_exp_rule = 0 : UnaryExp
+  mul_exp_rule = 1 : MulExp '*' UnaryExp
+  mul_exp_rule = 2 : MulExp '/' UnaryExp
+  mul_exp_rule = 3 : MulExp '%' UnaryExp
+*/
+BaseIr *MulExpAST ::buildIrTree() {
+  if (mul_exp_rule == 0) {
+    return unary_exp_ast->buildIrTree();
+  } else if (mul_exp_rule == 1) {
+    auto binop = new BinopExp();
+    // binop->id = ir_id++;
+    // binop->type = IrType(Exp);
+
+    binop->op = BinOpType(Mul);
+    binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(mul_exp_ast->buildIrTree()));
+    binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(unary_exp_ast->buildIrTree()));
+
+    binop->res_type = VariableType(Int);
+    binop->reg_id = reg++;
+    return binop;
+  } else if (mul_exp_rule == 2) {
+    auto binop = new BinopExp();
+    // binop->id = ir_id++;
+    // binop->type = IrType(Exp);
+
+    binop->op = BinOpType(Divide);
+    binop->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(mul_exp_ast->buildIrTree()));
+    binop->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(unary_exp_ast->buildIrTree()));
+
+    binop->res_type = VariableType(Int);
+    binop->reg_id = reg++;
     return binop;
   }
 }
