@@ -1,0 +1,809 @@
+commit b8a15f36ab4e5315c1224e736dfdf2f2209527a2
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 22 23:38:39 2023 +0800
+
+    bao'gaobaogao
+
+commit f9e11ed51635c4b88324bbab5bce0a3ddd27c56e
+Author: NipElement <649443308@qq.com>
+Date:   Fri May 19 15:05:33 2023 +0800
+
+    Update README.md
+
+commit 666967480831f4ddc95eea4a9516357ec9359b80
+Author: NipElement <649443308@qq.com>
+Date:   Fri May 19 14:52:49 2023 +0800
+
+    报告第二版
+
+commit 0aff1ec32d380479f6166985e39878e5eb6fa333
+Author: NipElement <649443308@qq.com>
+Date:   Fri May 19 14:20:32 2023 +0800
+
+    Update 报告.md
+
+commit 801b109fb0ff1fd1965353b28e837603b5aea7bc
+Author: NipElement <649443308@qq.com>
+Date:   Fri May 19 14:06:56 2023 +0800
+
+    第一版报告
+    
+    不明确部分用？打出
+
+commit b98c7669c5eea6db6e883dc9c2c47d9ced6de4c2
+Merge: 5bb2e67 7262799
+Author: NipElement <649443308@qq.com>
+Date:   Fri May 19 10:27:41 2023 +0800
+
+    Merge branch 'main' of https://github.com/NipElement/Compiler
+
+commit 5bb2e67c55ac0d124ed2ed13082f6ff17a3556a7
+Author: NipElement <649443308@qq.com>
+Date:   Fri May 19 10:26:44 2023 +0800
+
+    Create 报告.md
+
+commit 72627991ea505eb035d4f8fdd6db326f1f273f28
+Author: JSC1375 <565405659@qq.com>
+Date:   Thu May 18 12:42:15 2023 +0800
+
+    add mul
+
+commit f5036361dad8609c2e0536520e10bd51d5eed65f
+Merge: b1527c0 4da7c70
+Author: JSC1375 <565405659@qq.com>
+Date:   Wed May 17 09:08:53 2023 +0800
+
+    Merge branch 'main' of https://github.com/NipElement/Compiler
+
+commit b1527c08df3913c9704c7e8058a38596a3ccc59f
+Author: JSC1375 <565405659@qq.com>
+Date:   Wed May 17 09:08:34 2023 +0800
+
+    add source code for matrix and quicksort
+
+commit 4da7c7060d5e9071f88e3529a40bfa4db77f03fa
+Author: Clinxi <jsha0707@163.com>
+Date:   Tue May 16 22:14:44 2023 +0800
+
+    jsa
+
+commit f4517776ead6da2a605bdf97e6d31192f3f8c90d
+Author: JSC1375 <565405659@qq.com>
+Date:   Tue May 16 21:09:55 2023 +0800
+
+    return i32
+
+commit 3a399b69bbd11b1e4fd160b4891810ef158c4fcf
+Author: JSC1375 <565405659@qq.com>
+Date:   Tue May 16 20:58:48 2023 +0800
+
+    int func parser
+
+commit 8e8ed53cfe5993966ac20ac7676eb8af320e541c
+Author: JSC1375 <565405659@qq.com>
+Date:   Tue May 16 18:35:42 2023 +0800
+
+    quicksort
+
+commit 66fe57ff547903844c9a194db21b0e034a2b13a9
+Author: JSC1375 <565405659@qq.com>
+Date:   Tue May 16 18:25:25 2023 +0800
+
+    fix phi
+
+commit 24aecf484c93ae035271f0345a92aeaa83f0c906
+Author: JSC1375 <565405659@qq.com>
+Date:   Tue May 16 18:15:34 2023 +0800
+
+    18：15 begin
+
+commit dffad769c555215cdcee9b949c91be46fad910a7
+Author: JSC1375 <565405659@qq.com>
+Date:   Tue May 16 16:49:40 2023 +0800
+
+    finish a[const] as left value
+
+commit a582b68e5e5844acffc37a8ab486e84f5d260161
+Author: JSC1375 <565405659@qq.com>
+Date:   Tue May 16 14:27:35 2023 +0800
+
+    modify res_type in Binop and handle binop in function
+
+commit 2d6648cfa322ee4f9aae3e03d598da202fe2323a
+Author: Clinxi <jsha0707@163.com>
+Date:   Tue May 16 12:50:54 2023 +0800
+
+    jsa
+
+commit 450a760737f6d58ad39c3599a716c329269bb1e9
+Author: JSC1375 <565405659@qq.com>
+Date:   Tue May 16 12:12:54 2023 +0800
+
+    sign ext won't be set while const exp
+
+commit a1e69e81eb3f46320c5a091567e9a6571fb1e261
+Author: Clinxi <jsha0707@163.com>
+Date:   Tue May 16 12:05:42 2023 +0800
+
+    jsa
+
+commit 57ed9ad65ee968b18ec77cab0d7b7c5ad2e12e3f
+Author: JSC1375 <565405659@qq.com>
+Date:   Tue May 16 11:01:04 2023 +0800
+
+    modify function
+
+commit 416a4fd6be8ae25197f291ba07e21be4c13a2e93
+Author: Clinxi <jsha0707@163.com>
+Date:   Mon May 15 23:54:43 2023 +0800
+
+    jsa
+
+commit fe9c975d746ac4f042a5822762c75e706dec485b
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 15 23:47:52 2023 +0800
+
+    finish function para : mem or tempp
+
+commit 98f5e1181b67b7d3f1e82e0eaf6e31a708126c11
+Author: Clinxi <jsha0707@163.com>
+Date:   Mon May 15 23:17:02 2023 +0800
+
+    jsa
+
+commit b8a7de40311b2366ecc799bc381a216551c25f9c
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 15 22:58:08 2023 +0800
+
+    finish replace escape ch
+
+commit 8b0ffdc14f6ec305d7b2b362624274488307d894
+Author: Clinxi <jsha0707@163.com>
+Date:   Mon May 15 20:06:33 2023 +0800
+
+    jsa
+
+commit 9cfdd8ba3526d5d4c9ac51205310f203a6c45fae
+Author: Clinxi <jsha0707@163.com>
+Date:   Mon May 15 19:55:54 2023 +0800
+
+    jsa
+
+commit 623738dbc4ee47c48713dd26f0b14c2d1b5a62e6
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 15 18:06:53 2023 +0800
+
+    finish a[1], 1 doesn't need sext
+
+commit dfc14a0bfd00e6d5c54ad41b8f376f3140b512b1
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 15 17:04:11 2023 +0800
+
+    finish: func def return int , retrun i32 0 and scanf printf declare
+
+commit f1ed250b7002322b9b79b558247b595992bde852
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 15 15:49:53 2023 +0800
+
+    finish debug 2
+
+commit b18e2a9e4dab19134e2ec09a509677829f0e4b8a
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 15 15:18:09 2023 +0800
+
+    finish printf scanf debug
+
+commit 26895a1571e7f85a09b2e24330764340707734dd
+Author: Clinxi <jsha0707@163.com>
+Date:   Mon May 15 14:24:02 2023 +0800
+
+    jsa
+
+commit 516040e0e30d6df7c56e07ca826c21cb095dc083
+Author: JSC1375 <565405659@qq.com>
+Date:   Sun May 14 17:25:40 2023 +0800
+
+    add scanf and printf
+
+commit cdc32aba3cb004c2c36dc2a2223b99a567513fb0
+Author: JSC1375 <565405659@qq.com>
+Date:   Sun May 14 15:53:37 2023 +0800
+
+    add scanf &m
+
+commit 520c49b1061d52bd5e6e71013002d8c1f87a4060
+Author: JSC1375 <565405659@qq.com>
+Date:   Sun May 14 12:17:01 2023 +0800
+
+    add const string
+
+commit cf3a09ceb6c238e691bf5bc856dcff3121fa1406
+Author: JSC1375 <565405659@qq.com>
+Date:   Sat May 13 20:36:01 2023 +0800
+
+    增加括号
+
+commit 911d2503d1da36463edf729d5d11c85506bbfe8c
+Author: Clinxi <jsha0707@163.com>
+Date:   Sat May 13 19:47:02 2023 +0800
+
+    jsa
+
+commit c7875ff24bdc3e756aa8a182b228485f77d594da
+Author: Clinxi <jsha0707@163.com>
+Date:   Sat May 13 19:15:40 2023 +0800
+
+    jsa
+
+commit e934263883c0b7418fc977e7c60bcc161ef6d0f1
+Author: Clinxi <jsha0707@163.com>
+Date:   Sat May 13 19:07:13 2023 +0800
+
+    jsa
+
+commit a0f73d4bc7fdc86645ec17da7e72f93004f6aaa3
+Author: Clinxi <jsha0707@163.com>
+Date:   Sat May 13 09:21:01 2023 +0800
+
+    jsa
+
+commit f482c24d28f008075747447ada966dbeb1fb3a6b
+Author: JSC1375 <565405659@qq.com>
+Date:   Fri May 12 10:33:20 2023 +0800
+
+    finish function(ir,ll),jump(ll),label(ll),cjump(ll),ret(ll)
+
+commit b3d22dec6f6da2f8ea0dd700038cba422290524c
+Author: JSC1375 <565405659@qq.com>
+Date:   Fri May 12 10:18:55 2023 +0800
+
+    finish function
+
+commit e26efd9b779c0553f79d09c9e5a4765e03da8087
+Author: JSC1375 <565405659@qq.com>
+Date:   Fri May 12 00:07:38 2023 +0800
+
+    func parameter unfiinish
+
+commit fdd0707cd1c61b94870aa63c1ef41cbdea5d3e31
+Author: JSC1375 <565405659@qq.com>
+Date:   Thu May 11 21:43:59 2023 +0800
+
+    debug
+
+commit 67fd52d4655cc1c67091258fa4414f5203487327
+Author: JSC1375 <565405659@qq.com>
+Date:   Thu May 11 20:50:39 2023 +0800
+
+    modify switch case  to if else
+
+commit 384afbf99dd3f4988b6816013803853c93c449ab
+Merge: 61ea57e dcecec9
+Author: JSC1375 <565405659@qq.com>
+Date:   Thu May 11 20:17:30 2023 +0800
+
+    Merge branch 'main' of https://github.com/NipElement/Compiler
+
+commit 61ea57ea7550bbf4758ab762d73917ad2ad8ffb3
+Author: JSC1375 <565405659@qq.com>
+Date:   Thu May 11 20:17:27 2023 +0800
+
+    print ir
+
+commit dcecec9c374b4da9b5a8e3138a54bb2d243c1c7e
+Author: Clinxi <jsha0707@163.com>
+Date:   Thu May 11 19:18:02 2023 +0800
+
+    jsa
+
+commit c450815dbaf9a0649d7eb2705975a5c07afc7ad0
+Author: Clinxi <jsha0707@163.com>
+Date:   Thu May 11 16:39:10 2023 +0800
+
+    test
+
+commit 04548d03c5403c3fd84276064e32448db3467045
+Author: Clinxi <jsha0707@163.com>
+Date:   Thu May 11 16:38:13 2023 +0800
+
+    test
+
+commit db66c2a9536555475f9948527e473ce8e3f6474c
+Author: Clinxi <jsha0707@163.com>
+Date:   Thu May 11 16:37:36 2023 +0800
+
+    test
+
+commit a6c4d3608083f5479fa04397d15a5a4b0eb63502
+Author: Clinxi <jsha0707@163.com>
+Date:   Thu May 11 16:37:15 2023 +0800
+
+    test
+
+commit d689ea9ab515e11297372fab69faa72a960686c0
+Author: Clinxi <jsha0707@163.com>
+Date:   Thu May 11 16:33:12 2023 +0800
+
+    update
+
+commit 2a93de73f730609f920d9577f453cb1388b88bdd
+Author: Clinxi <jsha0707@163.com>
+Date:   Thu May 11 16:23:36 2023 +0800
+
+    jsa
+
+commit 25744b74479e05845eb3d3a7ae43348ae58191ed
+Author: JSC1375 <565405659@qq.com>
+Date:   Thu May 11 12:59:47 2023 +0800
+
+    finish while
+
+commit 72e7e9a8d44255b9f367d6c441c50d747b2dc3fc
+Merge: 750214c 8b9f9c7
+Author: JSC1375 <565405659@qq.com>
+Date:   Thu May 11 10:37:17 2023 +0800
+
+    Merge branch 'main' of https://github.com/NipElement/Compiler
+
+commit 750214c461259ef567cef023e2f3a681ddd7f88f
+Author: JSC1375 <565405659@qq.com>
+Date:   Thu May 11 10:35:23 2023 +0800
+
+    h'ha
+
+commit 8b9f9c7f728d81c1102b7eeab92c064d69022884
+Author: Clinxi <jsha0707@163.com>
+Date:   Thu May 11 10:34:31 2023 +0800
+
+    test
+
+commit a0975e7182b6e58787cc90fa726c28cab365cb02
+Author: JSC1375 <565405659@qq.com>
+Date:   Wed May 10 18:43:47 2023 +0800
+
+    little modify
+
+commit 5cfc914f46b8fe748631bb04ed55c63a9b809196
+Author: Clinxi <jsha0707@163.com>
+Date:   Mon May 8 23:05:52 2023 +0800
+
+    update
+
+commit 9fea328e79a55c924a510202e14ee66790547500
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 8 21:36:54 2023 +0800
+
+    finish work
+
+commit 659623c17e285c28716c7a36ad7cadf6b55c69f5
+Author: jsc <565405659@qq.com>
+Date:   Mon May 8 21:15:10 2023 +0800
+
+    fix some bugs
+
+commit a4b4cecb433445e43c26540192af31c0df830c66
+Author: jsc <565405659@qq.com>
+Date:   Mon May 8 20:58:18 2023 +0800
+
+    pointer and arrays with lots of bugs
+
+commit 7c9a0df971a6583e1ebbdc9cbf5516fc92fe7f1d
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 8 09:55:22 2023 +0800
+
+    merge
+
+commit dd5f3e57799fa9e71dee9eba6161f88ec2a5a11b
+Author: jsc <565405659@qq.com>
+Date:   Mon May 8 09:53:21 2023 +0800
+
+    s
+
+commit 808b577fb85452d353c774393bb2929ae6cff3a1
+Author: JSC1375 <565405659@qq.com>
+Date:   Wed May 3 11:20:52 2023 +0800
+
+    Update irtree.hpp
+
+commit ab86d577c7ba42998e0e07d2cff7a6452e0b0f66
+Author: JSC1375 <565405659@qq.com>
+Date:   Wed May 3 11:17:05 2023 +0800
+
+    add return statement for void func
+
+commit cd73599439c6a3609b6909090f4642c657f56d49
+Author: Clinxi <jsha0707@163.com>
+Date:   Wed May 3 11:06:23 2023 +0800
+
+    update
+
+commit e624e5748072f522b9c8675a8ea53bf4706c3e72
+Author: Clinxi <jsha0707@163.com>
+Date:   Wed May 3 10:58:40 2023 +0800
+
+    update
+
+commit 44f62cef1d9098e8e8fc0e08b86dbec138164f1e
+Author: Clinxi <jsha0707@163.com>
+Date:   Wed May 3 10:57:50 2023 +0800
+
+    update
+
+commit cf680055252ea7f9c8af3b92c9178e77f925f327
+Author: Clinxi <jsha0707@163.com>
+Date:   Wed May 3 10:52:25 2023 +0800
+
+    update
+
+commit e243e7abe7989df6dd4382627cd902aca8eb00d7
+Author: Clinxi <jsha0707@163.com>
+Date:   Wed May 3 10:42:57 2023 +0800
+
+    update
+
+commit f3105f25a2ca95189a830eae36dd380bff0b23d4
+Author: JSC1375 <565405659@qq.com>
+Date:   Tue May 2 16:03:19 2023 +0800
+
+    add cjump condition_reg
+
+commit cf0265533b3736fd18f9146f650fc001706cbdfd
+Author: Clinxi <jsha0707@163.com>
+Date:   Tue May 2 15:56:35 2023 +0800
+
+    update
+
+commit b35ee00c907510eb293c4d5ae0fd00c4017df88b
+Author: Clinxi <jsha0707@163.com>
+Date:   Tue May 2 14:11:43 2023 +0800
+
+    update
+
+commit 6804dd6be4c64eb8fedcb717e8f282e1a38bb3f9
+Author: Clinxi <jsha0707@163.com>
+Date:   Tue May 2 14:04:01 2023 +0800
+
+    update
+
+commit 5919860f0e3eadc85da2301c650ddf7e3f2d1c25
+Author: JSC1375 <565405659@qq.com>
+Date:   Tue May 2 11:06:51 2023 +0800
+
+    modify baseir to expir in exp class
+
+commit 1607e6a2d6111294ce6ec98a2d7ffad68097ad2a
+Merge: 47c4bde e808eba
+Author: JSC1375 <565405659@qq.com>
+Date:   Tue May 2 11:01:21 2023 +0800
+
+    Merge branch 'main' of https://github.com/NipElement/Compiler
+
+commit 47c4bde78228ff3aa16dc23bd7636b49206cd2e2
+Author: JSC1375 <565405659@qq.com>
+Date:   Tue May 2 11:01:04 2023 +0800
+
+    update notice
+
+commit e808eba23bf60a9279729c3234266122093e2c59
+Author: Clinxi <jsha0707@163.com>
+Date:   Tue May 2 10:50:00 2023 +0800
+
+    update
+
+commit e9194ce30c65146f1878ad9f1b79c840bd37b003
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 1 22:49:19 2023 +0800
+
+    change baseir to expir
+
+commit 0fdccc0342b89b04edf3326503bc31e0b77177b8
+Author: Clinxi <jsha0707@163.com>
+Date:   Mon May 1 22:36:03 2023 +0800
+
+    update
+
+commit b76d499fcc20a227c98f4d2687db52a2010378d3
+Merge: 910a426 86c281e
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 1 22:29:15 2023 +0800
+
+    Merge branch 'main' of https://github.com/NipElement/Compiler
+
+commit 910a42656868e1304b7ff52ea4aceac18b809d25
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 1 22:29:11 2023 +0800
+
+    add a pdf
+
+commit 86c281e7513ad820403914d66dc42229608db3fe
+Author: Clinxi <jsha0707@163.com>
+Date:   Mon May 1 21:37:28 2023 +0800
+
+    update
+
+commit 34f4d67083dbb1a3c1138992f1e9e7f049a3da94
+Author: Clinxi <jsha0707@163.com>
+Date:   Mon May 1 21:34:21 2023 +0800
+
+    update
+
+commit 7b06455c2a971fcc293096e11aebaca3255fdf6a
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 1 19:13:55 2023 +0800
+
+    modify reg
+
+commit 045c0e3c6b6e6e413ba15cada45d87a133490d5a
+Author: Clinxi <jsha0707@163.com>
+Date:   Mon May 1 19:12:05 2023 +0800
+
+    first try
+
+commit 732a9605166f4a9db0cc37a2c07600ff5f184f83
+Author: JSC1375 <565405659@qq.com>
+Date:   Mon May 1 16:27:02 2023 +0800
+
+    add input.c
+
+commit 91a8094a81e3a30f37a5ea1ee021f73f61634091
+Author: JSC1375 <565405659@qq.com>
+Date:   Fri Apr 28 18:09:03 2023 +0800
+
+    ir initialize
+
+commit e3560abc5adeb4a8a849427458317f6c87f3023d
+Author: jsc <565405659@qq.com>
+Date:   Sat Apr 15 11:27:39 2023 +0800
+
+    ir discussion
+
+commit b34388f01419210789573044929317ce6b05846b
+Author: jsc <565405659@qq.com>
+Date:   Sat Apr 15 00:01:19 2023 +0800
+
+    fix bugs and build a tree
+
+commit e1f607636f7e2e0ce2705e903ed48c61aca354ab
+Author: jsc <565405659@qq.com>
+Date:   Fri Apr 14 23:35:15 2023 +0800
+
+    fix some bug like $$ = ast and string* ident
+    but still lots of bugs exist
+
+commit 8d7ff1f7cb775287830667a49ae9f972bc94648e
+Author: Clinxi <jsha0707@163.com>
+Date:   Fri Apr 14 21:47:41 2023 +0800
+
+    printTree
+
+commit df5b7690c6c1085572b3c8d5be89886cf9a26802
+Author: jsc <565405659@qq.com>
+Date:   Fri Apr 14 19:56:35 2023 +0800
+
+    fix some bug in parser.y and half of printtree
+
+commit d2f1126026cc29e4effa5e55030ce7b87ac8dbe9
+Author: jsc <565405659@qq.com>
+Date:   Fri Apr 14 19:25:59 2023 +0800
+
+    add id attribute in ast node
+
+commit e40d1f2f7836aae5e9abd6e1a0e90742f99a9508
+Merge: bacbd33 94f94f1
+Author: jsc <565405659@qq.com>
+Date:   Fri Apr 14 19:21:26 2023 +0800
+
+    Merge branch 'main' of https://github.com/NipElement/Compiler into main
+
+commit bacbd33726aa1dc08a91ee9c7abdadde6bf00028
+Author: jsc <565405659@qq.com>
+Date:   Fri Apr 14 19:21:11 2023 +0800
+
+    wait
+
+commit 94f94f1ac9cb67aca4ab583dab4a8fb2f4591d06
+Merge: 72c3bf5 ca81c9f
+Author: NipElement <649443308@qq.com>
+Date:   Thu Apr 13 23:53:07 2023 +0800
+
+    Merge branch 'main' of https://github.com/NipElement/Compiler
+
+commit 72c3bf59ed16e4e3f6eee9a65bc897605809d406
+Author: NipElement <649443308@qq.com>
+Date:   Thu Apr 13 23:52:59 2023 +0800
+
+    update parser.y and ast.hp
+
+commit ca81c9f9f295d78ee5851bbfd658ecb1e6f3b822
+Merge: c42a278 b4d370b
+Author: JSC1375 <565405659@qq.com>
+Date:   Thu Apr 13 22:15:48 2023 +0800
+
+    Merge branch 'main' of https://github.com/NipElement/Compiler
+
+commit b4d370bc9a7cdfe5b02e39a6a2715fbdeb56e3d4
+Author: NipElement <649443308@qq.com>
+Date:   Thu Apr 13 22:12:58 2023 +0800
+
+    update ast
+
+commit c42a278c4a8db23899acbd669573804f31c25e7c
+Author: jsc <565405659@qq.com>
+Date:   Thu Apr 13 22:08:39 2023 +0800
+
+    push
+
+commit a0a62d280ee872c139a9dd6f57c5783d6b51e7d3
+Merge: 7902ce8 053d0ac
+Author: jsc <565405659@qq.com>
+Date:   Thu Apr 13 22:08:10 2023 +0800
+
+    Merge branch 'main' of https://github.com/NipElement/Compiler
+
+commit 7902ce8e255cecfadb55baba081896768f3ed717
+Author: jsc <565405659@qq.com>
+Date:   Thu Apr 13 21:33:02 2023 +0800
+
+    123
+
+commit 053d0ac449f4bfdb576452b3903f9c616e68f569
+Author: Clinxi <jsha0707@163.com>
+Date:   Thu Apr 13 14:33:36 2023 +0800
+
+    predefine
+
+commit c9cbad9b68f7fdf733e7cd8ed1dd00bed89a1c16
+Merge: c510119 ea50993
+Author: Clinxi <jsha0707@163.com>
+Date:   Thu Apr 13 11:58:09 2023 +0800
+
+    Merge branch 'main' of github.com:NipElement/Compiler
+
+commit ea5099341eb71f4d3a86d2e9e3b8a070581f623a
+Author: Clinxi <92784210+Clinxi@users.noreply.github.com>
+Date:   Thu Apr 13 11:14:13 2023 +0800
+
+    test
+
+commit c5101199be044ee17b9707fcb9511c5ed48739b5
+Author: jsa <jsha0707@163.com>
+Date:   Thu Apr 13 11:13:10 2023 +0800
+
+    first
+
+commit 11cb7d02262ed1f110fe9e777d2ad94bc0e30d87
+Author: jsa <jsha0707@163.com>
+Date:   Thu Apr 13 10:49:34 2023 +0800
+
+    first
+
+commit 15a8841a8921a6ec8b3fd6ef7e2bd1ec2ecf3b02
+Author: JSC1375 <565405659@qq.com>
+Date:   Thu Apr 13 10:33:26 2023 +0800
+
+    bug in parser.y
+
+commit 4d0baae812ba8b0f7430353030643f59db4317be
+Author: JSC1375 <565405659@qq.com>
+Date:   Thu Apr 13 09:53:10 2023 +0800
+
+    add how to generate ir code
+
+commit 3fc4f80185727144551af85a987d6361508de9bf
+Author: jsc <565405659@qq.com>
+Date:   Wed Apr 12 23:24:05 2023 +0800
+
+    delete parser.tab.c
+
+commit f0b22522b5a3557b91f486b9df7f667bde308f7d
+Author: NipElement <649443308@qq.com>
+Date:   Wed Apr 12 22:11:27 2023 +0800
+
+    Fix Debug
+
+commit 192acd287843c7a572b37020d3868caf640c0e71
+Author: NipElement <649443308@qq.com>
+Date:   Wed Apr 12 21:48:25 2023 +0800
+
+    Fix some bug
+
+commit 8ecdf534aab40cadf3ed776812293f7a24f5075c
+Author: NipElement <649443308@qq.com>
+Date:   Wed Apr 12 21:27:29 2023 +0800
+
+    Still ERROR
+
+commit 527e0108f64cbb20ca7dedbbad33b8e7c5f835d8
+Author: jsc <565405659@qq.com>
+Date:   Wed Apr 12 19:26:18 2023 +0800
+
+    delete previous
+
+commit a12c0b2b72d91c65412cd634b793a6c4b88e7bad
+Author: NipElement <649443308@qq.com>
+Date:   Wed Apr 12 18:56:13 2023 +0800
+
+    Update README.md
+
+commit 32cfff89cd7517d45b3b8db3c980af3619c4602a
+Merge: dbe22ef 59d92bf
+Author: NipElement <649443308@qq.com>
+Date:   Wed Apr 12 16:39:20 2023 +0800
+
+    Merge branch 'main' of https://github.com/NipElement/Compiler
+
+commit dbe22effbab3ffc4ccabc65c587c21aeb511dc06
+Author: NipElement <649443308@qq.com>
+Date:   Wed Apr 12 16:35:16 2023 +0800
+
+    文法定义
+    
+    ast的都没写
+
+commit 59d92bfd545c82880d526b8be961e31d93e1a57d
+Author: jsc <565405659@qq.com>
+Date:   Wed Apr 12 15:37:19 2023 +0800
+
+    update lexer.l
+
+commit 7ad92fbeb1081eff33905c59dffc81f2e08ce56e
+Author: JSC1375 <565405659@qq.com>
+Date:   Wed Apr 12 10:01:16 2023 +0800
+
+    readme
+
+commit 9ff9d6e52734e767f64a82f90dda94d6ab909069
+Author: JSC1375 <565405659@qq.com>
+Date:   Wed Apr 12 09:53:21 2023 +0800
+
+    example
+
+commit 71a8db391781229c0e49a1ee4480da6ddb96e75e
+Author: JSC1375 <565405659@qq.com>
+Date:   Wed Apr 12 09:11:29 2023 +0800
+
+    first task: make ast
+
+commit bf4cfc71ab93c763219aab2af90ecd1c6269f74d
+Author: JSC1375 <565405659@qq.com>
+Date:   Fri Apr 7 22:08:22 2023 +0800
+
+    gitignore
+
+commit 45cb2e052155c826a5614ba8e79b04d58f7b82fd
+Author: JSC1375 <565405659@qq.com>
+Date:   Fri Apr 7 22:08:02 2023 +0800
+
+    gitignore
+
+commit 1e4be1f9de9d0e383c9b9c5608d57994211ab91b
+Author: NipElement <649443308@qq.com>
+Date:   Thu Apr 6 23:27:44 2023 +0800
+
+    init
+
+commit d8e21ff218cf76cc5aa32f184fdaf3e1a618c905
+Merge: 52ff051 060ded3
+Author: NipElement <649443308@qq.com>
+Date:   Thu Apr 6 23:26:52 2023 +0800
+
+    Merge branch 'main' of https://github.com/NipElement/Compiler
+
+commit 52ff051c69e4d11e993fc9335bfd6735ad95c03c
+Author: NipElement <649443308@qq.com>
+Date:   Thu Apr 6 23:26:27 2023 +0800
+
+    inti
+
+commit 060ded3ec7405ea732ee1d21b49d37edb43d9e6a
+Author: NipElement <649443308@qq.com>
+Date:   Thu Apr 6 23:24:58 2023 +0800
+
+    Update README.md
+
+commit 5d698e035b334b83b5104bdbf792e2c7c7034a31
+Author: NipElement <649443308@qq.com>
+Date:   Thu Apr 6 23:24:01 2023 +0800
+
+    first commit
