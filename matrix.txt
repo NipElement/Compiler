@@ -74,9 +74,9 @@ int main()
 
                     tmp1 = multiple(loop, N1);
                     tmp2 = multiple(k, N2);
-                    //printf("a=%d b=%d\n",A[tmp1 + k], B[tmp2 + j]);
+                    // printf("a=%d b=%d\n",A[tmp1 + k], B[tmp2 + j]);
                     temp = multiple(A[tmp1 + k], B[tmp2 + j]);
-                    //printf("temp=%d\n",temp);
+                    // printf("temp=%d\n",temp);
                     sum = sum + temp;
                     k = k + 1;
                 }
@@ -113,111 +113,8 @@ int multiple(int a, int b)
     int sign;
     int retVal;
     retVal = 0;
-    if (a > 0)
-    {
-        if (b > 0)
-        {
-            sign = 1;
-        }else{}
 
-
-        if (b == 0)
-        {
-            sign = 0;
-            retVal = 0;
-        }else{}
-
-        if (b < 0)
-        {
-            sign = 0;
-            sign=sign-1;
-        }else{
-          
-        }
-    }else{
-          
-    }
-    if (a == 0)
-    {
-        sign = 0;
-        retVal = 0;
-    }
-    else{
-          
-    }
-
-    if (a < 0)
-    {
-        if (b > 0)
-        {
-            sign = 0;
-            sign=sign-1;
-            //printf("a=%d,b=%d,sign=%d",a,b,sign);
-        }else{
-          
-        }
-
-        if (b == 0)
-        {
-            sign = 0;
-            retVal = 0;
-        }else{
-          
-        }
-        if (b < 0)
-        {
-            sign = 1;
-        }else{
-          
-        }
-    }else{
-          
-    }
-
-    if (a < 0)
-    {
-        a = 0 - a;
-    }else{
-          
-    }
-    if (b < 0)
-    {
-        b = 0 - b;
-    }else{
-          
-    }
-
-    if (sign == 1)
-    {
-        int i;
-        i = 0;
-        while (i < b)
-        {
-            retVal = retVal + a;
-            i = i + 1;
-        }
-    }
-    else{
-
-    }
-
-    int ne;
-    ne=0;
-    ne=ne-1;
-    if(sign==ne)
-    {
-        int j;
-        j = 0;
-        while (j < b)
-        {
-            retVal = retVal - a;
-            j = j + 1;
-        }
-    }else{
-
-    }
-
-
+    retVal = a * b;
 
     return retVal;
 }
