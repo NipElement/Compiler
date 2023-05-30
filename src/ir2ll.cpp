@@ -42,7 +42,7 @@ void RootIr::printLL() {
   cout << "declare i32 @printf(i8 * noundef, ...) #1" << endl;
 
   cout << "declare i8* @strcpy(i8*, i8*) #1" << endl;
-  cout << "declare i32 @strcmp(i8 *, i8 *) " << endl;
+  cout << "declare i32 @strcmp(i8*, i8*) " << endl;
 }
 
 void BlockIr::printLL() {
