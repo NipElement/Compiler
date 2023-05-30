@@ -56,6 +56,12 @@ void VarDeclIr::printLL() {
     //%5 = alloca [20 x i32], align 16
     std::string array_type = "[" + to_string(size) + " x i32]";
     cout << "  %" << mem_id << " = alloca " << array_type << ", align 16" << endl;
+  } else if (var_type == VariableType(CharArray)) {
+    std::string array_type = "[" + to_string(size) + " x i8]";
+    cout << "  %" << mem_id << " = alloca " << array_type << ", align 1" << endl;
+  } else if (var_type == VariableType(CharPtrArray)) {
+    std::string array_type = "[" + to_string(size) + " x i8*]";
+    cout << "  %" << mem_id << " = alloca " << array_type << ", align 16" << endl;
   }
 }
 
@@ -368,28 +374,47 @@ void MemExp::printLL() {
 
   if (exp == nullptr) {
     // simple variable int, do nothing
-  } else if (mem_type == VariableType(Array)) {
+
+  } else if (mem_type == VariableType(Array) || mem_type == VariableType(CharArray) ||
+             mem_type == VariableType(CharPtrArray)) {
     // array element as left value: like a[exp]=..
     if (exp->exp_type != ExpType(Const)) {  // a[exp]
       exp->printLL();
       // sext i32 %12 to i64
       cout << "  %" << signext_id << " = sext i32 %" << exp->reg_id << " to i64" << endl;
       // %10 = getelementptr inbounds [10 x i32], [10 x i32]* %3, i64 0, i64 %9
-      std::string array_type = "[" + to_string(size) + " x i32]";
-
+      std::string array_type;
+      if (mem_type == VariableType(Array)) {
+        array_type = "[" + to_string(size) + " x i32]";
+      } else if (mem_type == VariableType(CharArray)) {
+        array_type = "[" + to_string(size) + " x i8]";
+      } else {
+        array_type = "[" + to_string(size) + " x i8*]";
+      }
       cout << "  %" << reg_id << " = getelementptr inbounds ";
       cout << array_type << ", " << array_type << "*"
            << " %" << array_reg_id << ", i64 0, i64 %" << signext_id << std::endl;
     } else {  // const exp a[1]
-      std::string array_type = "[" + to_string(size) + " x i32]";
+      std::string array_type;
+      if (mem_type == VariableType(Array)) {
+        array_type = "[" + to_string(size) + " x i32]";
+      } else if (mem_type == VariableType(CharArray)) {
+        array_type = "[" + to_string(size) + " x i8]";
+      } else {
+        array_type = "[" + to_string(size) + " x i8*]";
+      }
       cout << "  %" << reg_id << " = getelementptr inbounds ";
       cout << array_type << ", " << array_type << "*"
            << " %" << array_reg_id << ", i64 0, i64 " << dynamic_cast<ConstExp *>(exp.get())->value << std::endl;
     }
-  } else if (mem_type == VariableType(Pointer)) {
+  } else if (mem_type == VariableType(Pointer) || mem_type == VariableType(CharPointer)) {
     if (exp->exp_type != ExpType(Const)) {  // a[exp]
       std::string pointer_type = "i32*";
       std::string pointed_type = "i32";
+      if (mem_type == VariableType(CharPointer)) {
+        pointer_type = "i8*";
+        pointed_type = "i8";
+      }
       // load pointer value from memory
       cout << "  %" << pointer_value_reg_id << " = load " << pointer_type << ", " << pointer_type << "*"
            << " %" << array_reg_id << ", align 8" << endl;
@@ -405,6 +430,10 @@ void MemExp::printLL() {
     } else {  // const exp a[1]
       std::string pointer_type = "i32*";
       std::string pointed_type = "i32";
+      if (mem_type == VariableType(CharPointer)) {
+        pointer_type = "i8*";
+        pointed_type = "i8";
+      }
       // load pointer value from memory
       cout << "  %" << pointer_value_reg_id << " = load " << pointer_type << ", " << pointer_type << "*"
            << " %" << array_reg_id << ", align 8" << endl;
@@ -421,18 +450,39 @@ void TempExp::printLL() {
   mem->printLL();
 
   auto mem_exp = dynamic_cast<MemExp *>(mem.get());
-  if (res_type == VariableType(Int)) {  // for simple int or a[i]..
+  if (res_type == VariableType(Int) || res_type == VariableType(Char) ||
+      (res_type == VariableType(CharPointer) &&
+       mem_exp->mem_type == VariableType(CharPtrArray))) {  // for simple int or int or char a[i] or char* a[i]
     // %10 = load i32, i32* %6, align 4
-    cout << "  %" << reg_id << " = load i32, i32* %" << mem->reg_id << ", align 4" << endl;
-  } else if (mem_exp->mem_type == VariableType(Array)) {  // array as function parameter passing
+    std::string res_type_str = "i32";
+    if (res_type == VariableType(Char)) {
+      res_type_str = "i8";
+    } else if (res_type == VariableType(CharPointer)) {
+      res_type_str = "i8*";
+    }
+    cout << "  %" << reg_id << " = load " << res_type_str << ", " << res_type_str << "* %" << mem->reg_id << ", align 4"
+         << endl;
+  } else if (mem_exp->mem_type == VariableType(Array) || mem_exp->mem_type == VariableType(CharArray) ||
+             mem_exp->mem_type == VariableType(CharPtrArray)) {  // array as function parameter passing
     //%10 = getelementptr inbounds [10 x i32], [10 x i32]* %7, i64 0, i64 0
     string array_type = "[" + to_string(mem_exp->size) + " x i32]";
+    if (mem_exp->mem_type == VariableType(CharArray)) {
+      array_type = "[" + to_string(mem_exp->size) + " x i8]";
+    } else if (mem_exp->mem_type == VariableType(CharPtrArray)) {
+      array_type = "[" + to_string(mem_exp->size) + " x i8*]";
+      // we suppose char* a[] will not be passing to function, will this work ?
+    }
     cout << "  %" << reg_id << " = "
          << "getelementptr inbounds ";
     cout << array_type << ", " << array_type << "* "
          << "%" << mem->reg_id << ", i64 0, i64 0" << endl;
-  } else if (mem_exp->mem_type == VariableType(Pointer)) {  // pointer as function parameter passing
+  } else if (mem_exp->mem_type == VariableType(Pointer) ||
+             mem_exp->mem_type == VariableType(CharPointer)) {  // pointer as function parameter passing
     // %8 = load i32*, i32** %3, align 8
+    std::string res_type_str = "i32*";
+    if (mem_exp->mem_type == VariableType(CharPointer)) {
+      res_type_str = "i8*";
+    }
     cout << "  %" << reg_id << " = "
          << "load i32*, i32** %" << mem->reg_id << ", align 8" << endl;
   }
@@ -456,8 +506,8 @@ void CallExp::printLL() {
     // get the string index
     int index = std::distance(BaseIr::const_strings.begin(), it);
 
-    // %7 = call i32 (i8*, ...) @printf(i8* noundef getelementptr inbounds ([8 x i8], [8 x i8]* @.str.1, i64 0, i64 0),
-    // i32 noundef %6)
+    // %7 = call i32 (i8*, ...) @printf(i8* noundef getelementptr inbounds ([8 x i8], [8 x i8]* @.str.1, i64 0, i64
+    // 0), i32 noundef %6)
     std::string const_str_type = "[" + to_string(string.length() + 1) + " x i8]";
     std::cout << "  %" << reg_id << " = call i32 (i8*, ...) @printf"
               << "(i8* noundef getelementptr inbounds (" << const_str_type << ", " << const_str_type << "* @.str";
@@ -513,10 +563,18 @@ void CallExp::printLL() {
     // we always assume scanf has only & lval, so it is MemExp
     for (int i = 1; i < params.size(); i++) {
       cout << ", ";
-      auto mem = dynamic_cast<MemExp *>(params[i].get());
-      // like &a or &a[1]
-      cout << "i32* noundef "
-           << "%" << mem->reg_id;
+      if (params[i]->exp_type == ExpType(Mem)) {
+        auto mem = dynamic_cast<MemExp *>(params[i].get());
+        // like &a or &a[1]
+        cout << "i32* noundef "
+             << "%" << mem->reg_id;
+      } else if (params[i]->exp_type == ExpType(Temp)) {
+        std::string temp_type = "i8*";
+        auto temp = dynamic_cast<TempExp *>(params[i].get());
+        // like &a or &a[1]
+        cout << temp_type << " noundef "
+             << "%" << temp->reg_id;
+      }
     }
     cout << ")" << endl;
     return;
@@ -538,9 +596,19 @@ void CallExp::printLL() {
     cout << "  %" << reg_id << " = "
          << "call i32 @" << name;
     cout << "(";
+  } else if (ret_type == VariableType(CharPointer)) {  // for malloc
+    cout << "  %" << reg_id << " = "
+         << "call i8* @" << name;
+    cout << "(";
   }
+
   // parameter
   for (int i = 0; i < params.size(); i++) {
+    if (name == "malloc") {  // special for malloc
+      cout << "i64 " << dynamic_cast<ConstExp *>(params[i].get())->value;
+      break;
+    }
+
     if (i != 0) {
       cout << ", ";
     }

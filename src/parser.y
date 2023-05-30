@@ -28,7 +28,7 @@ int id=0;
 }
 
  
-%token INT RETURN VOID CONST IF ELSE WHILE BREAK CONTINUE GE LE GT LT EQ NE AND OR  
+%token INT CHAR RETURN VOID CONST IF ELSE WHILE BREAK CONTINUE GE LE GT LT EQ NE AND OR  CHAR_PTR
 %token <str_val> IDENT STR
 %token <int_val> INT_CONST 
 
@@ -148,6 +148,22 @@ VarDecl
     $$ = ast;
     //std::cout<<"INT VarDef VarDefList ';'"<<endl;
   }
+  | CHAR VarDef VarDefList ';' {
+    auto ast = new VarDeclAST();
+    ast->type = 1;
+    ast->var_def_ast = unique_ptr<BaseAST>($2);
+    ast->var_def_list_ast = unique_ptr<BaseAST>($3);
+    ast->id = id++;
+    $$ = ast;
+  } 
+  | CHAR_PTR VarDef VarDefList ';' {
+    auto ast = new VarDeclAST();
+    ast->type = 2;
+    ast->var_def_ast = unique_ptr<BaseAST>($2);
+    ast->var_def_list_ast = unique_ptr<BaseAST>($3);
+    ast->id = id++;
+    $$ = ast;
+  } 
   ;
 
 VarDefList

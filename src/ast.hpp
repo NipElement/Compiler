@@ -45,7 +45,7 @@ class CompUnitAST : public BaseAST {
 
 class VarDeclAST : public BaseAST {
  public:
-  // if type = 0 , INT type = 1, VOID
+  // if type = 0 , INT type = 1, CHAR
   int type;
   std::unique_ptr<BaseAST> var_def_ast;
   std::unique_ptr<BaseAST> var_def_list_ast;

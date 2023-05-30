@@ -122,16 +122,41 @@ void MemExp::printTree() {
   std::cout << "SYNTAX_NODE_" << id << "[label=\"";
   std::cout << "MemIr\\nid=" << id;
   std::cout << "\\n";
-  if (exp) {                                // array or pointer
-    if (mem_type == VariableType(Array)) {  // array
-      std::cout << "array=$" << array_reg_id;
+  std::string type = "";
+  switch (mem_type) {
+    case VariableType(Int):
+      type = "int";
+      break;
+    case VariableType(Array):
+      type = "array";
+      break;
+    case VariableType(CharArray):
+      type = "char array";
+      break;
+    case VariableType(CharPtrArray):
+      type = "Char Ptr array";
+      break;
+    case VariableType(Pointer):
+      type = "pointer";
+      break;
+    case VariableType(CharPointer):
+      type = "Char Ptr ";
+      break;
+    default:
+      break;
+  }
+  std::cout << "type=" << type;
+
+  if (exp) {  // array or pointer
+    if (mem_type == VariableType(Array) || mem_type == VariableType(Char) || VariableType(CharPtrArray)) {  // array
+      std::cout << "\\narray=$" << array_reg_id;
       std::cout << "\\n element=$" << reg_id;
       std::cout << "\\n signext=$" << signext_id;
       std::cout << "\"];" << std::endl;
       exp->printTree();
       std::cout << "SYNTAX_NODE_" << id << "  ->  "
                 << "SYNTAX_NODE_" << exp->id << ";" << std::endl;
-    } else if (mem_type == VariableType(Pointer)) {
+    } else if (mem_type == VariableType(Pointer) || mem_type == VariableType(CharPointer)) {
       std::cout << "array=$" << array_reg_id;
       std::cout << "\\n element=$" << reg_id;
       std::cout << "\\n signext=$" << signext_id;
@@ -143,7 +168,7 @@ void MemExp::printTree() {
     }
   } else {
     // simple variable
-    std::cout << "simple reg_id=$" << reg_id;
+    std::cout << "\\nsimple reg_id=$" << reg_id;
     std::cout << "\"];" << std::endl;
   }
 }

@@ -25,6 +25,12 @@ enum VariableType {
   Pointer,
   Array,
   Void,
+  // for char
+  Char,
+  CharArray,
+  CharPointer,
+  CharPtrArray,
+  // CharPtrPtr
 };
 
 enum ConstType {

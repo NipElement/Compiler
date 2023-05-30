@@ -25,6 +25,10 @@ BaseIr *StartRoot::buildIrTree() {
   auto p = dynamic_cast<CompUnitAST *>(comp_unit_ast.get());
   func_rettype_table.insert(std::pair<std::string, VariableType>(std::string("printf"), VariableType(Int)));
   func_rettype_table.insert(std::pair<std::string, VariableType>(std::string("scanf"), VariableType(Int)));
+  func_rettype_table.insert(std::pair<std::string, VariableType>(std::string("malloc"), VariableType(CharPointer)));
+  func_rettype_table.insert(std::pair<std::string, VariableType>(std::string("strcmp"), VariableType(Int)));
+  func_rettype_table.insert(std::pair<std::string, VariableType>(std::string("strcpy"), VariableType(Int)));
+
   while (p) {
     // here I assume p has only funcdef, be careful !
     ir_root->funcs.push_back(std::unique_ptr<BaseIr>((p->func_def_ast.get())->buildIrTree()));
@@ -155,9 +159,13 @@ BaseIr *BlockItemAST::buildIrTree() {
     // suppose no initial value and check
     assert(var_def->initval_ast == nullptr);
 
-    if (var_def->exp_list1_ast == nullptr) {  // simple varaible: int
+    if (var_def->exp_list1_ast == nullptr) {  // simple varaible: int or char
       auto decl = new VarDeclIr();
-      decl->var_type = VariableType(Int);
+      if (var_decl->type == 0) {
+        decl->var_type = VariableType(Int);
+      } else if (var_decl->type == 1) {
+        decl->var_type = VariableType(Char);
+      }
       // decl->type = IrType(VarDecl);
       // decl->id = ir_id++;
       decl->mem_id = reg++;
@@ -167,7 +175,11 @@ BaseIr *BlockItemAST::buildIrTree() {
       return decl;
     } else {  // array
       auto decl = new VarDeclIr();
-      decl->var_type = VariableType(Array);
+      if (var_decl->type == 0) {
+        decl->var_type = VariableType(Array);
+      } else if (var_decl->type == 1) {
+        decl->var_type = VariableType(CharArray);
+      }
 
       // decl->type = IrType(VarDecl);
       // decl->id = ir_id++;
@@ -212,23 +224,33 @@ std::vector<BaseIr *> BlockItemAST::buildIrNodes() {
 
     if (var_def->exp_list1_ast == nullptr) {  // simple varaible: int
       auto decl = new VarDeclIr();
-      decl->var_type = VariableType(Int);
+      if (var_decl->type == 0) {
+        decl->var_type = VariableType(Int);
+      } else if (var_decl->type == 1) {
+        decl->var_type = VariableType(Char);
+      }
       // decl->type = IrType(VarDecl);
       // decl->id = ir_id++;
       decl->mem_id = reg++;
       table.insert(std::pair<std::string, int>(*var_def->ident, decl->mem_id));
-      variable_type_table.insert(std::pair<std::string, VariableType>(*var_def->ident, VariableType(Int)));
+      variable_type_table.insert(std::pair<std::string, VariableType>(*var_def->ident, decl->var_type));
 
       return std::vector<BaseIr *>{decl};
     } else {  // array
       auto decl = new VarDeclIr();
-      decl->var_type = VariableType(Array);
+      if (var_decl->type == 0) {
+        decl->var_type = VariableType(Array);
+      } else if (var_decl->type == 1) {
+        decl->var_type = VariableType(CharArray);
+      } else if (var_decl->type == 2) {
+        decl->var_type = VariableType(CharPtrArray);
+      }
 
       // decl->type = IrType(VarDecl);
       // decl->id = ir_id++;
       decl->mem_id = reg++;
       table.insert(std::pair<std::string, int>(*var_def->ident, decl->mem_id));
-      variable_type_table.insert(std::pair<std::string, VariableType>(*var_def->ident, VariableType(Array)));
+      variable_type_table.insert(std::pair<std::string, VariableType>(*var_def->ident, decl->var_type));
 
       // suppose the expression could only be a const and check
       auto exp_list1 = dynamic_cast<ExpList1AST *>(var_def->exp_list1_ast.get());
@@ -431,14 +453,14 @@ BaseIr *LValAST::buildIrTree() {
 
   // get type info
   mem->mem_type = variable_type_table.find(*ident)->second;
-  if (mem->mem_type == VariableType(Int)) {  // simple variable int
+  if (mem->mem_type == VariableType(Int) || mem->mem_type == VariableType(Char)) {  // simple variable int
     mem->signext_id = -1;
     mem->exp = nullptr;
     // the address of this lval
     mem->reg_id = table.find(*ident)->second;
 
   } else if (exp_list1_ast != nullptr) {  // array or pointer with exp(as left value)
-    if (mem->mem_type == VariableType(Pointer)) {
+    if (mem->mem_type == VariableType(Pointer) || mem->mem_type == VariableType(CharPointer)) {
       mem->pointer_value_reg_id = reg++;
     }
 
@@ -461,7 +483,8 @@ BaseIr *LValAST::buildIrTree() {
     // after compute exp, we will getelementptr to get the address, store into reg_id, that is a[exp]'s address.
     mem->reg_id = reg++;
 
-    if (mem->mem_type == VariableType(Array)) {
+    if (mem->mem_type == VariableType(Array) || mem->mem_type == VariableType(CharArray) ||
+        mem->mem_type == VariableType(CharPtrArray)) {
       // get the size of array
       mem->size = array_size_table.find(*ident)->second;
     }
@@ -469,7 +492,7 @@ BaseIr *LValAST::buildIrTree() {
     mem->exp = nullptr;
     // reg_id is the address of the array
     mem->reg_id = table.find(*ident)->second;
-    if (mem->mem_type == VariableType(Array)) {
+    if (mem->mem_type == VariableType(Array) || mem->mem_type == VariableType(CharArray)) {
       // get the size of array
       mem->size = array_size_table.find(*ident)->second;
     }
@@ -772,12 +795,14 @@ BaseIr *UnaryExpAST::buildIrTree() {
         }
       }
 
-      if (func_call->ret_type == VariableType(Int)) {
+      if (func_call->ret_type == VariableType(Int) || func_call->ret_type == VariableType(CharPointer)) {
         func_call->reg_id = reg++;
       }
     } else {
-      std::cout << "function:" << *ident << "doesn't exist" << std::endl;
-      assert(0);
+      if (*ident != "strcpy" && *ident != "strcmp" && *ident != "malloc") {
+        std::cout << "function:" << *ident << "doesn't exist" << std::endl;
+        assert(0);
+      }
     }
 
     return func_call;
@@ -806,10 +831,25 @@ BaseIr *PrimaryExpAST::buildIrTree() {
 
     if (mem_exp->mem_type == VariableType(Int)) {  // simple int
       temp->res_type = VariableType(Int);
+    } else if (mem_exp->mem_type == VariableType(Char)) {
+      std::cout << "no char " << std::endl;
+      temp->res_type = VariableType(Char);
     } else if (mem_exp->exp != nullptr) {  // a[i]
-      temp->res_type = VariableType(Int);
+      if (mem_exp->mem_type == VariableType(Array)) {
+        temp->res_type = VariableType(Int);
+      } else if (mem_exp->mem_type == VariableType(CharArray)) {  // char a[i]
+        temp->res_type = VariableType(Char);
+      } else if (mem_exp->mem_type == VariableType(CharPtrArray)) {  // char* a[i]
+        temp->res_type = VariableType(CharPointer);
+      }
     } else {  // array a in function params passing
-      temp->res_type = VariableType(Pointer);
+      if (mem_exp->mem_type == VariableType(Array)) {
+        temp->res_type = VariableType(Pointer);
+      } else if (mem_exp->mem_type == VariableType(CharArray)) {
+        temp->res_type = VariableType(CharPointer);
+      } else if (mem_exp->mem_type == VariableType(CharPtrArray)) {
+        assert(0);
+      }
     }
     return temp;
   } else if (number_ast) {

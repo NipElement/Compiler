@@ -36,6 +36,8 @@ String        \"[^\"]*\"
 {LineComment}   { /* 忽略, 不做任何操作 */ }
 
 "int"           { return INT; }
+"char"          { return CHAR; }
+"char*"         { return CHAR_PTR; }
 "return"        { return RETURN; }
 "void"          { return VOID; }
 "const"         { return CONST;}
