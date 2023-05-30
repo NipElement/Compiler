@@ -522,12 +522,15 @@ void CallExp::printLL() {
       // we always assume that the paras in printf is Temp
       // here we implement both
       if (params[i]->exp_type == ExpType(Temp)) {
-        if (dynamic_cast<TempExp *>(params[i].get())->res_type ==
-            VariableType(Pointer)) {  // passing to printf like array, which is not permitted
-          assert(0);
-        } else {
+        auto temp = dynamic_cast<TempExp *>(params[i].get());
+        if (temp->res_type == VariableType(CharPointer)) {  // passing to printf like array, which is not permitted
+          cout << "i8* "
+               << "%" << params[i]->reg_id;
+        } else if (temp->res_type == VariableType(Int)) {
           cout << "i32 "
                << "%" << params[i]->reg_id;
+        } else {
+          assert(0);
         }
       } else if (params[i]->exp_type == ExpType(Mem)) {  // like printf("%d",&a) or printf("%d",&a[1])
         cout << "i32* "
