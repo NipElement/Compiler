@@ -678,6 +678,13 @@ void MoveIr::printLL() {
     cout << "  store i32 " << dynamic_cast<ConstExp *>(exp2.get())->value << ", i32* %" << exp1->reg_id << ", align 4"
          << endl;
     return;
+  } else if (exp2->exp_type == ExpType(Call)) {
+    auto exp2_call = dynamic_cast<CallExp *>(exp2.get());
+    if (exp2_call->ret_type == VariableType(CharPointer)) {  // for malloc
+      cout << "  store i8* %" << exp2->reg_id << ", i8** %" << exp1->reg_id << ", align 4" << endl;
+    } else {
+      cout << "  store i32 %" << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
+    }
   } else {
     cout << "  store i32 %" << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
   }
