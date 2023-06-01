@@ -322,6 +322,7 @@ std::vector<BaseIr *> StmtAST::buildIrNodes() {
     auto l_val = dynamic_cast<LValAST *>(l_val_ast.get());
     auto exp = dynamic_cast<ExpAST *>(exp_ast.get());
     move->exp2 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(exp->buildIrTree()));
+
     move->exp1 = std::unique_ptr<ExpIr>(dynamic_cast<ExpIr *>(l_val->buildIrTree()));
     return std::vector<BaseIr *>{move};
   } else if (stmt_rule == 2) {  // stmt_rule == 2:Exp

@@ -619,7 +619,26 @@ void CallExp::printLL() {
       cout << ", ";
     }
     if (params[i]->exp_type == ExpType(Const)) {
-      cout << "i32 " << dynamic_cast<ConstExp *>(params[i].get())->value;
+      auto const_exp = dynamic_cast<ConstExp *>(params[i].get());
+      if (const_exp->const_type == ConstType(CInt)) {
+        cout << "i32 " << dynamic_cast<ConstExp *>(params[i].get())->value;
+      } else {
+        // get the string
+        auto string = dynamic_cast<ConstExp *>(params[i].get())->str;
+        auto it = std::find(BaseIr::const_strings.begin(), BaseIr::const_strings.end(), string);
+        // get the string index
+        int index = std::distance(BaseIr::const_strings.begin(), it);
+
+        // %7 = call i32 (i8*, ...) @printf(i8* noundef getelementptr inbounds ([8 x i8], [8 x i8]* @.str.1, i64 0, i64
+        // 0), i32 noundef %6)
+        std::string const_str_type = "[" + to_string(string.length() + 1) + " x i8]";
+
+        std::cout << "i8* noundef getelementptr inbounds (" << const_str_type << ", " << const_str_type << "* @.str";
+        if (index != 0) {
+          std::cout << "." << index;
+        }
+        std::cout << ")";
+      }
     } else if (params[i]->exp_type == ExpType(Temp)) {
       if (params[i]->res_type == VariableType(Int)) {  // passing like a (int)
         cout << "i32 "
@@ -627,6 +646,9 @@ void CallExp::printLL() {
       } else if (params[i]->res_type == VariableType(Pointer) ||
                  params[i]->res_type == VariableType(Array)) {  // passing like a[],
         cout << "i32* "
+             << "%" << params[i]->reg_id;
+      } else if (params[i]->res_type == VariableType(CharPointer)) {
+        cout << "i8* "
              << "%" << params[i]->reg_id;
       }
     } else if (params[i]->exp_type == ExpType(Mem)) {  // passing like &a
