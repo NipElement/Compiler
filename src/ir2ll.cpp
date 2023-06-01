@@ -311,8 +311,13 @@ void NorBoolBinopExp::printLL() {
       ConstExp *theConstExp = dynamic_cast<ConstExp *>(exp2.get());
       // %bool_result_reg = icmp eq i32 %exp2->reg_id, const
       // %reg_id = zext i1 %bool_result_reg to i32
-      cout << "  %" << bool_result_reg << " = icmp eq i32 %" << exp1->reg_id << ", " << theConstExp->value << endl;
-      cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
+      if (exp1->res_type == VariableType(Char)) {
+        cout << "  %" << bool_result_reg << " = icmp eq i8 %" << exp1->reg_id << ", " << theConstExp->value << endl;
+        cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
+      } else {
+        cout << "  %" << bool_result_reg << " = icmp eq i32 %" << exp1->reg_id << ", " << theConstExp->value << endl;
+        cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
+      }
     }
   } else if (op == Ne) {
     if (constFlag == 0) {
