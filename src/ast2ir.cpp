@@ -70,8 +70,10 @@ BaseIr *FuncDefAST::buildIrTree() {
 
     if (first_para->type == 0) {
       func_def->param_types.push_back(VariableType(Int));
-    } else {
+    } else if (first_para->type == 1) {
       func_def->param_types.push_back(VariableType(Pointer));
+    } else if (first_para->type == 2) {
+      func_def->param_types.push_back(VariableType(CharPointer));
     }
 
     func_def->param_names.push_back(*(first_para->ident));
@@ -83,7 +85,14 @@ BaseIr *FuncDefAST::buildIrTree() {
       while (it) {
         auto para_leaf = dynamic_cast<FuncFParamAST *>(it->func_fparam_ast.get());
 
-        func_def->param_types.push_back(VariableType(para_leaf->type));
+        if (para_leaf->type == 0) {
+          func_def->param_types.push_back(VariableType(Int));
+        } else if (para_leaf->type == 1) {
+          func_def->param_types.push_back(VariableType(Pointer));
+        } else if (para_leaf->type == 2) {
+          func_def->param_types.push_back(VariableType(CharPointer));
+        }
+
         func_def->param_names.push_back(*(para_leaf->ident));
         reg++;
 
@@ -850,6 +859,8 @@ BaseIr *PrimaryExpAST::buildIrTree() {
         temp->res_type = VariableType(CharPointer);
       } else if (mem_exp->mem_type == VariableType(CharPtrArray)) {
         assert(0);
+      } else if (mem_exp->mem_type == VariableType(CharPointer)) {
+        temp->res_type = VariableType(CharPointer);
       }
     }
     return temp;

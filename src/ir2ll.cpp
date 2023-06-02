@@ -85,8 +85,10 @@ void FuncDefIr::printLL() {
       std::cout << "i32 ";
     } else if (param_types[i] == VariableType(Pointer)) {  // int*
       std::cout << "i32* ";
+    } else if (param_types[i] == VariableType(CharPointer)) {
+      std::cout << "i8* ";
     } else {
-      // ..
+      //..
     }
     cout << "noundef ";
     std::cout << "%" << i;
@@ -108,6 +110,11 @@ void FuncDefIr::printLL() {
       // store i32 %i, i32* %param_names.size() + i + 1, align 4
       cout << "  store i32* "
            << "%" << i << ", i32** %" << param_names.size() + i + 1 << ", align 8" << endl;
+    } else if (param_types[i] == VariableType(CharPointer)) {
+      cout << "  %" << param_names.size() + i + 1 << " = alloca i8*, align 8" << endl;
+      // store i32 %i, i32* %param_names.size() + i + 1, align 4
+      cout << "  store i8* "
+           << "%" << i << ", i8** %" << param_names.size() + i + 1 << ", align 8" << endl;
     }
   }
 
@@ -311,7 +318,7 @@ void NorBoolBinopExp::printLL() {
       ConstExp *theConstExp = dynamic_cast<ConstExp *>(exp2.get());
       // %bool_result_reg = icmp eq i32 %exp2->reg_id, const
       // %reg_id = zext i1 %bool_result_reg to i32
-      // jsc 
+      // jsc
       if (exp1->res_type == VariableType(Char)) {
         cout << "  %" << bool_result_reg << " = icmp eq i8 %" << exp1->reg_id << ", " << theConstExp->value << endl;
         cout << "  %" << reg_id << " = zext i1 %" << bool_result_reg << " to i32" << endl;
@@ -461,8 +468,9 @@ void TempExp::printLL() {
 
   auto mem_exp = dynamic_cast<MemExp *>(mem.get());
   if (res_type == VariableType(Int) || res_type == VariableType(Char) ||
+      (res_type == VariableType(CharPointer) && mem_exp->mem_type == VariableType(CharPtrArray)) ||
       (res_type == VariableType(CharPointer) &&
-       mem_exp->mem_type == VariableType(CharPtrArray))) {  // for simple int or int or char a[i] or char* a[i]
+       mem_exp->mem_type == VariableType(CharPointer))) {  // for simple int or int or char a[i] or char* a[i]
     // %10 = load i32, i32* %6, align 4
     std::string res_type_str = "i32";
     if (res_type == VariableType(Char)) {

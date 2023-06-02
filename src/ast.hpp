@@ -105,6 +105,7 @@ class FuncFParamAST : public BaseAST {
  public:
   // type = 0: int
   // type = 1: int []
+  // type = 3: char*
   int type;
   std::string *ident;
   std::unique_ptr<BaseAST> exp_list1_ast;

@@ -301,6 +301,14 @@ FuncFParam
     $$ = ast;
     //std::cout<<"INT IDENT '['  ']' ExpList"<<endl;
   }
+  | CHAR_PTR IDENT {
+    auto ast = new FuncFParamAST();
+    ast->type = 2;
+    ast->ident = $2;
+    ast->exp_list1_ast = nullptr;
+    ast->id = id++;
+    $$ = ast;
+  }
   ;
 
 Block
