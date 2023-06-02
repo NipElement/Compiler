@@ -709,7 +709,7 @@ void MoveIr::printLL() {
   } else {
     auto exp1_mem = dynamic_cast<MemExp *>(exp1.get());
     if (exp1_mem->mem_type == VariableType(CharArray) || exp1_mem->mem_type == VariableType(CharPointer)) {
-      cout << "  store i8 " << exp2->reg_id << ", i8* %" << exp1->reg_id << ", align 4" << endl;
+      cout << "  store i8 %" << exp2->reg_id << ", i8* %" << exp1->reg_id << ", align 4" << endl;
     } else {
       cout << "  store i32 " << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
     }
