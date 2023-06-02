@@ -690,8 +690,14 @@ void MoveIr::printLL() {
   // Mem
   exp1->printLL();
   if (exp2->exp_type == ExpType(Const)) {  // a or a[i]
-    cout << "  store i32 " << dynamic_cast<ConstExp *>(exp2.get())->value << ", i32* %" << exp1->reg_id << ", align 4"
-         << endl;
+    auto exp1_mem = dynamic_cast<MemExp *>(exp1.get());
+    if (exp1_mem->mem_type == VariableType(CharArray) || exp1_mem->mem_type == VariableType(CharPointer)) {
+      cout << "  store i8 " << dynamic_cast<ConstExp *>(exp2.get())->value << ", i8* %" << exp1->reg_id << ", align 4"
+           << endl;
+    } else {
+      cout << "  store i32 " << dynamic_cast<ConstExp *>(exp2.get())->value << ", i32* %" << exp1->reg_id << ", align 4"
+           << endl;
+    }
     return;
   } else if (exp2->exp_type == ExpType(Call)) {
     auto exp2_call = dynamic_cast<CallExp *>(exp2.get());
@@ -701,7 +707,12 @@ void MoveIr::printLL() {
       cout << "  store i32 %" << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
     }
   } else {
-    cout << "  store i32 %" << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
+    auto exp1_mem = dynamic_cast<MemExp *>(exp1.get());
+    if (exp1_mem->mem_type == VariableType(CharArray) || exp1_mem->mem_type == VariableType(CharPointer)) {
+      cout << "  store i8 " << exp2->reg_id << ", i8* %" << exp1->reg_id << ", align 4" << endl;
+    } else {
+      cout << "  store i32 " << exp2->reg_id << ", i32* %" << exp1->reg_id << ", align 4" << endl;
+    }
   }
 }
 
