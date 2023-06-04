@@ -855,6 +855,8 @@ BaseIr *PrimaryExpAST::buildIrTree() {
     } else {  // array a in function params passing
       if (mem_exp->mem_type == VariableType(Array)) {
         temp->res_type = VariableType(Pointer);
+      } else if (mem_exp->mem_type == VariableType(Pointer)) {
+        temp->res_type = VariableType(Pointer);
       } else if (mem_exp->mem_type == VariableType(CharArray)) {
         temp->res_type = VariableType(CharPointer);
       } else if (mem_exp->mem_type == VariableType(CharPtrArray)) {
